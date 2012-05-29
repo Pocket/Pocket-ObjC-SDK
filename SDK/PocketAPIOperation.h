@@ -17,7 +17,7 @@
 	NSDictionary *arguments;
 }
 
-@property (nonatomic, retain) PocketAPI *API	;
+@property (nonatomic, retain) PocketAPI *API;
 @property (nonatomic, assign) id<PocketAPIDelegate> delegate;
 
 @property (nonatomic, retain) NSString *method;
