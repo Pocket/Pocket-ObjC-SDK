@@ -16,6 +16,8 @@
 		AA37FB0C157570ED00A63400 /* PocketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA37FB0B157570ED00A63400 /* PocketViewController.m */; };
 		AA37FB0F157570ED00A63400 /* PocketViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA37FB0D157570ED00A63400 /* PocketViewController.xib */; };
 		AA37FB1B1575738300A63400 /* PocketAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = AA37FB1A1575738300A63400 /* PocketAPI.m */; };
+		AA37FB1F157574CA00A63400 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = AA37FB1E157574CA00A63400 /* README.md */; };
+		AA37FB2C1575891400A63400 /* PocketAPIOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = AA37FB2B1575891400A63400 /* PocketAPIOperation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +36,11 @@
 		AA37FB0E157570ED00A63400 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/PocketViewController.xib; sourceTree = "<group>"; };
 		AA37FB191575738300A63400 /* PocketAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PocketAPI.h; path = SDK/PocketAPI.h; sourceTree = SOURCE_ROOT; };
 		AA37FB1A1575738300A63400 /* PocketAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PocketAPI.m; path = SDK/PocketAPI.m; sourceTree = SOURCE_ROOT; };
+		AA37FB1E157574CA00A63400 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		AA37FB251575840500A63400 /* SFHFKeychainUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SFHFKeychainUtils.h; path = SDK/SFHFKeychainUtils.h; sourceTree = SOURCE_ROOT; };
+		AA37FB261575840500A63400 /* SFHFKeychainUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SFHFKeychainUtils.m; path = SDK/SFHFKeychainUtils.m; sourceTree = SOURCE_ROOT; };
+		AA37FB2A1575891400A63400 /* PocketAPIOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PocketAPIOperation.h; path = SDK/PocketAPIOperation.h; sourceTree = SOURCE_ROOT; };
+		AA37FB2B1575891400A63400 /* PocketAPIOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PocketAPIOperation.m; path = SDK/PocketAPIOperation.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +64,7 @@
 				AA37FAFE157570ED00A63400 /* Test App */,
 				AA37FAF7157570ED00A63400 /* Frameworks */,
 				AA37FAF5157570ED00A63400 /* Products */,
+				AA37FB1E157574CA00A63400 /* README.md */,
 			);
 			sourceTree = "<group>";
 		};
@@ -108,6 +116,10 @@
 			children = (
 				AA37FB191575738300A63400 /* PocketAPI.h */,
 				AA37FB1A1575738300A63400 /* PocketAPI.m */,
+				AA37FB2A1575891400A63400 /* PocketAPIOperation.h */,
+				AA37FB2B1575891400A63400 /* PocketAPIOperation.m */,
+				AA37FB251575840500A63400 /* SFHFKeychainUtils.h */,
+				AA37FB261575840500A63400 /* SFHFKeychainUtils.m */,
 			);
 			name = "Pocket SDK";
 			path = PocketSDK/SDK;
@@ -167,6 +179,7 @@
 			files = (
 				AA37FB03157570ED00A63400 /* InfoPlist.strings in Resources */,
 				AA37FB0F157570ED00A63400 /* PocketViewController.xib in Resources */,
+				AA37FB1F157574CA00A63400 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,6 +194,7 @@
 				AA37FB09157570ED00A63400 /* PocketAppDelegate.m in Sources */,
 				AA37FB0C157570ED00A63400 /* PocketViewController.m in Sources */,
 				AA37FB1B1575738300A63400 /* PocketAPI.m in Sources */,
+				AA37FB2C1575891400A63400 /* PocketAPIOperation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,6 +269,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TestApp/PocketSDK-Prefix.pch";
 				INFOPLIST_FILE = "TestApp/PocketSDK-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -266,6 +281,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TestApp/PocketSDK-Prefix.pch";
 				INFOPLIST_FILE = "TestApp/PocketSDK-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

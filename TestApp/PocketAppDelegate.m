@@ -10,6 +10,8 @@
 
 #import "PocketViewController.h"
 
+#import "PocketAPI.h"
+
 @implementation PocketAppDelegate
 
 @synthesize window = _window;
@@ -24,6 +26,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+	[[PocketAPI sharedAPI] setAPIKey:@"Put Your API Key Here"];
+	
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.
 	self.viewController = [[[PocketViewController alloc] initWithNibName:@"PocketViewController" bundle:nil] autorelease];
