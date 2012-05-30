@@ -105,10 +105,11 @@
 			[self.delegate pocketAPI:self.API hadLoginError:error];
 		}
 	}else if([self.method isEqualToString:@"add"]){
-		if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:failedToSaveURL:error:)]){
+		if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:failedToSaveURL:error:needsToRelogin:)]){
 			[self.delegate pocketAPI:self.API 
 					 failedToSaveURL:[NSURL URLWithString:[self.arguments objectForKey:@"url"]] 
-							   error:error];
+							   error:error
+                        needsToRelogin:[error code] == 401];
 		}
 	}
 

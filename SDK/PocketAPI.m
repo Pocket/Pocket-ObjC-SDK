@@ -222,13 +222,13 @@ static PocketAPI *sSharedAPI = nil;
 
 -(void)pocketAPI:(PocketAPI *)api savedURL:(NSURL *)url{
 	if(self.saveHandler){
-		self.saveHandler(api, url, nil);
+		self.saveHandler(api, url, nil, NO);
 	}
 }
 
--(void)pocketAPI:(PocketAPI *)api failedToSaveURL:(NSURL *)url error:(NSError *)error{
+-(void)pocketAPI:(PocketAPI *)api failedToSaveURL:(NSURL *)url error:(NSError *)error needsToRelogin:(BOOL)needsToRelogin{
 	if(self.saveHandler){
-		self.saveHandler(api, url, error);
+		self.saveHandler(api, url, error, needsToRelogin);
 	}
 }
 

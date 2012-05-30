@@ -68,15 +68,15 @@
 }
 
 -(void)pocketAPI:(PocketAPI *)api hadLoginError:(NSError *)error{
-	NSLog(@"Pocket API could not log in: %@", error);
+	NSLog(@"Pocket API could not log in: %@", [error localizedDescription]);
 }
 
 -(void)pocketAPI:(PocketAPI *)api savedURL:(NSURL *)url{
 	NSLog(@"Pocket API saved URL %@ for user %@", url, [api username]);
 }
 
--(void)pocketAPI:(PocketAPI *)api failedToSaveURL:(NSURL *)url error:(NSError *)error{
-	NSLog(@"Pocket API could not save URL %@ for user %@: %@", url, [api username], error);
+-(void)pocketAPI:(PocketAPI *)api failedToSaveURL:(NSURL *)url error:(NSError *)error needsToRelogin:(BOOL)needsToRelogin{
+	NSLog(@"Pocket API could not save URL %@ for user %@: %@. Should prompt to reauth user: %@", url, [api username], [error localizedDescription], needsToRelogin?@"Yes":@"No");
 }
 
 @end
