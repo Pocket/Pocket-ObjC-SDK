@@ -45,11 +45,13 @@
 static PocketAPI *sSharedAPI = nil;
 
 +(PocketAPI *)sharedAPI{
-	static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-		sSharedAPI = [[PocketAPI alloc] init];
-	});
-	return sSharedAPI;
+	@synchronized(self)
+    {
+        if (sSharedAPI == NULL)
+            sSharedAPI = [[self alloc] init];
+    }
+	
+    return(sSharedAPI);
 }
 
 -(id)init{
@@ -75,6 +77,14 @@ static PocketAPI *sSharedAPI = nil;
 }
 
 -(void)loginWithUsername:(NSString *)username password:(NSString *)password delegate:(id<PocketAPIDelegate>)delegate{
+	[operationQueue addOperation:[self loginOperationWithUsername:username password:password delegate:delegate]];
+}
+
+-(void)saveURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate{
+	[operationQueue addOperation:[self saveOperationWithURL:url delegate:delegate]];
+}
+
+-(NSOperation *)loginOperationWithUsername:(NSString *)username password:(NSString *)password delegate:(id<PocketAPIDelegate>)delegate{
 	PocketAPIOperation *operation = [[[PocketAPIOperation alloc] init] autorelease];
 	operation.API = self;
 	operation.delegate = delegate;
@@ -83,11 +93,10 @@ static PocketAPI *sSharedAPI = nil;
 						   username, @"username",
 						   password, @"password",
 						   nil];
-	
-	[operationQueue addOperation:operation];
+	return operation;
 }
 
--(void)saveURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate{
+-(NSOperation *)saveOperationWithURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate{
 	PocketAPIOperation *operation = [[[PocketAPIOperation alloc] init] autorelease];
 	operation.API = self;
 	operation.delegate = delegate;
@@ -96,7 +105,7 @@ static PocketAPI *sSharedAPI = nil;
 						   [url absoluteString], @"url",
 						   nil];
 	
-	[operationQueue addOperation:operation];
+	return operation;
 }
 
 #pragma mark Account Info

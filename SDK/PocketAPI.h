@@ -32,7 +32,6 @@
 
 -(void)pocketAPI:(PocketAPI *)api savedURL:(NSURL *)url;
 -(void)pocketAPI:(PocketAPI *)api failedToSaveURL:(NSURL *)url error:(NSError *)error;
-
 @end
 
 @interface PocketAPI : NSObject {
@@ -44,8 +43,15 @@
 
 -(void)setAPIKey:(NSString *)APIKey;
 
+// simple API
+
 -(void)loginWithUsername:(NSString *)username password:(NSString *)password delegate:(id<PocketAPIDelegate>)delegate;
 -(void)saveURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate;
+
+// operation API
+
+-(NSOperation *)loginOperationWithUsername:(NSString *)username password:(NSString *)password delegate:(id<PocketAPIDelegate>)delegate;
+-(NSOperation *)saveOperationWithURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate;
 
 @property (nonatomic, retain) NSString *APIKey;
 
