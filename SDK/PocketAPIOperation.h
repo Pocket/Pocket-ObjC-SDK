@@ -41,7 +41,7 @@
 }
 
 @property (nonatomic, retain) PocketAPI *API;
-@property (nonatomic, assign) id<PocketAPIDelegate> delegate;
+@property (nonatomic, retain) id<PocketAPIDelegate> delegate; // we break convention here to ensure the delegate exists for operation lifetime, release on complete
 
 @property (nonatomic, retain) NSString *method;
 @property (nonatomic, retain) NSDictionary *arguments;

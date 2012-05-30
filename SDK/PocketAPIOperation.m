@@ -118,6 +118,8 @@
 	finishedLoading = YES;
 	[self  didChangeValueForKey:@"isFinished"];
 	[self  didChangeValueForKey:@"isExecuting"];
+
+	[delegate release], delegate = nil;
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection{
@@ -139,6 +141,8 @@
 	finishedLoading = YES;
 	[self  didChangeValueForKey:@"isFinished"];
 	[self  didChangeValueForKey:@"isExecuting"];
+	
+	[delegate release], delegate = nil;
 }
 
 #pragma mark Private APIs

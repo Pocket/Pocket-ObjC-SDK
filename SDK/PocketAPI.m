@@ -238,13 +238,13 @@ static PocketAPI *sSharedAPI = nil;
 
 +(id)delegateWithLoginHandler:(PocketAPILoginHandler)handler{
 	PocketAPIBlockDelegate *delegate = [[[self alloc] init] autorelease];
-	delegate.loginHandler = handler;
+	delegate.loginHandler = [[handler copy] autorelease];
 	return delegate;
 }
 
 +(id)delegateWithSaveHandler: (PocketAPISaveHandler)handler{
 	PocketAPIBlockDelegate *delegate = [[[self alloc] init] autorelease];
-	delegate.saveHandler = handler;
+	delegate.saveHandler = [[handler copy] autorelease];
 	return delegate;
 }
 
