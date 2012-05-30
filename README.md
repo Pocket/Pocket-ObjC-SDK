@@ -70,7 +70,7 @@ NSURL *url = ...;
 	if(error){
 		if(needsToRelogin){
 			// the user's login information changed elsewhere, prompt them to login here
-			NSLog(@"User needs to login again. %@", needsToRelogin);
+			NSLog(@"User needs to login again. %@", error);
 		}else{
 			// a server issue happened, inform the user their URL will not be saved
 			NSLog(@"Could not save the item to Pocket: %@", error);
