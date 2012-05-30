@@ -25,7 +25,8 @@ You can find more information on these in PocketAPITypes.h
 
 You will have to present your own login form to the user using UI appropriate for your app. You should check the loggedIn property on the PocketAPI to see if you should present a login UI. Once you have a username and password, call one of the login methods below. If it succeeds, your delegate or block will be notified and the user's credentials will be saved automatically to the keychain.
 
-Once the user is logged in, and manually decides to save a URL to their Pocket list, you can call one of the save APIs to save the URL. If you get no error back, the save succeeded, and you should notify the user that their item was saved successfully to their Pocket list. If you get an error back, there are a few status codes you should keep an eye out for:
+Once the user is logged in, and manually decides to save a URL to their Pocket list, you can call one of the save APIs to save the URL. If you get no error back, the save succeeded, and you should notify the user that their item was saved successfully to their Pocket list.
+If you get an error back, there are a few status codes you should keep an eye out for:
 
 - 401: This means the user's account information is invalid and you should prompt to login again.
 - 503: This means the server is temporarily down. The error will contain a message explaining why.

@@ -51,7 +51,6 @@
  * - 503: This means the server is temporarily down. The error will contain a message explaining why.
  */
 
-#import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import "PocketAPITypes.h"
 
