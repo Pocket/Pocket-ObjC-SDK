@@ -83,7 +83,7 @@
 - (void)connection:(NSURLConnection *)aConnection didReceiveResponse:(NSURLResponse *)receivedResponse{
 	response = (NSHTTPURLResponse *)[receivedResponse retain];
 	if([response statusCode] == 200){
-		data = [[NSMutableData alloc] initWithLength:response.expectedContentLength];
+		data = [[NSMutableData alloc] initWithCapacity:0];
 	}else if([[response allHeaderFields] objectForKey:@"X-Error"]){
 		[connection cancel];
 		[self connection:connection didFailWithError:[NSError errorWithDomain:@"PocketSDK" 
