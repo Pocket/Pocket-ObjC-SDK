@@ -27,15 +27,15 @@
 		AA37FAFC157570ED00A63400 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		AA37FB00157570ED00A63400 /* PocketSDK-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PocketSDK-Info.plist"; sourceTree = "<group>"; };
 		AA37FB02157570ED00A63400 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		AA37FB04157570ED00A63400 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		AA37FB04157570ED00A63400 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = main.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		AA37FB06157570ED00A63400 /* PocketSDK-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PocketSDK-Prefix.pch"; sourceTree = "<group>"; };
 		AA37FB07157570ED00A63400 /* PocketAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PocketAppDelegate.h; sourceTree = "<group>"; };
 		AA37FB08157570ED00A63400 /* PocketAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PocketAppDelegate.m; sourceTree = "<group>"; };
 		AA37FB0A157570ED00A63400 /* PocketViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PocketViewController.h; sourceTree = "<group>"; };
 		AA37FB0B157570ED00A63400 /* PocketViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PocketViewController.m; sourceTree = "<group>"; };
 		AA37FB0E157570ED00A63400 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/PocketViewController.xib; sourceTree = "<group>"; };
-		AA37FB191575738300A63400 /* PocketAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PocketAPI.h; path = SDK/PocketAPI.h; sourceTree = SOURCE_ROOT; };
-		AA37FB1A1575738300A63400 /* PocketAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PocketAPI.m; path = SDK/PocketAPI.m; sourceTree = SOURCE_ROOT; };
+		AA37FB191575738300A63400 /* PocketAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = PocketAPI.h; path = SDK/PocketAPI.h; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		AA37FB1A1575738300A63400 /* PocketAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = PocketAPI.m; path = SDK/PocketAPI.m; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		AA37FB1E157574CA00A63400 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		AA37FB251575840500A63400 /* SFHFKeychainUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SFHFKeychainUtils.h; path = SDK/SFHFKeychainUtils.h; sourceTree = SOURCE_ROOT; };
 		AA37FB261575840500A63400 /* SFHFKeychainUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SFHFKeychainUtils.m; path = SDK/SFHFKeychainUtils.m; sourceTree = SOURCE_ROOT; };
