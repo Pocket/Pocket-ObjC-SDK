@@ -1,0 +1,329 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AADD9BAE1576B18400D7D20C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADD9BAD1576B18400D7D20C /* Cocoa.framework */; };
+		AADD9BB81576B18400D7D20C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AADD9BB61576B18400D7D20C /* InfoPlist.strings */; };
+		AADD9BBA1576B18400D7D20C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AADD9BB91576B18400D7D20C /* main.m */; };
+		AADD9BBE1576B18400D7D20C /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = AADD9BBC1576B18400D7D20C /* Credits.rtf */; };
+		AADD9BC11576B18400D7D20C /* PocketAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AADD9BC01576B18400D7D20C /* PocketAppDelegate.m */; };
+		AADD9BC41576B18400D7D20C /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = AADD9BC21576B18400D7D20C /* MainMenu.xib */; };
+		AADD9BDB1576B23500D7D20C /* PocketAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = AADD9BD51576B23500D7D20C /* PocketAPI.m */; };
+		AADD9BDC1576B23500D7D20C /* PocketAPIOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = AADD9BD71576B23500D7D20C /* PocketAPIOperation.m */; };
+		AADD9BDD1576B23500D7D20C /* SFHFKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = AADD9BDA1576B23500D7D20C /* SFHFKeychainUtils.m */; };
+		AADD9BDF1576B25400D7D20C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADD9BDE1576B25400D7D20C /* Security.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		AADD9BA91576B18400D7D20C /* PocketSDK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PocketSDK.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AADD9BAD1576B18400D7D20C /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		AADD9BB01576B18400D7D20C /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		AADD9BB11576B18400D7D20C /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		AADD9BB21576B18400D7D20C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		AADD9BB51576B18400D7D20C /* PocketSDK-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PocketSDK-Info.plist"; sourceTree = "<group>"; };
+		AADD9BB71576B18400D7D20C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AADD9BB91576B18400D7D20C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		AADD9BBB1576B18400D7D20C /* PocketSDK-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PocketSDK-Prefix.pch"; sourceTree = "<group>"; };
+		AADD9BBD1576B18400D7D20C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		AADD9BBF1576B18400D7D20C /* PocketAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PocketAppDelegate.h; sourceTree = "<group>"; };
+		AADD9BC01576B18400D7D20C /* PocketAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PocketAppDelegate.m; sourceTree = "<group>"; };
+		AADD9BC31576B18400D7D20C /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		AADD9BD41576B23500D7D20C /* PocketAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PocketAPI.h; sourceTree = "<group>"; };
+		AADD9BD51576B23500D7D20C /* PocketAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PocketAPI.m; sourceTree = "<group>"; };
+		AADD9BD61576B23500D7D20C /* PocketAPIOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PocketAPIOperation.h; sourceTree = "<group>"; };
+		AADD9BD71576B23500D7D20C /* PocketAPIOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PocketAPIOperation.m; sourceTree = "<group>"; };
+		AADD9BD81576B23500D7D20C /* PocketAPITypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PocketAPITypes.h; sourceTree = "<group>"; };
+		AADD9BD91576B23500D7D20C /* SFHFKeychainUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SFHFKeychainUtils.h; sourceTree = "<group>"; };
+		AADD9BDA1576B23500D7D20C /* SFHFKeychainUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SFHFKeychainUtils.m; sourceTree = "<group>"; };
+		AADD9BDE1576B25400D7D20C /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AADD9BA61576B18400D7D20C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AADD9BDF1576B25400D7D20C /* Security.framework in Frameworks */,
+				AADD9BAE1576B18400D7D20C /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AADD9B9E1576B18400D7D20C = {
+			isa = PBXGroup;
+			children = (
+				AADD9BD31576B23500D7D20C /* Pocket SDK */,
+				AADD9BB31576B18400D7D20C /* Test App */,
+				AADD9BAC1576B18400D7D20C /* Frameworks */,
+				AADD9BAA1576B18400D7D20C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AADD9BAA1576B18400D7D20C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AADD9BA91576B18400D7D20C /* PocketSDK.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AADD9BAC1576B18400D7D20C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AADD9BDE1576B25400D7D20C /* Security.framework */,
+				AADD9BAD1576B18400D7D20C /* Cocoa.framework */,
+				AADD9BAF1576B18400D7D20C /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AADD9BAF1576B18400D7D20C /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AADD9BB01576B18400D7D20C /* AppKit.framework */,
+				AADD9BB11576B18400D7D20C /* CoreData.framework */,
+				AADD9BB21576B18400D7D20C /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		AADD9BB31576B18400D7D20C /* Test App */ = {
+			isa = PBXGroup;
+			children = (
+				AADD9BBF1576B18400D7D20C /* PocketAppDelegate.h */,
+				AADD9BC01576B18400D7D20C /* PocketAppDelegate.m */,
+				AADD9BC21576B18400D7D20C /* MainMenu.xib */,
+				AADD9BB41576B18400D7D20C /* Supporting Files */,
+			);
+			name = "Test App";
+			sourceTree = "<group>";
+		};
+		AADD9BB41576B18400D7D20C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				AADD9BB51576B18400D7D20C /* PocketSDK-Info.plist */,
+				AADD9BB61576B18400D7D20C /* InfoPlist.strings */,
+				AADD9BB91576B18400D7D20C /* main.m */,
+				AADD9BBB1576B18400D7D20C /* PocketSDK-Prefix.pch */,
+				AADD9BBC1576B18400D7D20C /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		AADD9BD31576B23500D7D20C /* Pocket SDK */ = {
+			isa = PBXGroup;
+			children = (
+				AADD9BD41576B23500D7D20C /* PocketAPI.h */,
+				AADD9BD51576B23500D7D20C /* PocketAPI.m */,
+				AADD9BD61576B23500D7D20C /* PocketAPIOperation.h */,
+				AADD9BD71576B23500D7D20C /* PocketAPIOperation.m */,
+				AADD9BD81576B23500D7D20C /* PocketAPITypes.h */,
+				AADD9BD91576B23500D7D20C /* SFHFKeychainUtils.h */,
+				AADD9BDA1576B23500D7D20C /* SFHFKeychainUtils.m */,
+			);
+			name = "Pocket SDK";
+			path = ../SDK;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AADD9BA81576B18400D7D20C /* PocketSDK */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AADD9BC71576B18400D7D20C /* Build configuration list for PBXNativeTarget "PocketSDK" */;
+			buildPhases = (
+				AADD9BA51576B18400D7D20C /* Sources */,
+				AADD9BA61576B18400D7D20C /* Frameworks */,
+				AADD9BA71576B18400D7D20C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PocketSDK;
+			productName = PocketSDK;
+			productReference = AADD9BA91576B18400D7D20C /* PocketSDK.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AADD9BA01576B18400D7D20C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = Pocket;
+				LastUpgradeCheck = 0430;
+				ORGANIZATIONNAME = "Read It Later, Inc.";
+			};
+			buildConfigurationList = AADD9BA31576B18400D7D20C /* Build configuration list for PBXProject "Mac Test App" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = AADD9B9E1576B18400D7D20C;
+			productRefGroup = AADD9BAA1576B18400D7D20C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AADD9BA81576B18400D7D20C /* PocketSDK */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AADD9BA71576B18400D7D20C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AADD9BB81576B18400D7D20C /* InfoPlist.strings in Resources */,
+				AADD9BBE1576B18400D7D20C /* Credits.rtf in Resources */,
+				AADD9BC41576B18400D7D20C /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AADD9BA51576B18400D7D20C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AADD9BBA1576B18400D7D20C /* main.m in Sources */,
+				AADD9BC11576B18400D7D20C /* PocketAppDelegate.m in Sources */,
+				AADD9BDB1576B23500D7D20C /* PocketAPI.m in Sources */,
+				AADD9BDC1576B23500D7D20C /* PocketAPIOperation.m in Sources */,
+				AADD9BDD1576B23500D7D20C /* SFHFKeychainUtils.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		AADD9BB61576B18400D7D20C /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AADD9BB71576B18400D7D20C /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		AADD9BBC1576B18400D7D20C /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AADD9BBD1576B18400D7D20C /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		AADD9BC21576B18400D7D20C /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AADD9BC31576B18400D7D20C /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		AADD9BC51576B18400D7D20C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		AADD9BC61576B18400D7D20C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		AADD9BC81576B18400D7D20C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "PocketSDK-Prefix.pch";
+				INFOPLIST_FILE = "PocketSDK-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		AADD9BC91576B18400D7D20C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "PocketSDK-Prefix.pch";
+				INFOPLIST_FILE = "PocketSDK-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AADD9BA31576B18400D7D20C /* Build configuration list for PBXProject "Mac Test App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AADD9BC51576B18400D7D20C /* Debug */,
+				AADD9BC61576B18400D7D20C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AADD9BC71576B18400D7D20C /* Build configuration list for PBXNativeTarget "PocketSDK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AADD9BC81576B18400D7D20C /* Debug */,
+				AADD9BC91576B18400D7D20C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AADD9BA01576B18400D7D20C /* Project object */;
+}

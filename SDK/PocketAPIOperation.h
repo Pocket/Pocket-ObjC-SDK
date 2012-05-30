@@ -24,7 +24,7 @@
 #import <Foundation/Foundation.h>
 #import "PocketAPI.h"
 
-@interface PocketAPIOperation : NSOperation <NSURLConnectionDelegate, NSURLConnectionDataDelegate> {
+@interface PocketAPIOperation : NSOperation <NSURLConnectionDelegate> {
 	PocketAPI *API;
 	id<PocketAPIDelegate> delegate;
 	

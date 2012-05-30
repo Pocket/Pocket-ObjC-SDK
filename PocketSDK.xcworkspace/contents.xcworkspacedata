@@ -5,6 +5,9 @@
       location = "container:iOSApp/iOS Test App.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:MacApp/Mac Test App.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:iOSApp/../README.md">
    </FileRef>
 </Workspace>
