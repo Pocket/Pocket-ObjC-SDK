@@ -36,6 +36,8 @@ If you get an error back, there are a few status codes you should keep an eye ou
 
 The Save API also will inform you through an argument that the user needs to login again or not.
 
+These classes are not implemented as ARC, but will interoperate with ARC. You will need to add the -fno-objc-arc compiler flag to each of the files in the SDK if you are using ARC in your app.
+
 Sample Use
 ==========
 

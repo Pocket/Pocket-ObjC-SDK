@@ -53,6 +53,9 @@
  * - 503: This means the server is temporarily down. The error will contain a message explaining why.
  *
  * The Save API also will inform you through an argument that the user needs to login again or not.
+ *
+ * These classes are not implemented as ARC, but will interoperate with ARC. You will need to add the
+ * -fno-objc-arc compiler flag to each of the files in the SDK.
  */
 
 #import <Foundation/Foundation.h>
