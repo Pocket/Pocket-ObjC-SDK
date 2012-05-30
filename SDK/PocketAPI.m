@@ -61,8 +61,10 @@ static PocketAPI *sSharedAPI = nil;
 +(PocketAPI *)sharedAPI{
 	@synchronized(self)
     {
-        if (sSharedAPI == NULL)
-            sSharedAPI = [[self alloc] init];
+        if (sSharedAPI == NULL){
+            sSharedAPI = [self alloc];
+			[sSharedAPI init];
+		}
     }
 	
     return(sSharedAPI);
@@ -71,6 +73,11 @@ static PocketAPI *sSharedAPI = nil;
 -(id)init{
 	if(self = [super init]){
 		operationQueue = [[NSOperationQueue alloc] init];
+		
+		// set the initial API key to the one from the singleton
+		if(sSharedAPI != self){
+			APIKey = [sSharedAPI APIKey];
+		}
 	}
 	return self;
 }

@@ -159,7 +159,7 @@
 		[pairs addObject:[NSString stringWithFormat:@"%@=%@",key, [self pkt_urlEncode:[self.arguments objectForKey:key]]]];
 	}
 	
-	NSString *urlString = [NSString stringWithFormat:@"http://readitlaterlist.com/v2/%@", self.method];
+	NSString *urlString = [NSString stringWithFormat:@"https://readitlaterlist.com/v2/%@", self.method];
 	if(pairs.count > 0){
 		urlString = [urlString stringByAppendingFormat:@"?%@", [pairs componentsJoinedByString:@"&"]];
 	}
