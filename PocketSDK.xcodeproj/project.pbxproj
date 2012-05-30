@@ -41,6 +41,7 @@
 		AA37FB261575840500A63400 /* SFHFKeychainUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SFHFKeychainUtils.m; path = SDK/SFHFKeychainUtils.m; sourceTree = SOURCE_ROOT; };
 		AA37FB2A1575891400A63400 /* PocketAPIOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PocketAPIOperation.h; path = SDK/PocketAPIOperation.h; sourceTree = SOURCE_ROOT; };
 		AA37FB2B1575891400A63400 /* PocketAPIOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PocketAPIOperation.m; path = SDK/PocketAPIOperation.m; sourceTree = SOURCE_ROOT; };
+		AA37FB2D1575BF7500A63400 /* PocketAPITypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PocketAPITypes.h; path = SDK/PocketAPITypes.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +117,7 @@
 			children = (
 				AA37FB191575738300A63400 /* PocketAPI.h */,
 				AA37FB1A1575738300A63400 /* PocketAPI.m */,
+				AA37FB2D1575BF7500A63400 /* PocketAPITypes.h */,
 				AA37FB2A1575891400A63400 /* PocketAPIOperation.h */,
 				AA37FB2B1575891400A63400 /* PocketAPIOperation.m */,
 				AA37FB251575840500A63400 /* SFHFKeychainUtils.h */,

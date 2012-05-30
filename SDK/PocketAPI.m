@@ -34,6 +34,20 @@
 
 @end
 
+#if NS_BLOCKS_AVAILABLE
+@interface PocketAPIBlockDelegate : NSObject <PocketAPIDelegate>{
+	PocketAPILoginHandler loginHandler;
+	PocketAPISaveHandler saveHandler;
+}
+
++(id)delegateWithLoginHandler:(PocketAPILoginHandler)handler;
++(id)delegateWithSaveHandler: (PocketAPISaveHandler )handler;
+
+@property (nonatomic, copy) PocketAPILoginHandler loginHandler;
+@property (nonatomic, copy) PocketAPISaveHandler saveHandler;
+@end
+#endif
+
 #pragma mark Implementation
 
 @implementation PocketAPI
@@ -108,6 +122,28 @@ static PocketAPI *sSharedAPI = nil;
 	return operation;
 }
 
+#if NS_BLOCKS_AVAILABLE
+
+-(void)loginWithUsername:(NSString *)username password:(NSString *)password handler:(PocketAPILoginHandler)handler{
+	[self loginWithUsername:username password:password delegate:[PocketAPIBlockDelegate delegateWithLoginHandler:handler]];
+}
+
+-(void)saveURL:(NSURL *)url handler:(PocketAPISaveHandler)handler{
+	[self saveURL:url delegate:[PocketAPIBlockDelegate delegateWithSaveHandler:handler]];
+}
+
+// operation API
+
+-(NSOperation *)loginOperationWithUsername:(NSString *)username password:(NSString *)password handler:(PocketAPILoginHandler)handler{
+	return [self loginOperationWithUsername:username password:password delegate:[PocketAPIBlockDelegate delegateWithLoginHandler:handler]];
+}
+
+-(NSOperation *)saveOperationWithURL:(NSURL *)url handler:(PocketAPISaveHandler)handler{
+	return [self saveOperationWithURL:url delegate:[PocketAPIBlockDelegate delegateWithSaveHandler:handler]];
+}
+
+#endif
+
 #pragma mark Account Info
 
 -(NSString *)username{
@@ -159,3 +195,54 @@ static PocketAPI *sSharedAPI = nil;
 }
 
 @end
+
+#if NS_BLOCKS_AVAILABLE
+@implementation PocketAPIBlockDelegate
+
+@synthesize loginHandler, saveHandler;
+
+-(void)pocketAPILoggedIn:(PocketAPI *)api{
+	if(self.loginHandler){
+		self.loginHandler(api, nil);
+	}
+}
+
+-(void)pocketAPI:(PocketAPI *)api hadLoginError:(NSError *)error{
+	if(self.loginHandler){
+		self.loginHandler(api, error);
+	}
+}
+
+-(void)pocketAPI:(PocketAPI *)api savedURL:(NSURL *)url{
+	if(self.saveHandler){
+		self.saveHandler(api, url, nil);
+	}
+}
+
+-(void)pocketAPI:(PocketAPI *)api failedToSaveURL:(NSURL *)url error:(NSError *)error{
+	if(self.saveHandler){
+		self.saveHandler(api, url, error);
+	}
+}
+
++(id)delegateWithLoginHandler:(PocketAPILoginHandler)handler{
+	PocketAPIBlockDelegate *delegate = [[[self alloc] init] autorelease];
+	delegate.loginHandler = handler;
+	return delegate;
+}
+
++(id)delegateWithSaveHandler: (PocketAPISaveHandler)handler{
+	PocketAPIBlockDelegate *delegate = [[[self alloc] init] autorelease];
+	delegate.saveHandler = handler;
+	return delegate;
+}
+
+-(void)dealloc{
+	[loginHandler release], loginHandler = nil;
+	[saveHandler release], saveHandler = nil;
+	
+	[super dealloc];
+}
+
+@end
+#endif
