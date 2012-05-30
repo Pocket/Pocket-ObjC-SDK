@@ -22,6 +22,8 @@ The PocketAPI class represents a singleton for saving stuff to a user's Pocket l
 - an NSOperation based on a delegate (for advanced uses)
 - an NSOperation based on a block (for advanced uses)
 
+All delegates and blocks are called on the main thread, so you can safely update UI from there.
+
 You can find more information on these in PocketAPITypes.h
 
 You will have to present your own login form to the user using UI appropriate for your app. You should check the loggedIn property on the PocketAPI to see if you should present a login UI. Once you have a username and password, call one of the login methods below. If it succeeds, your delegate or block will be notified and the user's credentials will be saved automatically to the keychain.
