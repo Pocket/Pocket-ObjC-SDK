@@ -34,6 +34,11 @@ If you get an error back, there are a few status codes you should keep an eye ou
 
 The Save API also will inform you through an argument that the user needs to login again or not.
 
+Sample Use
+==========
+
+To login:
+
 Acknowledgements
 ================
 
