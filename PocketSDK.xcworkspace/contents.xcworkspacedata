@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "container:iOSApp/PocketSDK.xcodeproj">
+      location = "container:iOSApp/iOS Test App.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:iOSApp/../README.md">

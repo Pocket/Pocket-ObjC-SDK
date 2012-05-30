@@ -16,7 +16,7 @@
                BlueprintIdentifier = "AA37FAF3157570ED00A63400"
                BuildableName = "iOS Test App.app"
                BlueprintName = "iOS Test App"
-               ReferencedContainer = "container:PocketSDK.xcodeproj">
+               ReferencedContainer = "container:iOS Test App.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -34,7 +34,7 @@
             BlueprintIdentifier = "AA37FAF3157570ED00A63400"
             BuildableName = "iOS Test App.app"
             BlueprintName = "iOS Test App"
-            ReferencedContainer = "container:PocketSDK.xcodeproj">
+            ReferencedContainer = "container:iOS Test App.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -53,7 +53,7 @@
             BlueprintIdentifier = "AA37FAF3157570ED00A63400"
             BuildableName = "iOS Test App.app"
             BlueprintName = "iOS Test App"
-            ReferencedContainer = "container:PocketSDK.xcodeproj">
+            ReferencedContainer = "container:iOS Test App.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -71,7 +71,7 @@
             BlueprintIdentifier = "AA37FAF3157570ED00A63400"
             BuildableName = "iOS Test App.app"
             BlueprintName = "iOS Test App"
-            ReferencedContainer = "container:PocketSDK.xcodeproj">
+            ReferencedContainer = "container:iOS Test App.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

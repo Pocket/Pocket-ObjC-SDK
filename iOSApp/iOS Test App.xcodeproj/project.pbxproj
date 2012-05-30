@@ -158,7 +158,7 @@
 				LastUpgradeCheck = 0430;
 				ORGANIZATIONNAME = "Read It Later, Inc.";
 			};
-			buildConfigurationList = AA37FAEE157570ED00A63400 /* Build configuration list for PBXProject "PocketSDK" */;
+			buildConfigurationList = AA37FAEE157570ED00A63400 /* Build configuration list for PBXProject "iOS Test App" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -295,7 +295,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		AA37FAEE157570ED00A63400 /* Build configuration list for PBXProject "PocketSDK" */ = {
+		AA37FAEE157570ED00A63400 /* Build configuration list for PBXProject "iOS Test App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AA37FB10157570ED00A63400 /* Debug */,
