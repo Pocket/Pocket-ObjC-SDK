@@ -86,10 +86,11 @@
 		data = [[NSMutableData alloc] initWithCapacity:0];
 	}else if([[response allHeaderFields] objectForKey:@"X-Error"]){
 		[connection cancel];
+        NSString *xError = [[response allHeaderFields] objectForKey:@"X-Error"];
+        NSDictionary *userInfo = xError ? [NSDictionary dictionaryWithObjectsAndKeys:xError,NSLocalizedDescriptionKey,nil] : nil;
 		[self connection:connection didFailWithError:[NSError errorWithDomain:@"PocketSDK" 
 																		 code:[response statusCode] 
-																	 userInfo:[NSDictionary dictionaryWithObject:[[response allHeaderFields] objectForKey:@"X-Error"]
-																										  forKey:@"error"]]];
+																	 userInfo:userInfo]];
 	}
 }
 
