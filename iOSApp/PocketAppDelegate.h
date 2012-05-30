@@ -27,8 +27,8 @@
 
 @interface PocketAppDelegate : UIResponder <UIApplicationDelegate>
 
-@property (strong, nonatomic) UIWindow *window;
+@property (nonatomic, retain) UIWindow *window;
 
-@property (strong, nonatomic) PocketViewController *viewController;
+@property (nonatomic, retain) PocketViewController *viewController;
 
 @end

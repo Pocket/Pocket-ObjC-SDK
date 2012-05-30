@@ -27,6 +27,10 @@
 
 #pragma mark Private APIs (please do not call these directly)
 
+@interface PocketAPI  ()
+-(NSString *)pkt_getPassword;
+@end
+
 @interface PocketAPI (Credentials)
 
 -(void)pkt_setKeychainValue:(id)value forKey:(NSString *)key;
@@ -182,13 +186,13 @@ static PocketAPI *sSharedAPI = nil;
 #if TARGET_IPHONE_SIMULATOR
 		[[NSUserDefaults standardUserDefaults] setObject:value forKey:[NSString stringWithFormat:@"%@.%@", PocketGlobalKeychainServiceName, key]];
 #else
-		[SFHFKeychainUtils storeUsername:key andPassword:value forServiceName:RILGlobalKeychainServiceName updateExisting:YES error:nil];
+		[SFHFKeychainUtils storeUsername:key andPassword:value forServiceName:PocketGlobalKeychainServiceName updateExisting:YES error:nil];
 #endif
 	}else{
 #if TARGET_IPHONE_SIMULATOR
 		[[NSUserDefaults standardUserDefaults] removeObjectForKey:[NSString stringWithFormat:@"%@.%@", PocketGlobalKeychainServiceName, key]];
 #else
-		[SFHFKeychainUtils deleteItemForUsername:key andServiceName:RILGlobalKeychainServiceName error:nil];
+		[SFHFKeychainUtils deleteItemForUsername:key andServiceName:PocketGlobalKeychainServiceName error:nil];
 #endif
 	}
 }
@@ -197,7 +201,7 @@ static PocketAPI *sSharedAPI = nil;
 #if TARGET_IPHONE_SIMULATOR
 	return [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"%@.%@", PocketGlobalKeychainServiceName, key]];
 #else
-	return [SFHFKeychainUtils getPasswordForUsername:key andServiceName:RILGlobalKeychainServiceName error:nil];
+	return [SFHFKeychainUtils getPasswordForUsername:key andServiceName:PocketGlobalKeychainServiceName error:nil];
 #endif
 }
 

@@ -49,6 +49,8 @@
  * 
  * - 401: This means the user's account information is invalid and you should prompt to login again.
  * - 503: This means the server is temporarily down. The error will contain a message explaining why.
+ *
+ * The Save API also will inform you through an argument that the user needs to login again or not.
  */
 
 #import <Foundation/Foundation.h>

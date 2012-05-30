@@ -27,7 +27,8 @@
 
 int main(int argc, char *argv[])
 {
-	@autoreleasepool {
-	    return UIApplicationMain(argc, argv, nil, NSStringFromClass([PocketAppDelegate class]));
-	}
+	NSAutoreleasePool *pool = [NSAutoreleasePool new];
+	int ret = UIApplicationMain(argc, argv, nil, NSStringFromClass([PocketAppDelegate class]));
+	[pool release];
+	return ret;
 }
