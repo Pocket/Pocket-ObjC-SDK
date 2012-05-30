@@ -15,6 +15,14 @@
 	
 	NSString *method;
 	NSDictionary *arguments;
+	
+	NSURLConnection *connection;
+	NSHTTPURLResponse *response;
+	NSMutableData *data;
+	NSError *error;
+	
+	BOOL finishedLoading;
+
 }
 
 @property (nonatomic, retain) PocketAPI *API;
@@ -22,5 +30,10 @@
 
 @property (nonatomic, retain) NSString *method;
 @property (nonatomic, retain) NSDictionary *arguments;
+
+@property (nonatomic, readonly, retain) NSURLConnection *connection;
+@property (nonatomic, readonly, retain) NSHTTPURLResponse *response;
+@property (nonatomic, readonly, retain) NSMutableData *data;
+@property (nonatomic, readonly, retain) NSError *error;
 
 @end

@@ -22,6 +22,7 @@
 
 @interface PocketAPI : NSObject {
 	NSString *APIKey;
+	NSOperationQueue *operationQueue;
 }
 
 +(PocketAPI *)sharedAPI;
@@ -30,7 +31,6 @@
 
 -(void)loginWithUsername:(NSString *)username password:(NSString *)password delegate:(id<PocketAPIDelegate>)delegate;
 -(void)saveURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate;
--(void)saveURL:(NSURL *)url withTitle:(NSString *)title delegate:(id<PocketAPIDelegate>)delegate;
 
 @property (nonatomic, retain) NSString *APIKey;
 

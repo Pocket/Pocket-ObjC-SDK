@@ -37,6 +37,22 @@ static PocketAPI *sSharedAPI = nil;
 	return sSharedAPI;
 }
 
+-(id)init{
+	if(self = [super init]){
+		operationQueue = [[NSOperationQueue alloc] init];
+	}
+	return self;
+}
+
+-(void)dealloc{
+	[operationQueue waitUntilAllOperationsAreFinished];
+	[operationQueue release], operationQueue = nil;
+
+	[APIKey release], APIKey = nil;
+	
+	[super dealloc];
+}
+
 -(BOOL)isLoggedIn{
 	NSString *username = [self username];
 	NSString *password = [self pkt_getPassword];
@@ -44,7 +60,7 @@ static PocketAPI *sSharedAPI = nil;
 }
 
 -(void)loginWithUsername:(NSString *)username password:(NSString *)password delegate:(id<PocketAPIDelegate>)delegate{
-	PocketAPIOperation *operation = [[PocketAPIOperation alloc] init];
+	PocketAPIOperation *operation = [[[PocketAPIOperation alloc] init] autorelease];
 	operation.API = self;
 	operation.delegate = delegate;
 	operation.method = @"auth";
@@ -52,10 +68,20 @@ static PocketAPI *sSharedAPI = nil;
 						   username, @"username",
 						   password, @"password",
 						   nil];
+	
+	[operationQueue addOperation:operation];
 }
 
 -(void)saveURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate{
+	PocketAPIOperation *operation = [[[PocketAPIOperation alloc] init] autorelease];
+	operation.API = self;
+	operation.delegate = delegate;
+	operation.method = @"add";
+	operation.arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+						   [url absoluteString], @"url",
+						   nil];
 	
+	[operationQueue addOperation:operation];
 }
 
 #pragma mark Account Info
@@ -66,6 +92,11 @@ static PocketAPI *sSharedAPI = nil;
 
 -(NSString *)pkt_getPassword{
 	return [self pkt_getKeychainValueForKey:@"password"];
+}
+
+-(void)pkt_loggedInWithUsername:(NSString *)username password:(NSString *)password{
+	[self pkt_setKeychainValue:username forKey:@"username"];
+	[self pkt_setKeychainValue:password forKey:@"password"];
 }
 
 @end
