@@ -6,10 +6,11 @@ Thanks for checking out the Pocket SDK. With a few lines of code, your app can q
 Setup
 =====
 
-0. Get an API key from http://getpocket.com/api/
-1. Add the contents of the SDK folder to your app. If you already include SFHFKeychainUtils, you should not include the copy bundled with the SDK.
-2. In your app delegate's application:didFinishLaunchingWithOptions: method, add this line: `[[PocketAPI sharedAPI] setAPIKey:@"Put Your API Key Here"];`
-3. Replace the `"Put Your API Key Here"` bit with the API key you got in step 0.
+1. Get an API key from http://getpocket.com/api/
+2. Add the contents of the SDK folder to your app. If you already include SFHFKeychainUtils, you should not include the copy bundled with the SDK.
+3. Add the Security framework to your application's linker phase
+4. In your app delegate's application:didFinishLaunchingWithOptions: method, add this line: `[[PocketAPI sharedAPI] setAPIKey:@"Put Your API Key Here"];`
+5. Replace the `"Put Your API Key Here"` bit with the API key you got in step 1.
 
 Usage
 =====
@@ -30,6 +31,8 @@ If you get an error back, there are a few status codes you should keep an eye ou
 
 - 401: This means the user's account information is invalid and you should prompt to login again.
 - 503: This means the server is temporarily down. The error will contain a message explaining why.
+
+The Save API also will inform you through an argument that the user needs to login again or not.
 
 Acknowledgements
 ================
