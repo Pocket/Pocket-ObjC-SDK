@@ -24,17 +24,16 @@
 #import <UIKit/UIKit.h>
 #import "PocketAPI.h"
 
-@interface PocketViewController : UIViewController <PocketAPIDelegate>{
-	UITextField *usernameField;
-	UITextField *passwordField;
-	UITextField *URLField;
+@interface PocketViewController : UIViewController <PocketAPIDelegate, UITableViewDelegate, UITableViewDataSource>{
+	NSArray *stories;
+	UITableView *tableView;
 }
 
-@property (nonatomic, retain) IBOutlet UITextField *usernameField;
-@property (nonatomic, retain) IBOutlet UITextField *passwordField;
-@property (nonatomic, retain) IBOutlet UITextField *URLField;
+@property (nonatomic, strong) NSArray *stories;
+@property (nonatomic, strong) IBOutlet UITableView *tableView;
 
 -(IBAction)login:(id)sender;
--(IBAction)saveURL:(id)sender;
+-(IBAction)logout:(id)sender;
+
 
 @end

@@ -22,13 +22,14 @@
 //
 
 #import "PocketAPI.h"
+#import "PocketAPILogin.h"
 #import "PocketAPIOperation.h"
 #import <dispatch/dispatch.h>
 
 #pragma mark Private APIs (please do not call these directly)
 
 @interface PocketAPI  ()
--(NSString *)pkt_getPassword;
+-(NSString *)pkt_getToken;
 @end
 
 @interface PocketAPI (Credentials)
@@ -56,7 +57,7 @@
 
 @implementation PocketAPI
 
-@synthesize APIKey;
+@synthesize consumerKey;
 
 #pragma mark Public API
 
@@ -74,13 +75,21 @@ static PocketAPI *sSharedAPI = nil;
     return(sSharedAPI);
 }
 
++(BOOL)hasPocketAppInstalled{
+#if TARGET_OS_IPHONE
+	return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"pocket:"]];
+#else
+	return NO;
+#endif
+}
+
 -(id)init{
 	if(self = [super init]){
 		operationQueue = [[NSOperationQueue alloc] init];
 		
 		// set the initial API key to the one from the singleton
 		if(sSharedAPI != self){
-			APIKey = [sSharedAPI APIKey];
+			consumerKey = [sSharedAPI consumerKey];
 		}
 	}
 	return self;
@@ -90,35 +99,43 @@ static PocketAPI *sSharedAPI = nil;
 	[operationQueue waitUntilAllOperationsAreFinished];
 	[operationQueue release], operationQueue = nil;
 
-	[APIKey release], APIKey = nil;
+	[consumerKey release], consumerKey = nil;
 	
 	[super dealloc];
 }
 
--(BOOL)isLoggedIn{
-	NSString *username = [self username];
-	NSString *password = [self pkt_getPassword];
-	return (username && password && username.length > 0 && password.length > 0);
+-(BOOL)handleOpenURL:(NSURL *)url{
+	// TODO implement
+	return NO;
 }
 
--(void)loginWithUsername:(NSString *)username password:(NSString *)password delegate:(id<PocketAPIDelegate>)delegate{
-	[operationQueue addOperation:[self loginOperationWithUsername:username password:password delegate:delegate]];
+-(NSUInteger)appID{
+	NSUInteger appID = NSNotFound;
+	if(self.consumerKey){
+		NSArray *keyPieces = [self.consumerKey componentsSeparatedByString:@"-"];
+		if(keyPieces && keyPieces.count > 0){
+			NSString *appIDPiece = [keyPieces objectAtIndex:0];
+			if(appIDPiece && appIDPiece.length > 0){
+				appID = [appIDPiece integerValue];
+			}
+		}
+	}
+	return appID;
+}
+
+-(BOOL)isLoggedIn{
+	NSString *username = [self username];
+	NSString *token    = [self pkt_getToken];
+	return (username && token && username.length > 0 && token.length > 0);
+}
+
+-(void)loginWithDelegate:(id<PocketAPIDelegate>)delegate{
+	PocketAPILogin *login = [[PocketAPILogin alloc] initWithAPI:self];
+	[login fetchRequestToken];
 }
 
 -(void)saveURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate{
 	[operationQueue addOperation:[self saveOperationWithURL:url delegate:delegate]];
-}
-
--(NSOperation *)loginOperationWithUsername:(NSString *)username password:(NSString *)password delegate:(id<PocketAPIDelegate>)delegate{
-	PocketAPIOperation *operation = [[[PocketAPIOperation alloc] init] autorelease];
-	operation.API = self;
-	operation.delegate = delegate;
-	operation.method = @"auth";
-	operation.arguments = [NSDictionary dictionaryWithObjectsAndKeys:
-						   username, @"username",
-						   password, @"password",
-						   nil];
-	return operation;
 }
 
 -(NSOperation *)saveOperationWithURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate{
@@ -135,8 +152,8 @@ static PocketAPI *sSharedAPI = nil;
 
 #if NS_BLOCKS_AVAILABLE
 
--(void)loginWithUsername:(NSString *)username password:(NSString *)password handler:(PocketAPILoginHandler)handler{
-	[self loginWithUsername:username password:password delegate:[PocketAPIBlockDelegate delegateWithLoginHandler:handler]];
+-(void)loginWithHandler:(PocketAPILoginHandler)handler{
+	[self loginWithDelegate:[PocketAPIBlockDelegate delegateWithLoginHandler:handler]];
 }
 
 -(void)saveURL:(NSURL *)url handler:(PocketAPISaveHandler)handler{
@@ -144,10 +161,6 @@ static PocketAPI *sSharedAPI = nil;
 }
 
 // operation API
-
--(NSOperation *)loginOperationWithUsername:(NSString *)username password:(NSString *)password handler:(PocketAPILoginHandler)handler{
-	return [self loginOperationWithUsername:username password:password delegate:[PocketAPIBlockDelegate delegateWithLoginHandler:handler]];
-}
 
 -(NSOperation *)saveOperationWithURL:(NSURL *)url handler:(PocketAPISaveHandler)handler{
 	return [self saveOperationWithURL:url delegate:[PocketAPIBlockDelegate delegateWithSaveHandler:handler]];
@@ -161,13 +174,13 @@ static PocketAPI *sSharedAPI = nil;
 	return [self pkt_getKeychainValueForKey:@"username"];
 }
 
--(NSString *)pkt_getPassword{
-	return [self pkt_getKeychainValueForKey:@"password"];
+-(NSString *)pkt_getToken{
+	return [self pkt_getKeychainValueForKey:@"token"];
 }
 
--(void)pkt_loggedInWithUsername:(NSString *)username password:(NSString *)password{
+-(void)pkt_loggedInWithUsername:(NSString *)username token:(NSString *)token{
 	[self pkt_setKeychainValue:username forKey:@"username"];
-	[self pkt_setKeychainValue:password forKey:@"password"];
+	[self pkt_setKeychainValue:token forKey:@"token"];
 }
 
 @end

@@ -19,6 +19,7 @@
 		AA37FB4315769E8200A63400 /* PocketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA37FB0B157570ED00A63400 /* PocketViewController.m */; };
 		AA37FB4415769E8200A63400 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AA37FB04157570ED00A63400 /* main.m */; };
 		AA37FB4B15769F6700A63400 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA37FB4A15769F6700A63400 /* Security.framework */; };
+		AA9685F115BDDED900E9F7F1 /* PocketAPILogin.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9685F015BDDED900E9F7F1 /* PocketAPILogin.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,8 @@
 		AA37FB3815769D5700A63400 /* SFHFKeychainUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SFHFKeychainUtils.h; sourceTree = "<group>"; };
 		AA37FB3915769D5700A63400 /* SFHFKeychainUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SFHFKeychainUtils.m; sourceTree = "<group>"; };
 		AA37FB4A15769F6700A63400 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		AA9685EF15BDDED900E9F7F1 /* PocketAPILogin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PocketAPILogin.h; sourceTree = "<group>"; };
+		AA9685F015BDDED900E9F7F1 /* PocketAPILogin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PocketAPILogin.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +121,8 @@
 			children = (
 				AA37FB3315769D5700A63400 /* PocketAPI.h */,
 				AA37FB3415769D5700A63400 /* PocketAPI.m */,
+				AA9685EF15BDDED900E9F7F1 /* PocketAPILogin.h */,
+				AA9685F015BDDED900E9F7F1 /* PocketAPILogin.m */,
 				AA37FB3515769D5700A63400 /* PocketAPIOperation.h */,
 				AA37FB3615769D5700A63400 /* PocketAPIOperation.m */,
 				AA37FB3715769D5700A63400 /* PocketAPITypes.h */,
@@ -125,7 +130,7 @@
 				AA37FB3915769D5700A63400 /* SFHFKeychainUtils.m */,
 			);
 			name = "Pocket SDK";
-			path = ../SDK;
+			path = ../../SDK;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -198,6 +203,7 @@
 				AA37FB4215769E8200A63400 /* PocketAppDelegate.m in Sources */,
 				AA37FB4315769E8200A63400 /* PocketViewController.m in Sources */,
 				AA37FB4415769E8200A63400 /* main.m in Sources */,
+				AA9685F115BDDED900E9F7F1 /* PocketAPILogin.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

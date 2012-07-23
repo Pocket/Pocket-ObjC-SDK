@@ -24,11 +24,12 @@
 #import "PocketAPIOperation.h"
 
 @interface PocketAPI ()
--(NSString *)pkt_getPassword;
--(void)pkt_loggedInWithUsername:(NSString *)username password:(NSString *)password;
+-(void)pkt_loggedInWithUsername:(NSString *)username token:(NSString *)accessToken;
 @end
 
 @interface PocketAPIOperation ()
+
+-(void)pkt_connectionFinishedLoading;
 
 -(NSMutableURLRequest *)pkt_URLRequest;
 -(NSString *)pkt_urlEncode:(NSString *)urlStr;
@@ -37,13 +38,14 @@
 
 @implementation PocketAPIOperation
 
-@synthesize API, delegate;
-@synthesize method, arguments;
-@synthesize connection, response, data, error;
+@synthesize API, delegate, error;
+
+@synthesize domain, method, arguments;
+@synthesize connection, response, data;
 
 -(void)start{
 	finishedLoading = NO;
-	
+
 	NSURLRequest *request = [self pkt_URLRequest];
 	connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
 	[connection scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
@@ -63,6 +65,13 @@
 	return finishedLoading;
 }
 
+-(id)init{
+	if(self = [super init]){
+		domain = PocketAPIDomainDefault;
+	}
+	return self;
+}
+
 -(void)dealloc{
 	[API release], API = nil;
 	delegate = nil;
@@ -73,9 +82,26 @@
 	[connection release], connection = nil;
 	[response release], response = nil;
 	[data release], data = nil;
+
 	[error release], error = nil;
 	
 	[super dealloc];
+}
+
+-(NSString *)description{
+	return [NSString stringWithFormat:@"<%@: %p https://%@%@ %@>", [self class], self, self.baseURLPath, self.method, self.arguments];
+}
+
+-(NSString *)baseURLPath{
+	switch (self.domain) {
+		case PocketAPIDomainAuth:
+			return @"getpocket.com/oauth/";
+			break;
+		case PocketAPIDomainDefault:
+		default:
+			return @"getpocket.com/v2/";
+			break;
+	}
 }
 
 #pragma mark NSURLConnectionDelegate
@@ -109,22 +135,18 @@
 			[self.delegate pocketAPI:self.API 
 					 failedToSaveURL:[NSURL URLWithString:[self.arguments objectForKey:@"url"]] 
 							   error:error
-                        needsToRelogin:[error code] == 401];
+					  needsToRelogin:[error code] == 401];
 		}
+	}else if([self.method isEqualToString:@"request"]){
+		[self.delegate pocketAPI:self.API receivedRequestToken:@"abc123"];
 	}
-
-	[self willChangeValueForKey:@"isExecuting"];
-	[self willChangeValueForKey:@"isFinished"];
-	finishedLoading = YES;
-	[self  didChangeValueForKey:@"isFinished"];
-	[self  didChangeValueForKey:@"isExecuting"];
-
-	[delegate release], delegate = nil;
+	
+	[self pkt_connectionFinishedLoading];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection{
 	if([self.method isEqualToString:@"auth"]){
-		[self.API pkt_loggedInWithUsername:[self.arguments objectForKey:@"username"] password:[self.arguments objectForKey:@"password"]];
+		[self.API pkt_loggedInWithUsername:[self.arguments objectForKey:@"username"] token:[self.arguments objectForKey:@"token"]];
 		
 		if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPILoggedIn:)]){
 			[self.delegate pocketAPILoggedIn:self.API];
@@ -135,14 +157,11 @@
 							savedURL:[NSURL URLWithString:[self.arguments objectForKey:@"url"]]];
 		}
 	}
-
-	[self willChangeValueForKey:@"isExecuting"];
-	[self willChangeValueForKey:@"isFinished"];
-	finishedLoading = YES;
-	[self  didChangeValueForKey:@"isFinished"];
-	[self  didChangeValueForKey:@"isExecuting"];
+	else if([self.method isEqualToString:@"request"]){
+		[self.delegate pocketAPI:self.API receivedRequestToken:@"abc123"];
+	}
 	
-	[delegate release], delegate = nil;
+	[self pkt_connectionFinishedLoading];
 }
 
 #pragma mark Private APIs
@@ -150,22 +169,15 @@
 -(NSMutableURLRequest *)pkt_URLRequest{
 	NSMutableArray *pairs = [NSMutableArray array];
 	
-	if(self.API.APIKey){
-		[pairs addObject:[NSString stringWithFormat:@"apikey=%@", [self pkt_urlEncode:self.API.APIKey]]];
-	}
-	
-	NSString *username = [self.API username];
-	NSString *password = [self.API pkt_getPassword];
-	if(username && password){
-		[pairs addObject:[NSString stringWithFormat:@"username=%@", [self pkt_urlEncode:username]]];
-		[pairs addObject:[NSString stringWithFormat:@"password=%@", [self pkt_urlEncode:password]]];
+	if(self.API.consumerKey){
+		[pairs addObject:[NSString stringWithFormat:@"consumer_key=%@", [self pkt_urlEncode:self.API.consumerKey]]];
 	}
 	
 	for(NSString *key in [self.arguments allKeys]){
 		[pairs addObject:[NSString stringWithFormat:@"%@=%@",key, [self pkt_urlEncode:[self.arguments objectForKey:key]]]];
 	}
 	
-	NSString *urlString = [NSString stringWithFormat:@"https://readitlaterlist.com/v2/%@", self.method];
+	NSString *urlString = [NSString stringWithFormat:@"https://%@/%@", self.baseURLPath, self.method];
 	if(pairs.count > 0){
 		urlString = [urlString stringByAppendingFormat:@"?%@", [pairs componentsJoinedByString:@"&"]];
 	}
@@ -183,6 +195,16 @@
 																		   CFSTR("!*'();:@&=+$,/?%#[]"),
                                                                            kCFStringEncodingUTF8);
 	return [result autorelease];
+}
+
+-(void)pkt_connectionFinishedLoading{
+	[self willChangeValueForKey:@"isExecuting"];
+	[self willChangeValueForKey:@"isFinished"];
+	finishedLoading = YES;
+	[self  didChangeValueForKey:@"isFinished"];
+	[self  didChangeValueForKey:@"isExecuting"];
+
+	[delegate release], delegate = nil;
 }
 
 @end

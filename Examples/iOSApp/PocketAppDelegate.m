@@ -41,7 +41,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-	[[PocketAPI sharedAPI] setAPIKey:@"Put Your API Key Here"];
+	[[PocketAPI sharedAPI] setConsumerKey:@"Put Your API Key Here"];
 	
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.

@@ -12,6 +12,7 @@
 
 @protocol PocketAPIDelegate <NSObject>
 @optional
+-(void)pocketAPI:(PocketAPI *)api receivedRequestToken:(NSString *)requestToken;
 -(void)pocketAPILoggedIn:(PocketAPI *)api;
 -(void)pocketAPI:(PocketAPI *)api hadLoginError:(NSError *)error;
 
@@ -23,3 +24,8 @@
 typedef void(^PocketAPILoginHandler)(PocketAPI *api, NSError *error);
 typedef void(^PocketAPISaveHandler)(PocketAPI *api, NSURL *url, NSError *error, BOOL needsToRelogin);
 #endif
+
+typedef enum {
+	PocketAPIDomainDefault = 0,
+	PocketAPIDomainAuth = 10
+} PocketAPIDomain;

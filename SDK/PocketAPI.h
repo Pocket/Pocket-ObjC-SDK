@@ -62,27 +62,31 @@
 #import "PocketAPITypes.h"
 
 @interface PocketAPI : NSObject {
-	NSString *APIKey;
+	NSString *consumerKey;
 	NSOperationQueue *operationQueue;
 }
 
-@property (nonatomic, retain) NSString *APIKey;
+@property (nonatomic, retain) NSString *consumerKey;
 
 @property (nonatomic, copy, readonly) NSString *username;
 @property (nonatomic, assign, readonly, getter=isLoggedIn) BOOL loggedIn;
 
 +(PocketAPI *)sharedAPI;
++(BOOL)hasPocketAppInstalled;
 
--(void)setAPIKey:(NSString *)APIKey;
+-(void)setConsumerKey:(NSString *)consumerKey;
+-(NSUInteger)appID;
 
 // Simple API
--(void)loginWithUsername:(NSString *)username password:(NSString *)password delegate:(id<PocketAPIDelegate>)delegate;
+-(void)loginWithDelegate:(id<PocketAPIDelegate>)delegate;
 -(void)saveURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate;
 
 #if NS_BLOCKS_AVAILABLE
--(void)loginWithUsername:(NSString *)username password:(NSString *)password handler:(PocketAPILoginHandler)handler;
+-(void)loginWithHandler:(PocketAPILoginHandler)handler;
 -(void)saveURL:(NSURL *)url handler:(PocketAPISaveHandler)handler;
 #endif
+
+-(BOOL)handleOpenURL:(NSURL *)url;
 
 @end
 
@@ -90,11 +94,9 @@
 // If you don't need tight control over network requests, just use the simple API.
 @interface PocketAPI (NSOperations)
 
--(NSOperation *)loginOperationWithUsername:(NSString *)username password:(NSString *)password delegate:(id<PocketAPIDelegate>)delegate;
 -(NSOperation *)saveOperationWithURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate;
 
 #if NS_BLOCKS_AVAILABLE
--(NSOperation *)loginOperationWithUsername:(NSString *)username password:(NSString *)password handler:(PocketAPILoginHandler)handler;
 -(NSOperation *)saveOperationWithURL:(NSURL *)url handler:(PocketAPISaveHandler)handler;
 #endif
 

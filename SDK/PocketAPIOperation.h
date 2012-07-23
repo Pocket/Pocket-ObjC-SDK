@@ -23,11 +23,13 @@
 
 #import <Foundation/Foundation.h>
 #import "PocketAPI.h"
+#import "PocketAPITypes.h"
 
 @interface PocketAPIOperation : NSOperation <NSURLConnectionDelegate> {
 	PocketAPI *API;
 	id<PocketAPIDelegate> delegate;
 	
+	PocketAPIDomain domain;
 	NSString *method;
 	NSDictionary *arguments;
 	
@@ -36,19 +38,23 @@
 	NSMutableData *data;
 	NSError *error;
 	
+	NSString *baseURLPath;
+	
 	BOOL finishedLoading;
-
 }
 
 @property (nonatomic, retain) PocketAPI *API;
 @property (nonatomic, retain) id<PocketAPIDelegate> delegate; // we break convention here to ensure the delegate exists for operation lifetime, release on complete
 
+@property (nonatomic, readonly, retain) NSString *baseURLPath;
+@property (nonatomic, assign) PocketAPIDomain domain;
 @property (nonatomic, retain) NSString *method;
 @property (nonatomic, retain) NSDictionary *arguments;
 
 @property (nonatomic, readonly, retain) NSURLConnection *connection;
 @property (nonatomic, readonly, retain) NSHTTPURLResponse *response;
 @property (nonatomic, readonly, retain) NSMutableData *data;
+
 @property (nonatomic, readonly, retain) NSError *error;
 
 @end

@@ -24,20 +24,21 @@
 #import "PocketViewController.h"
 #import "PocketAPI.h"
 
-@interface PocketViewController ()
-
-@end
-
 @implementation PocketViewController
 
-@synthesize usernameField, passwordField, URLField;
+@synthesize stories, tableView;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
 	
-	usernameField.text = [[PocketAPI sharedAPI] username];
+	// Load some stories from Reddit
+	NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"http://www.reddit.com/.json"]];
+	[NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+		NSDictionary *dataDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+		self.stories = [[dataDictionary objectForKey:@"data"] objectForKey:@"children"];
+		[self.tableView reloadData];
+	}];
 }
 
 - (void)viewDidUnload
@@ -51,14 +52,41 @@
 	return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
+#pragma mark UITableView
+
+-(NSDictionary *)storyAtIndexPath:(NSIndexPath *)indexPath{
+	return [[self.stories objectAtIndex:indexPath.row] objectForKey:@"data"];
+}
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+	return self.stories.count;
+}
+
+-(UITableViewCell *)tableView:(UITableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+	UITableViewCell *cell = [aTableView dequeueReusableCellWithIdentifier:@"StoryCell"];
+	if(!cell){
+		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"StoryCell"] autorelease];
+	}
+	
+	NSDictionary *storyData = [self storyAtIndexPath:indexPath];
+	cell.textLabel.text = [storyData objectForKey:@"title"];
+	cell.detailTextLabel.text = [NSString stringWithFormat:@"%i pts • /r/%@ • %@",
+								 [[storyData objectForKey:@"score"] intValue],
+								 [storyData objectForKey:@"subreddit"],
+								 [storyData objectForKey:@"domain"]];
+	
+	return cell;
+}
+
 #pragma mark Pocket APIs
 
 -(IBAction)login:(id)sender{
-	[[PocketAPI sharedAPI] loginWithUsername:usernameField.text password:passwordField.text delegate:self];
+	[[PocketAPI sharedAPI] loginWithHandler:^(PocketAPI *api, NSError *error) {
+		NSLog(@"API logged in with error %@: %@", error, api.username);
+	}];
 }
 
--(IBAction)saveURL:(id)sender{
-	[[PocketAPI sharedAPI] saveURL:[NSURL URLWithString:URLField.text] delegate:self];
+-(IBAction)logout:(id)sender{
 }
 
 #pragma mark Pocket API callbacks
