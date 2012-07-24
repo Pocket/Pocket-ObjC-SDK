@@ -78,7 +78,8 @@
 	operation.API = API;
 	operation.delegate = self;
 	operation.domain = PocketAPIDomainAuth;
-	operation.method = @"request";
+	operation.HTTPMethod = PocketAPIHTTPMethodPOST;
+	operation.APIMethod = @"request";
 	
 	NSString *redirectURLPath = [[self redirectURL] absoluteString];
 	
@@ -95,7 +96,8 @@
 	operation.API = API;
 	operation.delegate = self;
 	operation.domain = PocketAPIDomainAuth;
-	operation.method = @"authorize";
+	operation.HTTPMethod = PocketAPIHTTPMethodPOST;
+	operation.APIMethod = @"authorize";
 	
 	NSString *redirectURLPath = [[self redirectURL] absoluteString];
 	

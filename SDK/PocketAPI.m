@@ -195,7 +195,7 @@ static PocketAPI *sSharedAPI = nil;
 	PocketAPIOperation *operation = [[[PocketAPIOperation alloc] init] autorelease];
 	operation.API = self;
 	operation.delegate = delegate;
-	operation.method = @"add";
+	operation.APIMethod = @"add";
 	operation.arguments = [NSDictionary dictionaryWithObjectsAndKeys:
 						   [url absoluteString], @"url",
 						   nil];

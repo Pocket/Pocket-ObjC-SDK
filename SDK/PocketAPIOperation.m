@@ -23,6 +23,24 @@
 
 #import "PocketAPIOperation.h"
 
+NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
+	switch (method) {
+		case PocketAPIHTTPMethodPOST:
+			return @"POST";
+			break;
+		case PocketAPIHTTPMethodPUT:
+			return @"PUT";
+			break;
+		case PocketAPIHTTPMethodDELETE:
+			return @"DELETE";
+			break;
+		case PocketAPIHTTPMethodGET:
+		default:
+			return @"GET";
+			break;
+	}
+}
+
 @interface PocketAPI ()
 -(void)pkt_loggedInWithUsername:(NSString *)username token:(NSString *)accessToken;
 @end
@@ -39,7 +57,7 @@
 
 @synthesize API, delegate, error;
 
-@synthesize domain, method, arguments;
+@synthesize domain, HTTPMethod, APIMethod, arguments;
 @synthesize connection, response, data;
 
 -(void)start{
@@ -75,7 +93,7 @@
 	[API release], API = nil;
 	delegate = nil;
 	
-	[method release], method = nil;
+	[APIMethod release], APIMethod = nil;
 	[arguments release], arguments = nil;
 	
 	[connection release], connection = nil;
@@ -88,17 +106,17 @@
 }
 
 -(NSString *)description{
-	return [NSString stringWithFormat:@"<%@: %p https://%@%@ %@>", [self class], self, self.baseURLPath, self.method, self.arguments];
+	return [NSString stringWithFormat:@"<%@: %p https://%@%@ %@>", [self class], self, self.baseURLPath, self.APIMethod, self.arguments];
 }
 
 -(NSString *)baseURLPath{
 	switch (self.domain) {
 		case PocketAPIDomainAuth:
-			return @"getpocket.com/oauth/";
+			return @"getpocket.com/oauth";
 			break;
 		case PocketAPIDomainDefault:
 		default:
-			return @"getpocket.com/v2/";
+			return @"getpocket.com/v2";
 			break;
 	}
 }
@@ -125,18 +143,18 @@
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)theError{
 	error = [theError retain];
-	if([self.method isEqualToString:@"auth"]){
+	if([self.APIMethod isEqualToString:@"auth"]){
 		if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:hadLoginError:)]){
 			[self.delegate pocketAPI:self.API hadLoginError:error];
 		}
-	}else if([self.method isEqualToString:@"add"]){
+	}else if([self.APIMethod isEqualToString:@"add"]){
 		if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:failedToSaveURL:error:needsToRelogin:)]){
 			[self.delegate pocketAPI:self.API 
 					 failedToSaveURL:[NSURL URLWithString:[self.arguments objectForKey:@"url"]] 
 							   error:error
 					  needsToRelogin:[error code] == 401];
 		}
-	}else if([self.method isEqualToString:@"request"]){
+	}else if([self.APIMethod isEqualToString:@"request"]){
 		[self.delegate pocketAPI:self.API receivedRequestToken:@"abc123"];
 	}
 	
@@ -144,22 +162,22 @@
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection{
-	if([self.method isEqualToString:@"auth"]){
+	if([self.APIMethod isEqualToString:@"auth"]){
 		[self.API pkt_loggedInWithUsername:[self.arguments objectForKey:@"username"] token:[self.arguments objectForKey:@"token"]];
 		
 		if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPILoggedIn:)]){
 			[self.delegate pocketAPILoggedIn:self.API];
 		}
-	}else if([self.method isEqualToString:@"add"]){
+	}else if([self.APIMethod isEqualToString:@"add"]){
 		if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:savedURL:)]){
 			[self.delegate pocketAPI:self.API 
 							savedURL:[NSURL URLWithString:[self.arguments objectForKey:@"url"]]];
 		}
 	}
-	else if([self.method isEqualToString:@"request"]){
+	else if([self.APIMethod isEqualToString:@"request"]){
 		[self.delegate pocketAPI:self.API receivedRequestToken:@"abc123"];
 	}
-	else if([self.method isEqualToString:@"authorize"]){
+	else if([self.APIMethod isEqualToString:@"authorize"]){
 		// TODO get this from actual data.
 		NSString *username = @"blah";
 		NSString *token    = @"abc123";
@@ -175,24 +193,42 @@
 
 #pragma mark Private APIs
 
--(NSMutableURLRequest *)pkt_URLRequest{
-	NSMutableArray *pairs = [NSMutableArray array];
-	
+-(NSDictionary *)pkt_requestArguments{
+	NSMutableDictionary *dict = [[self.arguments mutableCopy] autorelease];
 	if(self.API.consumerKey){
-		[pairs addObject:[NSString stringWithFormat:@"consumer_key=%@", [PocketAPIOperation encodeForURL:self.API.consumerKey]]];
+		[dict setObject:self.API.consumerKey forKey:@"consumer_key"];
 	}
-	
-	for(NSString *key in [self.arguments allKeys]){
-		[pairs addObject:[NSString stringWithFormat:@"%@=%@",key, [PocketAPIOperation encodeForURL:[self.arguments objectForKey:key]]]];
-	}
-	
-	NSString *urlString = [NSString stringWithFormat:@"https://%@/%@", self.baseURLPath, self.method];
-	if(pairs.count > 0){
-		urlString = [urlString stringByAppendingFormat:@"?%@", [pairs componentsJoinedByString:@"&"]];
+	return dict;
+}
+
+-(NSMutableURLRequest *)pkt_URLRequest{
+	NSString *urlString = [NSString stringWithFormat:@"https://%@/%@", self.baseURLPath, self.APIMethod];
+
+	NSDictionary *requestArgs = [self pkt_requestArguments];
+
+	if(self.HTTPMethod == PocketAPIHTTPMethodGET && requestArgs.count > 0){
+		NSMutableArray *pairs = [NSMutableArray array];
+		
+		for(NSString *key in [requestArgs allKeys]){
+			[pairs addObject:[NSString stringWithFormat:@"%@=%@",key, [PocketAPIOperation encodeForURL:[requestArgs objectForKey:key]]]];
+		}
+		
+		if(pairs.count > 0){
+			urlString = [urlString stringByAppendingFormat:@"?%@", [pairs componentsJoinedByString:@"&"]];
+		}
 	}
 	
 	NSURL *url = [NSURL URLWithString:urlString];
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
+	[request setHTTPMethod:PocketAPINameForHTTPMethod(self.HTTPMethod)];
+	
+	if(self.HTTPMethod != PocketAPIHTTPMethodGET && requestArgs.count > 0){
+		[request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+		[request setHTTPBody:[NSJSONSerialization dataWithJSONObject:requestArgs options:0 error:nil]];
+	}
+	
+	[request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
+	
 	return [request autorelease];
 }
 

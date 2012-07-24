@@ -29,3 +29,10 @@ typedef enum {
 	PocketAPIDomainDefault = 0,
 	PocketAPIDomainAuth = 10
 } PocketAPIDomain;
+
+typedef enum {
+	PocketAPIHTTPMethodGET,
+	PocketAPIHTTPMethodPOST,
+	PocketAPIHTTPMethodPUT,
+	PocketAPIHTTPMethodDELETE
+} PocketAPIHTTPMethod;

@@ -30,7 +30,8 @@
 	id<PocketAPIDelegate> delegate;
 	
 	PocketAPIDomain domain;
-	NSString *method;
+	PocketAPIHTTPMethod HTTPMethod;
+	NSString *APIMethod;
 	NSDictionary *arguments;
 	
 	NSURLConnection *connection;
@@ -48,7 +49,8 @@
 
 @property (nonatomic, readonly, retain) NSString *baseURLPath;
 @property (nonatomic, assign) PocketAPIDomain domain;
-@property (nonatomic, retain) NSString *method;
+@property (nonatomic, assign) PocketAPIHTTPMethod HTTPMethod;
+@property (nonatomic, retain) NSString *APIMethod;
 @property (nonatomic, retain) NSDictionary *arguments;
 
 @property (nonatomic, readonly, retain) NSURLConnection *connection;
@@ -60,3 +62,5 @@
 +(NSString *)encodeForURL:(NSString *)urlStr;
 
 @end
+
+NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method);

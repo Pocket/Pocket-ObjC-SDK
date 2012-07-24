@@ -41,7 +41,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-	[[PocketAPI sharedAPI] setConsumerKey:@"42-vinylscratchisbestpony"];
+	[[PocketAPI sharedAPI] setConsumerKey:@"42-ThisIsAFakeConsumerKey"];
 	
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.
