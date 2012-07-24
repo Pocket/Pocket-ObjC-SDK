@@ -61,9 +61,13 @@
 #import <Foundation/Foundation.h>
 #import "PocketAPITypes.h"
 
+@class PocketAPILogin;
+
 @interface PocketAPI : NSObject {
 	NSString *consumerKey;
 	NSOperationQueue *operationQueue;
+	
+	PocketAPILogin *currentLogin;
 }
 
 @property (nonatomic, retain) NSString *consumerKey;
@@ -75,7 +79,9 @@
 +(BOOL)hasPocketAppInstalled;
 
 -(void)setConsumerKey:(NSString *)consumerKey;
+
 -(NSUInteger)appID;
+-(NSString *)appURLScheme;
 
 // Simple API
 -(void)loginWithDelegate:(id<PocketAPIDelegate>)delegate;

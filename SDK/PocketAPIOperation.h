@@ -57,4 +57,6 @@
 
 @property (nonatomic, readonly, retain) NSError *error;
 
++(NSString *)encodeForURL:(NSString *)urlStr;
+
 @end

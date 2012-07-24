@@ -32,7 +32,6 @@
 -(void)pkt_connectionFinishedLoading;
 
 -(NSMutableURLRequest *)pkt_URLRequest;
--(NSString *)pkt_urlEncode:(NSString *)urlStr;
 
 @end
 
@@ -160,6 +159,16 @@
 	else if([self.method isEqualToString:@"request"]){
 		[self.delegate pocketAPI:self.API receivedRequestToken:@"abc123"];
 	}
+	else if([self.method isEqualToString:@"authorize"]){
+		// TODO get this from actual data.
+		NSString *username = @"blah";
+		NSString *token    = @"abc123";
+		
+		[self.API pkt_loggedInWithUsername:username token:token];
+		if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPILoggedIn:)]){
+			[self.delegate pocketAPILoggedIn:self.API];
+		}
+	}
 	
 	[self pkt_connectionFinishedLoading];
 }
@@ -170,11 +179,11 @@
 	NSMutableArray *pairs = [NSMutableArray array];
 	
 	if(self.API.consumerKey){
-		[pairs addObject:[NSString stringWithFormat:@"consumer_key=%@", [self pkt_urlEncode:self.API.consumerKey]]];
+		[pairs addObject:[NSString stringWithFormat:@"consumer_key=%@", [PocketAPIOperation encodeForURL:self.API.consumerKey]]];
 	}
 	
 	for(NSString *key in [self.arguments allKeys]){
-		[pairs addObject:[NSString stringWithFormat:@"%@=%@",key, [self pkt_urlEncode:[self.arguments objectForKey:key]]]];
+		[pairs addObject:[NSString stringWithFormat:@"%@=%@",key, [PocketAPIOperation encodeForURL:[self.arguments objectForKey:key]]]];
 	}
 	
 	NSString *urlString = [NSString stringWithFormat:@"https://%@/%@", self.baseURLPath, self.method];
@@ -187,7 +196,7 @@
 	return [request autorelease];
 }
 
--(NSString *)pkt_urlEncode:(NSString *)urlStr
++(NSString *)encodeForURL:(NSString *)urlStr
 {
 	NSString *result = (NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
                                                                            (CFStringRef)urlStr,

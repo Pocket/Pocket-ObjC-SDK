@@ -41,7 +41,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-	[[PocketAPI sharedAPI] setConsumerKey:@"Put Your API Key Here"];
+	[[PocketAPI sharedAPI] setConsumerKey:@"42-vinylscratchisbestpony"];
 	
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.
@@ -49,6 +49,15 @@
 	self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
     return YES;
+}
+
+-(BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation{
+	if([[PocketAPI sharedAPI] handleOpenURL:url]){
+		return YES;
+	}else{
+		// if you handle your own URLs, do it here
+		return NO;
+	}
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application

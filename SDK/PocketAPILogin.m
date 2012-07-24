@@ -41,6 +41,7 @@
 	[requestToken release], requestToken = nil;
 	[accessToken  release], accessToken  = nil;
 	[API release], API = nil;
+	[delegate release], delegate = nil;
 	
 	[super dealloc];
 }
@@ -57,13 +58,19 @@
 	return self;
 }
 
--(id)initWithAPI:(PocketAPI *)newAPI{
+-(id)initWithAPI:(PocketAPI *)newAPI delegate:(id<PocketAPIDelegate>)aDelegate{
 	if(self = [self init]){
 		[newAPI retain];
 		[API release];
 		API = newAPI;
+		
+		delegate = [aDelegate retain];
 	}
 	return self;
+}
+
+-(NSURL *)redirectURL{
+	return [NSURL URLWithString:[NSString stringWithFormat:@"pocketapp%i:authorizationFinished", [self.API appID]]];
 }
 
 -(void)fetchRequestToken{
@@ -73,7 +80,7 @@
 	operation.domain = PocketAPIDomainAuth;
 	operation.method = @"request";
 	
-	NSString *redirectURLPath = [NSString stringWithFormat:@"pocket-app-%i:", [self.API appID]];;
+	NSString *redirectURLPath = [[self redirectURL] absoluteString];
 	
 	operation.arguments = [NSDictionary dictionaryWithObjectsAndKeys:
 						   @"code", @"response_type",
@@ -83,15 +90,38 @@
 	[operationQueue addOperation:operation];
 }
 
+-(void)convertRequestTokenToAccessToken{
+	PocketAPIOperation *operation = [[PocketAPIOperation alloc] init];
+	operation.API = API;
+	operation.delegate = self;
+	operation.domain = PocketAPIDomainAuth;
+	operation.method = @"authorize";
+	
+	NSString *redirectURLPath = [[self redirectURL] absoluteString];
+	
+	operation.arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+						   @"authorization_code", @"grant_type",
+						   self.requestToken, @"code",
+						   redirectURLPath, @"redirect_uri",
+						   nil];
+	[operationQueue addOperation:operation];
+}
+
 #pragma mark Pocket API Delegate
 
--(void)pocketAPI:(PocketAPI *)api receivedRequestToken:(NSString *)requestToken{
+-(void)pocketAPI:(PocketAPI *)api receivedRequestToken:(NSString *)aRequestToken{
+	[self willChangeValueForKey:@"requestToken"];
+	[requestToken autorelease];
+	requestToken = [aRequestToken copy];
+	[self  didChangeValueForKey:@"requestToken"];
+	
 	NSLog(@"Received request token %@",requestToken);
 	NSURL *authorizeURL = nil;
+	NSString *encodedRedirectURLString = [PocketAPIOperation encodeForURL:[[self redirectURL] absoluteString]];
 	if([PocketAPI hasPocketAppInstalled]){
-		authorizeURL = [NSURL URLWithString:[NSString stringWithFormat:@"pocket:///authorize?requestToken=%@",requestToken]];
+		authorizeURL = [NSURL URLWithString:[NSString stringWithFormat:@"pocket:///authorize?request_token=%@&redirect_uri=%@",requestToken, encodedRedirectURLString]];
 	}else{
-		authorizeURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://getpocket.com/apps/authorize?requestToken=%@",requestToken]];
+		authorizeURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://getpocket.com/apps/authorize?request_token=%@&redirect_uri=%@",requestToken, encodedRedirectURLString]];
 	}
 	
 #if TARGET_OS_IPHONE
@@ -99,6 +129,14 @@
 #else
 	[[NSWorkspace sharedWorkspace] openURL:authorizeURL];
 #endif
+}
+
+-(void)pocketAPILoggedIn:(PocketAPI *)api{
+	if(delegate && [delegate respondsToSelector:@selector(pocketAPILoggedIn:)]){
+		[delegate pocketAPILoggedIn:self.API];
+	}
+	
+	[delegate release], delegate = nil;
 }
 
 @end

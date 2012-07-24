@@ -44,12 +44,8 @@ Sample Use
 To login:
 
 ```
-// get these from your login UI
-NSString *username = ...; 
-NSString *password = ...;
 
-// login
-[[PocketAPI sharedAPI] loginWithUsername:username password:password handler:^(PocketAPI *api, NSError *error){
+[[PocketAPI sharedAPI] loginWithHandler:^(PocketAPI *api, NSError *error){
 	if(error){
 		// login failed, show an error to the user
 		NSLog(@"Could not log in to Pocket: %@", error);

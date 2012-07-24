@@ -18,9 +18,11 @@
 	NSString *accessToken;
 	
 	NSOperationQueue *operationQueue;
+	
+	id<PocketAPIDelegate> delegate;
 }
 
--(id)initWithAPI:(PocketAPI *)api;
+-(id)initWithAPI:(PocketAPI *)api delegate:(id<PocketAPIDelegate>)delegate;
 
 @property (nonatomic, readonly, retain) PocketAPI *API;
 @property (nonatomic, readonly, retain) NSString *uuid;
@@ -28,5 +30,6 @@
 @property (nonatomic, readonly, retain) NSString *accessToken;
 
 -(void)fetchRequestToken;
+-(void)convertRequestTokenToAccessToken;
 
 @end

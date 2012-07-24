@@ -26,10 +26,16 @@
 #import "PocketAPIOperation.h"
 #import <dispatch/dispatch.h>
 
+static NSString *kPocketAPICurrentLoginKey = @"PocketAPICurrentLogin";
+
 #pragma mark Private APIs (please do not call these directly)
 
 @interface PocketAPI  ()
 -(NSString *)pkt_getToken;
+
+-(void)pkt_loadCurrentLoginFromDefaults;
+-(void)pkt_saveCurrentLoginToDefaults;
+
 @end
 
 @interface PocketAPI (Credentials)
@@ -89,10 +95,45 @@ static PocketAPI *sSharedAPI = nil;
 		
 		// set the initial API key to the one from the singleton
 		if(sSharedAPI != self){
-			consumerKey = [sSharedAPI consumerKey];
+			self.consumerKey = [sSharedAPI consumerKey];
 		}
+		
+		// register for lifecycle notifications
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
 	}
 	return self;
+}
+
+-(void)setConsumerKey:(NSString *)aConsumerKey{
+	[aConsumerKey retain];
+	[consumerKey release];
+	consumerKey = aConsumerKey;
+	
+#if DEBUG
+	if(!consumerKey) return;
+	
+	// check to make sure 
+	NSString *expectedURLScheme = [NSString stringWithFormat:@"pocketapp%i", [self appID]];
+	BOOL foundURLScheme = NO;
+	NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
+	NSArray *urlSchemeLists = [infoDict objectForKey:@"CFBundleURLTypes"];
+	for(NSDictionary *urlSchemeList in urlSchemeLists){
+		NSArray *urlSchemes = [urlSchemeList objectForKey:@"CFBundleURLSchemes"];
+		if([urlSchemes containsObject:expectedURLScheme]){
+			foundURLScheme = YES;
+			break;
+		}
+	}
+	
+	if(!foundURLScheme){
+		NSLog(@"** WARNING: You haven't added a URL scheme for the Pocket SDK. This will prevent login from working. See the SDK readme.");
+		NSLog(@"** The URL scheme you need to register is: %@",expectedURLScheme);
+	}
+#endif
+}
+
+-(void)applicationDidEnterBackground:(NSNotification *)notification{
+	[self pkt_saveCurrentLoginToDefaults];
 }
 
 -(void)dealloc{
@@ -106,6 +147,13 @@ static PocketAPI *sSharedAPI = nil;
 
 -(BOOL)handleOpenURL:(NSURL *)url{
 	// TODO implement
+	NSLog(@"URL to open: %@",url);
+	if([[url scheme] isEqualToString:[self appURLScheme]]){
+		[self pkt_loadCurrentLoginFromDefaults];
+		[currentLogin convertRequestTokenToAccessToken];
+		return YES;
+	}
+	
 	return NO;
 }
 
@@ -123,6 +171,10 @@ static PocketAPI *sSharedAPI = nil;
 	return appID;
 }
 
+-(NSString *)appURLScheme{
+	return [NSString stringWithFormat:@"pocketapp%i", [self appID]];
+}
+
 -(BOOL)isLoggedIn{
 	NSString *username = [self username];
 	NSString *token    = [self pkt_getToken];
@@ -130,8 +182,9 @@ static PocketAPI *sSharedAPI = nil;
 }
 
 -(void)loginWithDelegate:(id<PocketAPIDelegate>)delegate{
-	PocketAPILogin *login = [[PocketAPILogin alloc] initWithAPI:self];
-	[login fetchRequestToken];
+	[currentLogin autorelease];
+	currentLogin = [[PocketAPILogin alloc] initWithAPI:self delegate:delegate];
+	[currentLogin fetchRequestToken];
 }
 
 -(void)saveURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate{
@@ -181,6 +234,33 @@ static PocketAPI *sSharedAPI = nil;
 -(void)pkt_loggedInWithUsername:(NSString *)username token:(NSString *)token{
 	[self pkt_setKeychainValue:username forKey:@"username"];
 	[self pkt_setKeychainValue:token forKey:@"token"];
+}
+
+-(void)pkt_loadCurrentLoginFromDefaults{
+	NSUserDefaults *defaults = [[NSUserDefaults alloc] init];
+	
+	if(!currentLogin){
+		NSData *data = [defaults dataForKey:kPocketAPICurrentLoginKey];
+		if(data){
+			PocketAPILogin *newLogin = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+			currentLogin = [newLogin retain];
+		}
+	}
+
+	[defaults removeObjectForKey:kPocketAPICurrentLoginKey];
+	[defaults synchronize];
+	[defaults release];
+}
+
+-(void)pkt_saveCurrentLoginToDefaults{
+	if(currentLogin){
+		NSData *loginData = [NSKeyedArchiver archivedDataWithRootObject:currentLogin];
+		
+		NSUserDefaults *defaults = [[NSUserDefaults alloc] init];
+		[defaults setObject:loginData forKey:kPocketAPICurrentLoginKey];
+		[defaults synchronize];
+		[defaults release];
+	}
 }
 
 @end
