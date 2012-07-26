@@ -112,12 +112,21 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 -(NSString *)baseURLPath{
 	switch (self.domain) {
 		case PocketAPIDomainAuth:
-			return @"getpocket.com/oauth";
+			return @"getpocket.com/v3/oauth";
 			break;
 		case PocketAPIDomainDefault:
 		default:
 			return @"getpocket.com/v2";
 			break;
+	}
+}
+
+-(NSDictionary *)responseDictionary{
+	NSString *contentType = [[self.response allHeaderFields] objectForKey:@"Content-Type"];
+	if([contentType isEqualToString:@"application/json"]){
+		return [NSJSONSerialization JSONObjectWithData:self.data options:0 error:nil];
+	}else{
+		return nil;
 	}
 }
 
@@ -175,12 +184,13 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 		}
 	}
 	else if([self.APIMethod isEqualToString:@"request"]){
-		[self.delegate pocketAPI:self.API receivedRequestToken:@"abc123"];
+		NSDictionary *responseDict = [self responseDictionary];
+		[self.delegate pocketAPI:self.API receivedRequestToken:[responseDict objectForKey:@"code"]];
 	}
 	else if([self.APIMethod isEqualToString:@"authorize"]){
-		// TODO get this from actual data.
-		NSString *username = @"blah";
-		NSString *token    = @"abc123";
+		NSDictionary *responseDict = [self responseDictionary];
+		NSString *username = [responseDict objectForKey:@"username"];
+		NSString *token = [responseDict objectForKey:@"access_token"];
 		
 		[self.API pkt_loggedInWithUsername:username token:token];
 		if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPILoggedIn:)]){
@@ -203,7 +213,7 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 
 -(NSMutableURLRequest *)pkt_URLRequest{
 	NSString *urlString = [NSString stringWithFormat:@"https://%@/%@", self.baseURLPath, self.APIMethod];
-
+	
 	NSDictionary *requestArgs = [self pkt_requestArguments];
 
 	if(self.HTTPMethod == PocketAPIHTTPMethodGET && requestArgs.count > 0){
@@ -227,7 +237,7 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 		[request setHTTPBody:[NSJSONSerialization dataWithJSONObject:requestArgs options:0 error:nil]];
 	}
 	
-	[request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
+	[request addValue:@"application/json" forHTTPHeaderField:@"X-Accept"];
 	
 	return [request autorelease];
 }

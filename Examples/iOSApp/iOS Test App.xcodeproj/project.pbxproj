@@ -44,6 +44,7 @@
 		AA37FB3815769D5700A63400 /* SFHFKeychainUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SFHFKeychainUtils.h; sourceTree = "<group>"; };
 		AA37FB3915769D5700A63400 /* SFHFKeychainUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SFHFKeychainUtils.m; sourceTree = "<group>"; };
 		AA37FB4A15769F6700A63400 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		AA5065DA15C1F9AC0081E12A /* PocketCredentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PocketCredentials.h; sourceTree = "<group>"; };
 		AA9685EF15BDDED900E9F7F1 /* PocketAPILogin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PocketAPILogin.h; sourceTree = "<group>"; };
 		AA9685F015BDDED900E9F7F1 /* PocketAPILogin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PocketAPILogin.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -95,6 +96,7 @@
 		AA37FAFE157570ED00A63400 /* Test App */ = {
 			isa = PBXGroup;
 			children = (
+				AA5065DA15C1F9AC0081E12A /* PocketCredentials.h */,
 				AA37FB07157570ED00A63400 /* PocketAppDelegate.h */,
 				AA37FB08157570ED00A63400 /* PocketAppDelegate.m */,
 				AA37FB0A157570ED00A63400 /* PocketViewController.h */,

@@ -22,10 +22,11 @@
 //
 
 #import "PocketAppDelegate.h"
-
 #import "PocketViewController.h"
 
 #import "PocketAPI.h"
+
+#import "PocketCredentials.h"
 
 @implementation PocketAppDelegate
 
@@ -41,7 +42,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-	[[PocketAPI sharedAPI] setConsumerKey:@"42-ThisIsAFakeConsumerKey"];
+	[[PocketAPI sharedAPI] setConsumerKey:CONSUMER_KEY];
 	
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.
