@@ -27,10 +27,12 @@
 @interface PocketViewController : UIViewController <PocketAPIDelegate, UITableViewDelegate, UITableViewDataSource>{
 	NSArray *stories;
 	UITableView *tableView;
+	UIView *coverView;
 }
 
 @property (nonatomic, strong) NSArray *stories;
 @property (nonatomic, strong) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) IBOutlet UIView *coverView;
 
 -(IBAction)login:(id)sender;
 -(IBAction)logout:(id)sender;
