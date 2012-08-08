@@ -31,6 +31,7 @@
 }
 
 @property (nonatomic, strong) NSArray *stories;
+@property (nonatomic, strong) IBOutlet UINavigationBar *navigationBar;
 @property (nonatomic, strong) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) IBOutlet UIView *coverView;
 

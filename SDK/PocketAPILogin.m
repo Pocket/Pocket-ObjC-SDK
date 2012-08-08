@@ -89,6 +89,7 @@
 						   redirectURLPath, @"redirect_uri",
 						   nil];
 	[operationQueue addOperation:operation];
+	[operation release];
 }
 
 -(void)convertRequestTokenToAccessToken{
@@ -107,6 +108,7 @@
 						   redirectURLPath, @"redirect_uri",
 						   nil];
 	[operationQueue addOperation:operation];
+	[operation release];
 }
 
 #pragma mark Pocket API Delegate
@@ -136,6 +138,14 @@
 -(void)pocketAPILoggedIn:(PocketAPI *)api{
 	if(delegate && [delegate respondsToSelector:@selector(pocketAPILoggedIn:)]){
 		[delegate pocketAPILoggedIn:self.API];
+	}
+	
+	[delegate release], delegate = nil;
+}
+
+-(void)pocketAPI:(PocketAPI *)api hadLoginError:(NSError *)error{
+	if(delegate && [delegate respondsToSelector:@selector(pocketAPI:hadLoginError:)]){
+		[delegate pocketAPI:api hadLoginError:error];
 	}
 	
 	[delegate release], delegate = nil;

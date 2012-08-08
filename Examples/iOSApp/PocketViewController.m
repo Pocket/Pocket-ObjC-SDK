@@ -26,7 +26,7 @@
 
 @implementation PocketViewController
 
-@synthesize stories, tableView;
+@synthesize stories, tableView, coverView, navigationBar;
 
 - (void)viewDidLoad
 {
@@ -39,6 +39,8 @@
 		self.stories = [[dataDictionary objectForKey:@"data"] objectForKey:@"children"];
 		[self.tableView reloadData];
 	}];
+	
+	[self updateNavigationBarTitle];
 }
 
 - (void)viewDidUnload
@@ -78,23 +80,61 @@
 	return cell;
 }
 
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+	NSString *urlString = [[self storyAtIndexPath:indexPath] objectForKey:@"url"];
+	if(!urlString) return;
+	
+	NSURL *url = [NSURL URLWithString:urlString];
+	NSLog(@"Saving URL: %@", url);
+	[[PocketAPI sharedAPI] saveURL:url handler:^(PocketAPI *api, NSURL *url, NSError *error, BOOL needsToRelogin) {
+		if(error){
+			NSLog(@"URL %@ could not be saved to %@'s Pocket account. Needs to relogin? %@. Reason: %@", url, api.username, (needsToRelogin ? @"Yes" : @"No"), error.localizedDescription);
+		}else{
+			NSLog(@"URL %@ was saved to %@'s Pocket account", url, api.username);
+		}
+	}];
+}
+
 #pragma mark Pocket APIs
 
 -(IBAction)login:(id)sender{
-	[self.coverView setHidden:NO];
+//	[self.coverView setHidden:NO];
 	[[PocketAPI sharedAPI] loginWithHandler:^(PocketAPI *api, NSError *error) {
+//		[self.coverView setHidden:YES];
 		NSLog(@"API logged in with error %@: %@", error, api.username);
-		[self.coverView setHidden:YES];
-		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Logged in"
-															message:[NSString stringWithFormat:@"You are logged in for the Pocket user %@.", api.username]
-														   delegate:nil
-												  cancelButtonTitle:nil
-												  otherButtonTitles:@"Woo hoo!", nil];
+
+		UIAlertView *alertView = nil;
+		if(error){
+			alertView = [[UIAlertView alloc] initWithTitle:@"Error logging in"
+												   message:[NSString stringWithFormat:@"There was an error logging in: %@", [error localizedDescription]]
+												  delegate:nil
+										 cancelButtonTitle:nil
+										 otherButtonTitles:@"Awww", nil];
+		}else{
+			alertView = [[UIAlertView alloc] initWithTitle:@"Logged in"
+												   message:[NSString stringWithFormat:@"You are logged in for the Pocket user %@.", api.username]
+												  delegate:nil
+										 cancelButtonTitle:nil
+										 otherButtonTitles:@"Woo hoo!", nil];
+		}
+		[self updateNavigationBarTitle];
 		[alertView show];
+		[alertView autorelease];
 	}];
 }
 
 -(IBAction)logout:(id)sender{
+	[[PocketAPI sharedAPI] logout];
+	[self updateNavigationBarTitle];
+}
+
+-(void)updateNavigationBarTitle{
+	NSString *title = [PocketAPI sharedAPI].username;
+	if(!title || !title.length){
+		title = @"Not Logged In";
+	}
+	
+	self.navigationBar.topItem.title = title;
 }
 
 #pragma mark Pocket API callbacks

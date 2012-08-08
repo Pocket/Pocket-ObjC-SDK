@@ -83,7 +83,7 @@ static PocketAPI *sSharedAPI = nil;
 
 +(BOOL)hasPocketAppInstalled{
 #if TARGET_OS_IPHONE
-	return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"pocket:"]];
+	return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"pocket-oauth-v1:"]];
 #else
 	return NO;
 #endif
@@ -113,7 +113,7 @@ static PocketAPI *sSharedAPI = nil;
 	if(!consumerKey) return;
 	
 	// check to make sure 
-	NSString *expectedURLScheme = [NSString stringWithFormat:@"pocketapp%i", [self appID]];
+	NSString *expectedURLScheme = [self appURLScheme];
 	BOOL foundURLScheme = NO;
 	NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
 	NSArray *urlSchemeLists = [infoDict objectForKey:@"CFBundleURLTypes"];
@@ -232,8 +232,25 @@ static PocketAPI *sSharedAPI = nil;
 }
 
 -(void)pkt_loggedInWithUsername:(NSString *)username token:(NSString *)token{
+	[self willChangeValueForKey:@"username"];
+	[self willChangeValueForKey:@"isLoggedIn"];
+	
 	[self pkt_setKeychainValue:username forKey:@"username"];
 	[self pkt_setKeychainValue:token forKey:@"token"];
+	
+	[self  didChangeValueForKey:@"isLoggedIn"];
+	[self  didChangeValueForKey:@"username"];
+}
+
+-(void)logout{
+	[self willChangeValueForKey:@"username"];
+	[self willChangeValueForKey:@"isLoggedIn"];
+	
+	[self pkt_setKeychainValue:nil forKey:@"username"];
+	[self pkt_setKeychainValue:nil forKey:@"token"];
+	
+	[self  didChangeValueForKey:@"isLoggedIn"];
+	[self  didChangeValueForKey:@"username"];
 }
 
 -(void)pkt_loadCurrentLoginFromDefaults{

@@ -92,6 +92,8 @@
 -(void)saveURL:(NSURL *)url handler:(PocketAPISaveHandler)handler;
 #endif
 
+-(void)logout;
+
 -(BOOL)handleOpenURL:(NSURL *)url;
 
 @end
