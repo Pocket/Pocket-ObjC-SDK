@@ -156,7 +156,7 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 		if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:hadLoginError:)]){
 			[self.delegate pocketAPI:self.API hadLoginError:error];
 		}
-	}else if([self.APIMethod isEqualToString:@"add"]){
+	}else if([self.APIMethod isEqualToString:@"send"]){
 		if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:failedToSaveURL:error:needsToRelogin:)]){
 			[self.delegate pocketAPI:self.API 
 					 failedToSaveURL:[NSURL URLWithString:[self.arguments objectForKey:@"url"]] 
@@ -177,10 +177,12 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 		if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPILoggedIn:)]){
 			[self.delegate pocketAPILoggedIn:self.API];
 		}
-	}else if([self.APIMethod isEqualToString:@"add"]){
+	}else if([self.APIMethod isEqualToString:@"send"]){
 		if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:savedURL:)]){
-			[self.delegate pocketAPI:self.API 
-							savedURL:[NSURL URLWithString:[self.arguments objectForKey:@"url"]]];
+			NSString *urlString = [[[self.arguments objectForKey:@"actions"] objectAtIndex:0] objectForKey:@"url"];
+			NSURL *url = urlString ? [NSURL URLWithString:urlString] : nil;
+			[self.delegate pocketAPI:self.API
+							savedURL:url];
 		}
 	}
 	else if([self.APIMethod isEqualToString:@"request"]){
