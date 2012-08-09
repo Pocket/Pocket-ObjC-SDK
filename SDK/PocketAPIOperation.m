@@ -116,7 +116,7 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 			break;
 		case PocketAPIDomainDefault:
 		default:
-			return @"getpocket.com/v2";
+			return @"getpocket.com/v3";
 			break;
 	}
 }
@@ -212,6 +212,12 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 	if(self.API.consumerKey){
 		[dict setObject:self.API.consumerKey forKey:@"consumer_key"];
 	}
+
+	NSString *accessToken = [self.API pkt_getToken];
+	if(accessToken){
+		[dict setObject:accessToken forKey:@"access_token"];
+	}
+	
 	return dict;
 }
 

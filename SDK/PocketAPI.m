@@ -36,6 +36,8 @@ static NSString *kPocketAPICurrentLoginKey = @"PocketAPICurrentLogin";
 -(void)pkt_loadCurrentLoginFromDefaults;
 -(void)pkt_saveCurrentLoginToDefaults;
 
+-(NSDictionary *)pkt_actionDictionaryWithName:(NSString *)name parameters:(NSDictionary *)params;
+
 @end
 
 @interface PocketAPI (Credentials)
@@ -192,12 +194,16 @@ static PocketAPI *sSharedAPI = nil;
 }
 
 -(NSOperation *)saveOperationWithURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate{
+	NSDictionary *action = [self pkt_actionDictionaryWithName:@"add" parameters:[NSDictionary dictionaryWithObject:url.absoluteString forKey:@"url"]];
+	NSArray *actionsArray = [NSArray arrayWithObject:action];
+	
 	PocketAPIOperation *operation = [[[PocketAPIOperation alloc] init] autorelease];
 	operation.API = self;
 	operation.delegate = delegate;
-	operation.APIMethod = @"add";
+	operation.APIMethod = @"send";
+	operation.HTTPMethod = PocketAPIHTTPMethodPOST;
 	operation.arguments = [NSDictionary dictionaryWithObjectsAndKeys:
-						   [url absoluteString], @"url",
+						   actionsArray, @"actions",
 						   nil];
 	
 	return operation;
@@ -278,6 +284,16 @@ static PocketAPI *sSharedAPI = nil;
 		[defaults synchronize];
 		[defaults release];
 	}
+}
+
+-(NSDictionary *)pkt_actionDictionaryWithName:(NSString *)name parameters:(NSDictionary *)params{
+	if(!name) return nil;
+	
+	NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:params];
+	[dict setObject:name forKey:@"action"];
+	[dict setObject:[NSNumber numberWithInteger:(NSInteger)([[NSDate date] timeIntervalSince1970])] forKey:@"time"];
+	
+	return dict;
 }
 
 @end
