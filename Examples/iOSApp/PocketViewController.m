@@ -98,9 +98,9 @@
 #pragma mark Pocket APIs
 
 -(IBAction)login:(id)sender{
-//	[self.coverView setHidden:NO];
+	[self.coverView setHidden:NO];
 	[[PocketAPI sharedAPI] loginWithHandler:^(PocketAPI *api, NSError *error) {
-//		[self.coverView setHidden:YES];
+		[self.coverView setHidden:YES];
 		NSLog(@"API logged in with error %@: %@", error, api.username);
 
 		UIAlertView *alertView = nil;
