@@ -86,10 +86,12 @@
 // Simple API
 -(void)loginWithDelegate:(id<PocketAPIDelegate>)delegate;
 -(void)saveURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate;
+-(void)saveURL:(NSURL *)url withTitle:(NSString *)title delegate:(id<PocketAPIDelegate>)delegate;
 
 #if NS_BLOCKS_AVAILABLE
 -(void)loginWithHandler:(PocketAPILoginHandler)handler;
 -(void)saveURL:(NSURL *)url handler:(PocketAPISaveHandler)handler;
+-(void)saveURL:(NSURL *)url withTitle:(NSString *)title handler:(PocketAPISaveHandler)handler;
 #endif
 
 -(void)logout;
@@ -103,9 +105,11 @@
 @interface PocketAPI (NSOperations)
 
 -(NSOperation *)saveOperationWithURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate;
+-(NSOperation *)saveOperationWithURL:(NSURL *)url title:(NSString *)title delegate:(id<PocketAPIDelegate>)delegate;
 
 #if NS_BLOCKS_AVAILABLE
 -(NSOperation *)saveOperationWithURL:(NSURL *)url handler:(PocketAPISaveHandler)handler;
+-(NSOperation *)saveOperationWithURL:(NSURL *)url title:(NSString *)title handler:(PocketAPISaveHandler)handler;
 #endif
 
 @end

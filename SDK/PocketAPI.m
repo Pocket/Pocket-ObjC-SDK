@@ -193,8 +193,21 @@ static PocketAPI *sSharedAPI = nil;
 	[operationQueue addOperation:[self saveOperationWithURL:url delegate:delegate]];
 }
 
--(NSOperation *)saveOperationWithURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate{
-	NSDictionary *action = [self pkt_actionDictionaryWithName:@"add" parameters:[NSDictionary dictionaryWithObject:url.absoluteString forKey:@"url"]];
+-(void)saveURL:(NSURL *)url withTitle:(NSString *)title delegate:(id<PocketAPIDelegate>)delegate{
+	[operationQueue addOperation:[self saveOperationWithURL:url title:title delegate:delegate]];
+}
+
+-(NSOperation *)saveOperationWithURL:(NSURL *)url title:(NSString *)title delegate:(id<PocketAPIDelegate>)delegate{
+	if(!url || !url.absoluteString) return nil;
+	
+	NSMutableDictionary *actionParameters = [NSMutableDictionary dictionary];
+	[actionParameters setObject:url.absoluteString forKey:@"url"];
+	
+	if(title){
+		[actionParameters setObject:title forKey:@"title"];
+	}
+	
+	NSDictionary *action = [self pkt_actionDictionaryWithName:@"add" parameters:actionParameters];
 	NSArray *actionsArray = [NSArray arrayWithObject:action];
 	
 	PocketAPIOperation *operation = [[[PocketAPIOperation alloc] init] autorelease];
@@ -209,6 +222,10 @@ static PocketAPI *sSharedAPI = nil;
 	return operation;
 }
 
+-(NSOperation *)saveOperationWithURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate{
+	return [self saveOperationWithURL:url title:nil delegate:delegate];
+}
+
 #if NS_BLOCKS_AVAILABLE
 
 -(void)loginWithHandler:(PocketAPILoginHandler)handler{
@@ -219,10 +236,18 @@ static PocketAPI *sSharedAPI = nil;
 	[self saveURL:url delegate:[PocketAPIBlockDelegate delegateWithSaveHandler:handler]];
 }
 
+-(void)saveURL:(NSURL *)url withTitle:(NSString *)title handler:(PocketAPISaveHandler)handler{
+	[self saveURL:url withTitle:title delegate:[PocketAPIBlockDelegate delegateWithSaveHandler:handler]];
+}
+
 // operation API
 
 -(NSOperation *)saveOperationWithURL:(NSURL *)url handler:(PocketAPISaveHandler)handler{
 	return [self saveOperationWithURL:url delegate:[PocketAPIBlockDelegate delegateWithSaveHandler:handler]];
+}
+
+-(NSOperation *)saveOperationWithURL:(NSURL *)url title:(NSString *)title handler:(PocketAPISaveHandler)handler{
+	return [self saveOperationWithURL:url title:title delegate:[PocketAPIBlockDelegate delegateWithSaveHandler:handler]];
 }
 
 #endif

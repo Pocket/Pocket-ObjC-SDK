@@ -81,12 +81,14 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-	NSString *urlString = [[self storyAtIndexPath:indexPath] objectForKey:@"url"];
+	NSDictionary *story = [self storyAtIndexPath:indexPath];
+	NSString *urlString = [story objectForKey:@"url"];
 	if(!urlString) return;
 	
+	NSString *title = [story objectForKey:@"title"];
 	NSURL *url = [NSURL URLWithString:urlString];
 	NSLog(@"Saving URL: %@", url);
-	[[PocketAPI sharedAPI] saveURL:url handler:^(PocketAPI *api, NSURL *url, NSError *error, BOOL needsToRelogin) {
+	[[PocketAPI sharedAPI] saveURL:url withTitle:title handler:^(PocketAPI *api, NSURL *url, NSError *error, BOOL needsToRelogin) {
 		if(error){
 			NSLog(@"URL %@ could not be saved to %@'s Pocket account. Needs to relogin? %@. Reason: %@", url, api.username, (needsToRelogin ? @"Yes" : @"No"), error.localizedDescription);
 		}else{
