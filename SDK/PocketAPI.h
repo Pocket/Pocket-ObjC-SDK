@@ -85,13 +85,31 @@
 
 // Simple API
 -(void)loginWithDelegate:(id<PocketAPIDelegate>)delegate;
--(void)saveURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate;
--(void)saveURL:(NSURL *)url withTitle:(NSString *)title delegate:(id<PocketAPIDelegate>)delegate;
+
+-(void)saveURL:(NSURL *)url
+	  delegate:(id<PocketAPIDelegate>)delegate;
+-(void)saveURL:(NSURL *)url
+	 withTitle:(NSString *)title
+	  delegate:(id<PocketAPIDelegate>)delegate;
+
+-(void)callAPIMethod:(NSString *)apiMethod
+	  withHTTPMethod:(PocketAPIHTTPMethod)HTTPMethod
+		   arguments:(NSDictionary *)arguments
+			delegate:(id<PocketAPIDelegate>)delegate;
 
 #if NS_BLOCKS_AVAILABLE
 -(void)loginWithHandler:(PocketAPILoginHandler)handler;
--(void)saveURL:(NSURL *)url handler:(PocketAPISaveHandler)handler;
--(void)saveURL:(NSURL *)url withTitle:(NSString *)title handler:(PocketAPISaveHandler)handler;
+
+-(void)saveURL:(NSURL *)url
+	   handler:(PocketAPISaveHandler)handler;
+-(void)saveURL:(NSURL *)url
+	 withTitle:(NSString *)title
+	   handler:(PocketAPISaveHandler)handler;
+
+-(void)callAPIMethod:(NSString *)apiMethod
+	  withHTTPMethod:(PocketAPIHTTPMethod)HTTPMethod
+		   arguments:(NSDictionary *)arguments
+			 handler:(PocketAPIResponseHandler)handler;
 #endif
 
 -(void)logout;
@@ -104,12 +122,30 @@
 // If you don't need tight control over network requests, just use the simple API.
 @interface PocketAPI (NSOperations)
 
--(NSOperation *)saveOperationWithURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate;
--(NSOperation *)saveOperationWithURL:(NSURL *)url title:(NSString *)title delegate:(id<PocketAPIDelegate>)delegate;
+-(NSOperation *)saveOperationWithURL:(NSURL *)url
+							delegate:(id<PocketAPIDelegate>)delegate;
+
+-(NSOperation *)saveOperationWithURL:(NSURL *)url
+							   title:(NSString *)title
+							delegate:(id<PocketAPIDelegate>)delegate;
+
+-(NSOperation *)methodOperationWithAPIMethod:(NSString *)APIMethod
+							   forHTTPMethod:(PocketAPIHTTPMethod)HTTPMethod
+								   arguments:(NSDictionary *)arguments
+									delegate:(id<PocketAPIDelegate>)delegate;
 
 #if NS_BLOCKS_AVAILABLE
--(NSOperation *)saveOperationWithURL:(NSURL *)url handler:(PocketAPISaveHandler)handler;
--(NSOperation *)saveOperationWithURL:(NSURL *)url title:(NSString *)title handler:(PocketAPISaveHandler)handler;
+-(NSOperation *)saveOperationWithURL:(NSURL *)url
+							 handler:(PocketAPISaveHandler)handler;
+
+-(NSOperation *)saveOperationWithURL:(NSURL *)url
+							   title:(NSString *)title
+							 handler:(PocketAPISaveHandler)handler;
+
+-(NSOperation *)methodOperationWithAPIMethod:(NSString *)APIMethod
+							   forHTTPMethod:(PocketAPIHTTPMethod)HTTPMethod
+								   arguments:(NSDictionary *)arguments
+									 handler:(PocketAPIResponseHandler)handler;
 #endif
 
 @end

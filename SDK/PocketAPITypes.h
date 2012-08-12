@@ -18,11 +18,14 @@
 
 -(void)pocketAPI:(PocketAPI *)api savedURL:(NSURL *)url;
 -(void)pocketAPI:(PocketAPI *)api failedToSaveURL:(NSURL *)url error:(NSError *)error needsToRelogin:(BOOL)needsToRelogin;
+
+-(void)pocketAPI:(PocketAPI *)api receivedResponse:(NSDictionary *)response forAPIMethod:(NSString *)APIMethod error:(NSError *)error;
 @end
 
 #if NS_BLOCKS_AVAILABLE
 typedef void(^PocketAPILoginHandler)(PocketAPI *api, NSError *error);
 typedef void(^PocketAPISaveHandler)(PocketAPI *api, NSURL *url, NSError *error, BOOL needsToRelogin);
+typedef void(^PocketAPIResponseHandler)(PocketAPI *api, NSString *apiMethod, NSDictionary *response, NSError *error);
 #endif
 
 typedef enum {

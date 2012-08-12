@@ -152,6 +152,11 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)theError{
 	error = [theError retain];
+
+	if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:receivedResponse:forAPIMethod:error:)]){
+		[self.delegate pocketAPI:self.API receivedResponse:[self responseDictionary] forAPIMethod:self.APIMethod error:error];
+	}
+
 	if([self.APIMethod isEqualToString:@"auth"]){
 		if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:hadLoginError:)]){
 			[self.delegate pocketAPI:self.API hadLoginError:error];
@@ -163,14 +168,16 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 							   error:error
 					  needsToRelogin:[error code] == 401];
 		}
-	}else if([self.APIMethod isEqualToString:@"request"]){
-		[self.delegate pocketAPI:self.API receivedRequestToken:@"abc123"];
 	}
 	
 	[self pkt_connectionFinishedLoading];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection{
+	if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:receivedResponse:forAPIMethod:error:)]){
+		[self.delegate pocketAPI:self.API receivedResponse:[self responseDictionary] forAPIMethod:self.APIMethod error:nil];
+	}
+	
 	if([self.APIMethod isEqualToString:@"auth"]){
 		[self.API pkt_loggedInWithUsername:[self.arguments objectForKey:@"username"] token:[self.arguments objectForKey:@"token"]];
 		

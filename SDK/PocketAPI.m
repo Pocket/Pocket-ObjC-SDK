@@ -51,13 +51,16 @@ static NSString *kPocketAPICurrentLoginKey = @"PocketAPICurrentLogin";
 @interface PocketAPIBlockDelegate : NSObject <PocketAPIDelegate>{
 	PocketAPILoginHandler loginHandler;
 	PocketAPISaveHandler saveHandler;
+	PocketAPIResponseHandler responseHandler;
 }
 
 +(id)delegateWithLoginHandler:(PocketAPILoginHandler)handler;
 +(id)delegateWithSaveHandler: (PocketAPISaveHandler )handler;
++(id)delegateWithResponseHandler: (PocketAPIResponseHandler )handler;
 
 @property (nonatomic, copy) PocketAPILoginHandler loginHandler;
 @property (nonatomic, copy) PocketAPISaveHandler saveHandler;
+@property (nonatomic, copy) PocketAPIResponseHandler responseHandler;
 @end
 #endif
 
@@ -197,6 +200,10 @@ static PocketAPI *sSharedAPI = nil;
 	[operationQueue addOperation:[self saveOperationWithURL:url title:title delegate:delegate]];
 }
 
+-(void)callAPIMethod:(NSString *)APIMethod withHTTPMethod:(PocketAPIHTTPMethod)HTTPMethod arguments:(NSDictionary *)arguments delegate:(id<PocketAPIDelegate>)delegate{
+	[operationQueue addOperation:[self methodOperationWithAPIMethod:APIMethod forHTTPMethod:HTTPMethod arguments:arguments delegate:delegate]];
+}
+
 -(NSOperation *)saveOperationWithURL:(NSURL *)url title:(NSString *)title delegate:(id<PocketAPIDelegate>)delegate{
 	if(!url || !url.absoluteString) return nil;
 	
@@ -210,20 +217,26 @@ static PocketAPI *sSharedAPI = nil;
 	NSDictionary *action = [self pkt_actionDictionaryWithName:@"add" parameters:actionParameters];
 	NSArray *actionsArray = [NSArray arrayWithObject:action];
 	
-	PocketAPIOperation *operation = [[[PocketAPIOperation alloc] init] autorelease];
-	operation.API = self;
-	operation.delegate = delegate;
-	operation.APIMethod = @"send";
-	operation.HTTPMethod = PocketAPIHTTPMethodPOST;
-	operation.arguments = [NSDictionary dictionaryWithObjectsAndKeys:
-						   actionsArray, @"actions",
-						   nil];
-	
-	return operation;
+	return [self methodOperationWithAPIMethod:@"send"
+								forHTTPMethod:PocketAPIHTTPMethodPOST
+									arguments:[NSDictionary dictionaryWithObjectsAndKeys:
+											   actionsArray, @"actions",
+											   nil]
+									 delegate:delegate];
 }
 
 -(NSOperation *)saveOperationWithURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate{
 	return [self saveOperationWithURL:url title:nil delegate:delegate];
+}
+
+-(NSOperation *)methodOperationWithAPIMethod:(NSString *)APIMethod forHTTPMethod:(NSString *)HTTPMethod arguments:(NSDictionary *)arguments delegate:(id<PocketAPIDelegate>)delegate{
+	PocketAPIOperation *operation = [[[PocketAPIOperation alloc] init] autorelease];
+	operation.API = self;
+	operation.delegate = delegate;
+	operation.APIMethod = APIMethod;
+	operation.HTTPMethod = HTTPMethod;
+	operation.arguments = arguments;
+	return operation;
 }
 
 #if NS_BLOCKS_AVAILABLE
@@ -240,6 +253,10 @@ static PocketAPI *sSharedAPI = nil;
 	[self saveURL:url withTitle:title delegate:[PocketAPIBlockDelegate delegateWithSaveHandler:handler]];
 }
 
+-(void)callAPIMethod:(NSString *)APIMethod withHTTPMethod:(PocketAPIHTTPMethod)HTTPMethod arguments:(NSDictionary *)arguments handler:(PocketAPIResponseHandler)handler{
+	[self callAPIMethod:APIMethod withHTTPMethod:HTTPMethod arguments:arguments delegate:[PocketAPIBlockDelegate delegateWithResponseHandler:handler]];
+}
+
 // operation API
 
 -(NSOperation *)saveOperationWithURL:(NSURL *)url handler:(PocketAPISaveHandler)handler{
@@ -248,6 +265,10 @@ static PocketAPI *sSharedAPI = nil;
 
 -(NSOperation *)saveOperationWithURL:(NSURL *)url title:(NSString *)title handler:(PocketAPISaveHandler)handler{
 	return [self saveOperationWithURL:url title:title delegate:[PocketAPIBlockDelegate delegateWithSaveHandler:handler]];
+}
+
+-(NSOperation *)methodOperationWithAPIMethod:(NSString *)APIMethod forHTTPMethod:(NSString *)httpMethod arguments:(NSDictionary *)arguments handler:(PocketAPIResponseHandler)handler{
+	return [self methodOperationWithAPIMethod:APIMethod forHTTPMethod:httpMethod arguments:arguments delegate:[PocketAPIBlockDelegate delegateWithResponseHandler:handler]];
 }
 
 #endif
@@ -361,7 +382,7 @@ static PocketAPI *sSharedAPI = nil;
 #if NS_BLOCKS_AVAILABLE
 @implementation PocketAPIBlockDelegate
 
-@synthesize loginHandler, saveHandler;
+@synthesize loginHandler, saveHandler, responseHandler;
 
 -(void)pocketAPILoggedIn:(PocketAPI *)api{
 	if(self.loginHandler){
@@ -387,6 +408,12 @@ static PocketAPI *sSharedAPI = nil;
 	}
 }
 
+-(void)pocketAPI:(PocketAPI *)api receivedResponse:(NSDictionary *)response forAPIMethod:(NSString *)APIMethod error:(NSError *)error{
+	if(self.responseHandler){
+		self.responseHandler(api, APIMethod, response, error);
+	}
+}
+
 +(id)delegateWithLoginHandler:(PocketAPILoginHandler)handler{
 	PocketAPIBlockDelegate *delegate = [[[self alloc] init] autorelease];
 	delegate.loginHandler = [[handler copy] autorelease];
@@ -399,9 +426,16 @@ static PocketAPI *sSharedAPI = nil;
 	return delegate;
 }
 
++(id)delegateWithResponseHandler:(PocketAPIResponseHandler)handler{
+	PocketAPIBlockDelegate *delegate = [[[self alloc] init] autorelease];
+	delegate.responseHandler = [[handler copy] autorelease];
+	return delegate;
+}
+
 -(void)dealloc{
 	[loginHandler release], loginHandler = nil;
 	[saveHandler release], saveHandler = nil;
+	[responseHandler release], responseHandler = nil;
 	
 	[super dealloc];
 }
