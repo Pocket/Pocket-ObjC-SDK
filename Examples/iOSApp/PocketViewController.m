@@ -33,10 +33,10 @@
     [super viewDidLoad];
 	
 	// Load some stories from Reddit
-	NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"http://www.reddit.com/.json"]];
+	NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"http://search.twitter.com/search.json?q=pocket.co&result_type=recent&include_entities=true"]];
 	[NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
 		NSDictionary *dataDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-		self.stories = [[dataDictionary objectForKey:@"data"] objectForKey:@"children"];
+		self.stories = [dataDictionary objectForKey:@"results"];
 		[self.tableView reloadData];
 	}];
 	
@@ -57,7 +57,29 @@
 #pragma mark UITableView
 
 -(NSDictionary *)storyAtIndexPath:(NSIndexPath *)indexPath{
-	return [[self.stories objectAtIndex:indexPath.row] objectForKey:@"data"];
+	return [self.stories objectAtIndex:indexPath.row];
+}
+
+-(NSString *)formattedTextForStory:(NSDictionary *)storyData{
+	NSMutableString *text = [[[storyData objectForKey:@"text"] mutableCopy] autorelease];
+	NSArray *urlEntities = [[storyData objectForKey:@"entities"] objectForKey:@"urls"];
+	for(NSDictionary *entity in urlEntities){
+		NSString *tcoURL = [entity objectForKey:@"url"];
+		NSString *displayURL = [entity objectForKey:@"expanded_url"];
+		[text replaceOccurrencesOfString:tcoURL withString:displayURL options:0 range:NSMakeRange(0, text.length)];
+	}
+	return text;
+}
+
+-(NSURL *)URLForStory:(NSDictionary *)storyData{
+	NSArray *urlEntities = [[storyData objectForKey:@"entities"] objectForKey:@"urls"];
+	for(NSDictionary *entity in urlEntities){
+		NSString *urlString = [entity objectForKey:@"expanded_url"];
+		if([urlString rangeOfString:@"pocket.co"].location != NSNotFound){
+			return [NSURL URLWithString:urlString];
+		}
+	}
+	return nil;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -71,22 +93,18 @@
 	}
 	
 	NSDictionary *storyData = [self storyAtIndexPath:indexPath];
-	cell.textLabel.text = [storyData objectForKey:@"title"];
-	cell.detailTextLabel.text = [NSString stringWithFormat:@"%i pts • /r/%@ • %@",
-								 [[storyData objectForKey:@"score"] intValue],
-								 [storyData objectForKey:@"subreddit"],
-								 [storyData objectForKey:@"domain"]];
+	cell.textLabel.text = [self formattedTextForStory:storyData];
+	cell.detailTextLabel.text = [[self URLForStory:storyData] absoluteString];
 	
 	return cell;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	NSDictionary *story = [self storyAtIndexPath:indexPath];
-	NSString *urlString = [story objectForKey:@"url"];
-	if(!urlString) return;
+	NSURL *url = [self URLForStory:story];
+	if(!url) return;
 	
-	NSString *title = [story objectForKey:@"title"];
-	NSURL *url = [NSURL URLWithString:urlString];
+	NSString *title = [self formattedTextForStory:story];
 	NSLog(@"Saving URL: %@", url);
 	[[PocketAPI sharedAPI] saveURL:url withTitle:title handler:^(PocketAPI *api, NSURL *url, NSError *error, BOOL needsToRelogin) {
 		if(error){

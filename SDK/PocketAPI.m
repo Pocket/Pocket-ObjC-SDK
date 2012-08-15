@@ -105,7 +105,9 @@ static PocketAPI *sSharedAPI = nil;
 		}
 		
 		// register for lifecycle notifications
+#if TARGET_OS_IPHONE
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+#endif
 	}
 	return self;
 }

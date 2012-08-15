@@ -83,6 +83,7 @@ Acknowledgements
 The Pocket SDK uses the following open source software:
 
 - [SFHFKeychainUtils](https://github.com/ldandersen/scifihifi-iphone/tree/master/security) for saving user credentials securely to the keychain.
+- [UIDevice-Hardware](https://github.com/erica/uidevice-extension) for creating a user agent
 
 License
 =======
