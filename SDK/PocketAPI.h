@@ -68,6 +68,7 @@
 	NSOperationQueue *operationQueue;
 	
 	PocketAPILogin *currentLogin;
+	NSString *userAgent;
 }
 
 @property (nonatomic, retain) NSString *consumerKey;

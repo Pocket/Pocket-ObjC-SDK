@@ -43,6 +43,7 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 
 @interface PocketAPI ()
 -(void)pkt_loggedInWithUsername:(NSString *)username token:(NSString *)accessToken;
+-(NSString *)pkt_userAgent;
 @end
 
 @interface PocketAPIOperation ()
@@ -254,6 +255,11 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 	if(self.HTTPMethod != PocketAPIHTTPMethodGET && requestArgs.count > 0){
 		[request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
 		[request setHTTPBody:[NSJSONSerialization dataWithJSONObject:requestArgs options:0 error:nil]];
+	}
+	
+	NSString *userAgent = [self.API pkt_userAgent];
+	if(userAgent){
+		[request addValue:userAgent forHTTPHeaderField:@"User-Agent"];
 	}
 	
 	[request addValue:@"application/json" forHTTPHeaderField:@"X-Accept"];
