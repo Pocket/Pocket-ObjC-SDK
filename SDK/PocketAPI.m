@@ -233,7 +233,7 @@ static PocketAPI *sSharedAPI = nil;
 	return [self saveOperationWithURL:url title:nil delegate:delegate];
 }
 
--(NSOperation *)methodOperationWithAPIMethod:(NSString *)APIMethod forHTTPMethod:(NSString *)HTTPMethod arguments:(NSDictionary *)arguments delegate:(id<PocketAPIDelegate>)delegate{
+-(NSOperation *)methodOperationWithAPIMethod:(NSString *)APIMethod forHTTPMethod:(PocketAPIHTTPMethod)HTTPMethod arguments:(NSDictionary *)arguments delegate:(id<PocketAPIDelegate>)delegate{
 	PocketAPIOperation *operation = [[[PocketAPIOperation alloc] init] autorelease];
 	operation.API = self;
 	operation.delegate = delegate;
@@ -335,6 +335,29 @@ static PocketAPI *sSharedAPI = nil;
 		[defaults release];
 	}
 }
+
+// NOTE: This API will FAIL for you by default. It is only enabled for certain consumer keys,
+// and it will only be available for a short time. If you use it, do NOT store the user's
+// password permanently. If you require access to this API, contact us at api@getpocket.com.
+//
+// Be prepared for this API to return errors at any time, even after you are in production.
+
+-(void)pkt_migrateAccountToAccessTokenWithUsername:(NSString *)username password:(NSString *)password delegate:(id<PocketAPIDelegate>)delegate{
+	[self callAPIMethod:@"oauth/authorize"
+		 withHTTPMethod:PocketAPIHTTPMethodPOST
+			  arguments:[NSDictionary dictionaryWithObjectsAndKeys:
+						 username, @"username",
+						 password, @"password",
+						 @"credentials", @"grant_type",
+						 nil]
+			   delegate:delegate];
+}
+
+#if NS_BLOCKS_AVAILABLE
+-(void)pkt_migrateAccountToAccessTokenWithUsername:(NSString *)username password:(NSString *)password handler:(PocketAPILoginHandler)handler{
+	[self pkt_migrateAccountToAccessTokenWithUsername:username password:password delegate:[PocketAPIBlockDelegate delegateWithLoginHandler:handler]];
+}
+#endif
 
 -(NSDictionary *)pkt_actionDictionaryWithName:(NSString *)name parameters:(NSDictionary *)params{
 	if(!name) return nil;

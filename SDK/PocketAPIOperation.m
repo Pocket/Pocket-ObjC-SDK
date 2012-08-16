@@ -197,12 +197,12 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 		NSDictionary *responseDict = [self responseDictionary];
 		[self.delegate pocketAPI:self.API receivedRequestToken:[responseDict objectForKey:@"code"]];
 	}
-	else if([self.APIMethod isEqualToString:@"authorize"]){
+	else if([self.APIMethod isEqualToString:@"authorize"] || [self.APIMethod isEqualToString:@"oauth/authorize"]){
 		NSDictionary *responseDict = [self responseDictionary];
 		NSString *username = [responseDict objectForKey:@"username"];
 		NSString *token = [responseDict objectForKey:@"access_token"];
 		
-		if((id)username == [NSNull null] || (id)token == [NSNull null]){
+		if((id)username == [NSNull null] && (id)token == [NSNull null]){
 			[self.delegate pocketAPI:self.API hadLoginError:[NSError errorWithDomain:@"PocketAPI" code:404 userInfo:nil]];
 		}else{
 			[self.API pkt_loggedInWithUsername:username token:token];
