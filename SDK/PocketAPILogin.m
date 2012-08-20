@@ -102,10 +102,17 @@
 	
 	NSString *redirectURLPath = [[self redirectURL] absoluteString];
 	
+	NSString *locale = [[NSLocale preferredLanguages] objectAtIndex:0];
+	NSString *country = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
+	int timeZone = round([[NSTimeZone systemTimeZone] secondsFromGMT] / 60);
+	
 	operation.arguments = [NSDictionary dictionaryWithObjectsAndKeys:
 						   @"authorization_code", @"grant_type",
 						   self.requestToken, @"code",
 						   redirectURLPath, @"redirect_uri",
+						   locale, @"locale",
+						   country, @"country",
+						   [NSString stringWithFormat:@"%i", timeZone], @"timezone",
 						   nil];
 	[operationQueue addOperation:operation];
 	[operation release];
@@ -125,7 +132,7 @@
 	if([PocketAPI hasPocketAppInstalled]){
 		authorizeURL = [NSURL URLWithString:[NSString stringWithFormat:@"pocket:///authorize?request_token=%@&redirect_uri=%@",requestToken, encodedRedirectURLString]];
 	}else{
-		authorizeURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://getpocket.com/apps/authorize?request_token=%@&redirect_uri=%@",requestToken, encodedRedirectURLString]];
+		authorizeURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://web.steve.dev/oauth-tmp/authorize-mobile-web?request_token=%@&redirect_uri=%@",requestToken, encodedRedirectURLString]];
 	}
 	
 #if TARGET_OS_IPHONE
