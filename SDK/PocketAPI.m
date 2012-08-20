@@ -376,7 +376,7 @@ static PocketAPI *sSharedAPI = nil;
 	if(!userAgent){
 		NSDictionary *bundleInfo = [[NSBundle mainBundle] infoDictionary];
 		
-		NSString *productName   = @"SDK";
+		NSString *productName   = @"PocketSDK";
 		NSString *appName       = [bundleInfo objectForKey:@"CFBundleDisplayName"];
 		NSString *appVersion    = [bundleInfo objectForKey:@"CFBundleVersion"];
 		NSString *deviceMfg     = @"Apple";
