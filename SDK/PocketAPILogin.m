@@ -84,7 +84,6 @@
 	NSString *redirectURLPath = [[self redirectURL] absoluteString];
 	
 	operation.arguments = [NSDictionary dictionaryWithObjectsAndKeys:
-						   @"code", @"response_type",
 						   self.uuid, @"state",
 						   redirectURLPath, @"redirect_uri",
 						   nil];
@@ -100,16 +99,12 @@
 	operation.HTTPMethod = PocketAPIHTTPMethodPOST;
 	operation.APIMethod = @"authorize";
 	
-	NSString *redirectURLPath = [[self redirectURL] absoluteString];
-	
 	NSString *locale = [[NSLocale preferredLanguages] objectAtIndex:0];
 	NSString *country = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
 	int timeZone = round([[NSTimeZone systemTimeZone] secondsFromGMT] / 60);
 	
 	operation.arguments = [NSDictionary dictionaryWithObjectsAndKeys:
-						   @"authorization_code", @"grant_type",
 						   self.requestToken, @"code",
-						   redirectURLPath, @"redirect_uri",
 						   locale, @"locale",
 						   country, @"country",
 						   [NSString stringWithFormat:@"%i", timeZone], @"timezone",
