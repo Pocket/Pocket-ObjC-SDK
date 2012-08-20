@@ -125,7 +125,7 @@
 	NSURL *authorizeURL = nil;
 	NSString *encodedRedirectURLString = [PocketAPIOperation encodeForURL:[[self redirectURL] absoluteString]];
 	if([PocketAPI hasPocketAppInstalled]){
-		authorizeURL = [NSURL URLWithString:[NSString stringWithFormat:@"pocket:///authorize?request_token=%@&redirect_uri=%@",requestToken, encodedRedirectURLString]];
+		authorizeURL = [NSURL URLWithString:[NSString stringWithFormat:@"pocket-oauth-v1:///authorize?request_token=%@&redirect_uri=%@",requestToken, encodedRedirectURLString]];
 	}else{
 		authorizeURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://web.steve.dev/oauth-tmp/authorize-mobile-web?request_token=%@&redirect_uri=%@",requestToken, encodedRedirectURLString]];
 	}
