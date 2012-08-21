@@ -27,6 +27,8 @@
 #import <dispatch/dispatch.h>
 #include <sys/sysctl.h>
 
+#define POCKET_SDK_VERSION @"0.9"
+
 static NSString *kPocketAPICurrentLoginKey = @"PocketAPICurrentLogin";
 
 #pragma mark Private APIs (please do not call these directly)
@@ -380,7 +382,7 @@ static PocketAPI *sSharedAPI = nil;
 	if(!userAgent){
 		NSDictionary *bundleInfo = [[NSBundle mainBundle] infoDictionary];
 		
-		NSString *productName   = @"PocketSDK";
+		NSString *productName   = @"PocketSDK:" POCKET_SDK_VERSION;
 		NSString *appName       = [bundleInfo objectForKey:@"CFBundleDisplayName"];
 		NSString *appVersion    = [bundleInfo objectForKey:@"CFBundleVersion"];
 		NSString *deviceMfg     = @"Apple";
