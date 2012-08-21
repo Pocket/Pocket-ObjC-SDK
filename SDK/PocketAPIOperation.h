@@ -25,7 +25,7 @@
 #import "PocketAPI.h"
 #import "PocketAPITypes.h"
 
-@interface PocketAPIOperation : NSOperation <NSURLConnectionDelegate, NSCopying> {
+@interface PocketAPIOperation : NSOperation <NSURLConnectionDelegate, NSCopying, PocketAPIDelegate> {
 	PocketAPI *API;
 	id<PocketAPIDelegate> delegate;
 	

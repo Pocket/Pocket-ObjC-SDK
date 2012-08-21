@@ -44,6 +44,7 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 @interface PocketAPI ()
 -(void)pkt_loggedInWithUsername:(NSString *)username token:(NSString *)accessToken;
 -(NSString *)pkt_userAgent;
+-(NSString *)pkt_getToken;
 -(NSOperationQueue *)pkt_operationQueue;
 @end
 
@@ -231,8 +232,8 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 	[[self.API pkt_operationQueue] addOperation:[[self copy] autorelease]];
 }
 
--(void)pocketAPI:(PocketAPI *)api hadLoginError:(NSError *)error{
-	[self connectionFinishedWithStatusCode:403 error:error];
+-(void)pocketAPI:(PocketAPI *)api hadLoginError:(NSError *)theError{
+	[self connectionFinishedWithStatusCode:403 error:theError];
 }
 
 #pragma mark Private APIs

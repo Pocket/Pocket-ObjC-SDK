@@ -181,7 +181,7 @@ static PocketAPI *sSharedAPI = nil;
 }
 
 -(NSString *)appURLScheme{
-	return [NSString stringWithFormat:@"pocketapp%i", [self appID]];
+	return [NSString stringWithFormat:@"pocketapp%lu", (unsigned long)[self appID]];
 }
 
 -(BOOL)isLoggedIn{
@@ -271,7 +271,7 @@ static PocketAPI *sSharedAPI = nil;
 	return [self saveOperationWithURL:url title:title delegate:[PocketAPIBlockDelegate delegateWithSaveHandler:handler]];
 }
 
--(NSOperation *)methodOperationWithAPIMethod:(NSString *)APIMethod forHTTPMethod:(NSString *)httpMethod arguments:(NSDictionary *)arguments handler:(PocketAPIResponseHandler)handler{
+-(NSOperation *)methodOperationWithAPIMethod:(NSString *)APIMethod forHTTPMethod:(PocketAPIHTTPMethod)httpMethod arguments:(NSDictionary *)arguments handler:(PocketAPIResponseHandler)handler{
 	return [self methodOperationWithAPIMethod:APIMethod forHTTPMethod:httpMethod arguments:arguments delegate:[PocketAPIBlockDelegate delegateWithResponseHandler:handler]];
 }
 
