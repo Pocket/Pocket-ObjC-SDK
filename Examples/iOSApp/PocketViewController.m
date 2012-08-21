@@ -106,9 +106,9 @@
 	
 	NSString *title = [self formattedTextForStory:story];
 	NSLog(@"Saving URL: %@", url);
-	[[PocketAPI sharedAPI] saveURL:url withTitle:title handler:^(PocketAPI *api, NSURL *url, NSError *error, BOOL needsToRelogin) {
+	[[PocketAPI sharedAPI] saveURL:url withTitle:title handler:^(PocketAPI *api, NSURL *url, NSError *error) {
 		if(error){
-			NSLog(@"URL %@ could not be saved to %@'s Pocket account. Needs to relogin? %@. Reason: %@", url, api.username, (needsToRelogin ? @"Yes" : @"No"), error.localizedDescription);
+			NSLog(@"URL %@ could not be saved to %@'s Pocket account. Reason: %@", url, api.username, error.localizedDescription);
 		}else{
 			NSLog(@"URL %@ was saved to %@'s Pocket account", url, api.username);
 		}
@@ -171,8 +171,8 @@
 	NSLog(@"Pocket API saved URL %@ for user %@", url, [api username]);
 }
 
--(void)pocketAPI:(PocketAPI *)api failedToSaveURL:(NSURL *)url error:(NSError *)error needsToRelogin:(BOOL)needsToRelogin{
-	NSLog(@"Pocket API could not save URL %@ for user %@: %@. Should prompt to reauth user: %@", url, [api username], [error localizedDescription], needsToRelogin?@"Yes":@"No");
+-(void)pocketAPI:(PocketAPI *)api failedToSaveURL:(NSURL *)url error:(NSError *)error{
+	NSLog(@"Pocket API could not save URL %@ for user %@: %@.", url, [api username], [error localizedDescription]);
 }
 
 @end
