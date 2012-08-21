@@ -48,6 +48,13 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 -(NSOperationQueue *)pkt_operationQueue;
 @end
 
+@interface NSDictionary (PocketAdditions)
+
+-(NSString *)pkt_URLEncodedFormString;
++(NSDictionary *)pkt_dictionaryByParsingURLEncodedFormString:(NSString *)formString;
+
+@end
+
 @interface PocketAPIOperation ()
 
 -(void)pkt_connectionFinishedLoading;
@@ -127,7 +134,11 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 -(NSDictionary *)responseDictionary{
 	NSString *contentType = [[self.response allHeaderFields] objectForKey:@"Content-Type"];
 	if([contentType isEqualToString:@"application/json"]){
-		return [NSJSONSerialization JSONObjectWithData:self.data options:0 error:nil];
+		Class nsJSONSerialization = NSClassFromString(@"NSJSONSerialization");
+		return [nsJSONSerialization JSONObjectWithData:self.data options:0 error:nil];
+	}else if([contentType rangeOfString:@"application/x-www-form-urlencode"].location != NSNotFound){
+		NSString *formString = [[[NSString alloc] initWithData:self.data encoding:NSUTF8StringEncoding] autorelease];
+		return [NSDictionary pkt_dictionaryByParsingURLEncodedFormString:formString];
 	}else{
 		return nil;
 	}
@@ -286,9 +297,16 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
 	[request setHTTPMethod:PocketAPINameForHTTPMethod(self.HTTPMethod)];
 	
+	Class nsJSONSerialization = NSClassFromString(@"NSJSONSerialization");
+
 	if(self.HTTPMethod != PocketAPIHTTPMethodGET && requestArgs.count > 0){
-		[request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-		[request setHTTPBody:[NSJSONSerialization dataWithJSONObject:requestArgs options:0 error:nil]];
+		if(nsJSONSerialization != nil){
+			[request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+			[request setHTTPBody:[nsJSONSerialization dataWithJSONObject:requestArgs options:0 error:nil]];
+		}else{
+			[request addValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+			[request setHTTPBody:[[requestArgs pkt_URLEncodedFormString] dataUsingEncoding:NSUTF8StringEncoding]];
+		}
 	}
 	
 	NSString *userAgent = [self.API pkt_userAgent];
@@ -296,7 +314,11 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 		[request addValue:userAgent forHTTPHeaderField:@"User-Agent"];
 	}
 	
-	[request addValue:@"application/json" forHTTPHeaderField:@"X-Accept"];
+	if(nsJSONSerialization != nil){
+		[request addValue:@"application/json" forHTTPHeaderField:@"X-Accept"];
+	}else{
+		[request addValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"X-Accept"];
+	}
 	
 	return [request autorelease];
 }
@@ -308,6 +330,14 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
                                                                            NULL,
 																		   CFSTR("!*'();:@&=+$,/?%#[]"),
                                                                            kCFStringEncodingUTF8);
+	return [result autorelease];
+}
+
++(NSString *)decodeForURL:(NSString *)urlStr{
+	NSString *result = (NSString *)CFURLCreateStringByReplacingPercentEscapesUsingEncoding(kCFAllocatorDefault,
+																						   (CFStringRef)urlStr,
+																						   CFSTR(""),
+																						   kCFStringEncodingUTF8);
 	return [result autorelease];
 }
 
@@ -332,6 +362,34 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 	operation.APIMethod = self.APIMethod;
 	operation.arguments = self.arguments;
 	return operation;
+}
+
+@end
+
+@implementation NSDictionary (PocketAdditions)
+
+-(NSString *)pkt_URLEncodedFormString{
+	NSMutableArray *formPieces = [NSMutableArray arrayWithCapacity:self.allKeys.count];
+	for(NSString *key in self.allKeys){
+		NSString *value = [self objectForKey:key];
+		[formPieces addObject:[NSString stringWithFormat:@"%@=%@", [PocketAPIOperation encodeForURL:key], [PocketAPIOperation encodeForURL:value]]];
+	}
+	return [formPieces componentsJoinedByString:@"&"];
+}
+
++(NSDictionary *)pkt_dictionaryByParsingURLEncodedFormString:(NSString *)formString{
+	NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+	NSArray *formPieces = [formString componentsSeparatedByString:@"&"];
+	for(NSString *formPiece in formPieces){
+		NSArray *fieldPieces = [formPiece componentsSeparatedByString:@"="];
+		if(fieldPieces.count == 2){
+			NSString *fieldKey = [fieldPieces objectAtIndex:0];
+			NSString *fieldValue = [fieldPieces objectAtIndex:1];
+			[dictionary setObject:[PocketAPIOperation decodeForURL:fieldValue]
+						   forKey:[PocketAPIOperation decodeForURL:fieldKey]];
+		}
+	}
+	return [[dictionary copy] autorelease];
 }
 
 @end
