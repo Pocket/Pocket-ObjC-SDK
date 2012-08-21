@@ -164,17 +164,30 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 }
 
 -(void)connectionFinishedWithStatusCode:(NSUInteger)statusCode error:(NSError *)theError{
-	error = [theError retain];
+	BOOL needsToRelogin = statusCode == 401;
+	BOOL needsToLogout = statusCode == 403;
+	if(!theError && statusCode >= 400){
+		theError = [NSError errorWithDomain:@"PocketSDK"
+									   code:statusCode
+								   userInfo:nil];
+	}
 	
-	BOOL needsToRelogin = (statusCode == 401 || [error code] == 401);
+	error = [theError retain];
 	
 	if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:receivedResponse:forAPIMethod:error:)]){
 		[self.delegate pocketAPI:self.API receivedResponse:[self responseDictionary] forAPIMethod:self.APIMethod error:theError];
 	}
 	
+	// if the user has deauthorized the app, we bounce them to the Pocket to re-login
+	// if this succeeds, we re-call the API the app requested
+	// if it fails, then prompt for an error next time
 	if(needsToRelogin){
 		[self.API loginWithDelegate:self];
 		return;
+	}
+	
+	if(needsToLogout){
+		[self.API logout];
 	}
 	
 	if(theError){
