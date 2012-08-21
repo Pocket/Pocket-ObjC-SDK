@@ -44,6 +44,7 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 @interface PocketAPI ()
 -(void)pkt_loggedInWithUsername:(NSString *)username token:(NSString *)accessToken;
 -(NSString *)pkt_userAgent;
+-(NSOperationQueue *)pkt_operationQueue;
 @end
 
 @interface PocketAPIOperation ()
@@ -152,67 +153,86 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)theError{
-	error = [theError retain];
-
-	if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:receivedResponse:forAPIMethod:error:)]){
-		[self.delegate pocketAPI:self.API receivedResponse:[self responseDictionary] forAPIMethod:self.APIMethod error:error];
-	}
-
-	if([self.APIMethod isEqualToString:@"auth"]){
-		if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:hadLoginError:)]){
-			[self.delegate pocketAPI:self.API hadLoginError:error];
-		}
-	}else if([self.APIMethod isEqualToString:@"send"]){
-		if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:failedToSaveURL:error:needsToRelogin:)]){
-			[self.delegate pocketAPI:self.API 
-					 failedToSaveURL:[NSURL URLWithString:[self.arguments objectForKey:@"url"]] 
-							   error:error
-					  needsToRelogin:[error code] == 401];
-		}
-	}
-	
-	[self pkt_connectionFinishedLoading];
+	NSUInteger statusCode = [self.response statusCode];
+	[self connectionFinishedWithStatusCode:statusCode error:theError];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection{
+	NSUInteger statusCode = [self.response statusCode];
+	[self connectionFinishedWithStatusCode:statusCode error:nil];
+}
+
+-(void)connectionFinishedWithStatusCode:(NSUInteger)statusCode error:(NSError *)theError{
+	error = [theError retain];
+	
+	BOOL needsToRelogin = (statusCode == 401 || [error code] == 401);
+	
 	if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:receivedResponse:forAPIMethod:error:)]){
-		[self.delegate pocketAPI:self.API receivedResponse:[self responseDictionary] forAPIMethod:self.APIMethod error:nil];
+		[self.delegate pocketAPI:self.API receivedResponse:[self responseDictionary] forAPIMethod:self.APIMethod error:theError];
 	}
 	
-	if([self.APIMethod isEqualToString:@"auth"]){
-		[self.API pkt_loggedInWithUsername:[self.arguments objectForKey:@"username"] token:[self.arguments objectForKey:@"token"]];
-		
-		if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPILoggedIn:)]){
-			[self.delegate pocketAPILoggedIn:self.API];
-		}
-	}else if([self.APIMethod isEqualToString:@"send"]){
-		if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:savedURL:)]){
-			NSString *urlString = [[[self.arguments objectForKey:@"actions"] objectAtIndex:0] objectForKey:@"url"];
-			NSURL *url = urlString ? [NSURL URLWithString:urlString] : nil;
-			[self.delegate pocketAPI:self.API
-							savedURL:url];
-		}
+	if(needsToRelogin){
+		[self.API loginWithDelegate:self];
+		return;
 	}
-	else if([self.APIMethod isEqualToString:@"request"]){
-		NSDictionary *responseDict = [self responseDictionary];
-		[self.delegate pocketAPI:self.API receivedRequestToken:[responseDict objectForKey:@"code"]];
-	}
-	else if([self.APIMethod isEqualToString:@"authorize"] || [self.APIMethod isEqualToString:@"oauth/authorize"]){
-		NSDictionary *responseDict = [self responseDictionary];
-		NSString *username = [responseDict objectForKey:@"username"];
-		NSString *token = [responseDict objectForKey:@"access_token"];
-		
-		if((id)username == [NSNull null] && (id)token == [NSNull null]){
-			[self.delegate pocketAPI:self.API hadLoginError:[NSError errorWithDomain:@"PocketAPI" code:404 userInfo:nil]];
-		}else{
-			[self.API pkt_loggedInWithUsername:username token:token];
+	
+	if(theError){
+		if([self.APIMethod rangeOfString:@"auth"].location != NSNotFound){
+			if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:hadLoginError:)]){
+				[self.delegate pocketAPI:self.API hadLoginError:error];
+			}
+		}else if([self.APIMethod isEqualToString:@"send"]){
+			if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:failedToSaveURL:error:)]){
+				[self.delegate pocketAPI:self.API
+						 failedToSaveURL:[NSURL URLWithString:[self.arguments objectForKey:@"url"]]
+								   error:error];
+			}
+		}
+	}else{
+		if([self.APIMethod isEqualToString:@"auth"]){
+			[self.API pkt_loggedInWithUsername:[self.arguments objectForKey:@"username"] token:[self.arguments objectForKey:@"token"]];
+			
 			if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPILoggedIn:)]){
 				[self.delegate pocketAPILoggedIn:self.API];
 			}
+		}else if([self.APIMethod isEqualToString:@"send"]){
+			if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:savedURL:)]){
+				NSString *urlString = [[[self.arguments objectForKey:@"actions"] objectAtIndex:0] objectForKey:@"url"];
+				NSURL *url = urlString ? [NSURL URLWithString:urlString] : nil;
+				[self.delegate pocketAPI:self.API
+								savedURL:url];
+			}
+		}
+		else if([self.APIMethod isEqualToString:@"request"]){
+			NSDictionary *responseDict = [self responseDictionary];
+			[self.delegate pocketAPI:self.API receivedRequestToken:[responseDict objectForKey:@"code"]];
+		}
+		else if([self.APIMethod isEqualToString:@"authorize"] || [self.APIMethod isEqualToString:@"oauth/authorize"]){
+			NSDictionary *responseDict = [self responseDictionary];
+			NSString *username = [responseDict objectForKey:@"username"];
+			NSString *token = [responseDict objectForKey:@"access_token"];
+			
+			if((id)username == [NSNull null] && (id)token == [NSNull null]){
+				[self.delegate pocketAPI:self.API hadLoginError:[NSError errorWithDomain:@"PocketAPI" code:404 userInfo:nil]];
+			}else{
+				[self.API pkt_loggedInWithUsername:username token:token];
+				if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPILoggedIn:)]){
+					[self.delegate pocketAPILoggedIn:self.API];
+				}
+			}
 		}
 	}
-	
 	[self pkt_connectionFinishedLoading];
+}
+
+#pragma mark Handling Re-login
+
+-(void)pocketAPILoggedIn:(PocketAPI *)api{
+	[[self.API pkt_operationQueue] addOperation:[[self copy] autorelease]];
+}
+
+-(void)pocketAPI:(PocketAPI *)api hadLoginError:(NSError *)error{
+	[self connectionFinishedWithStatusCode:403 error:error];
 }
 
 #pragma mark Private APIs
@@ -285,6 +305,19 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 	[self  didChangeValueForKey:@"isExecuting"];
 
 	[delegate release], delegate = nil;
+}
+
+#pragma mark NSCopying
+
+- (id)copyWithZone:(NSZone *)zone{
+	PocketAPIOperation *operation = [[PocketAPIOperation allocWithZone:zone] init];
+	operation.API = self.API;
+	operation.delegate = self.delegate;
+	operation.domain = self.domain;
+	operation.HTTPMethod = self.HTTPMethod;
+	operation.APIMethod = self.APIMethod;
+	operation.arguments = self.arguments;
+	return operation;
 }
 
 @end

@@ -369,6 +369,10 @@ static PocketAPI *sSharedAPI = nil;
 	return dict;
 }
 
+-(NSOperationQueue *)pkt_operationQueue{
+	return operationQueue;
+}
+
 #pragma mark -
 #pragma mark User Agent (uses UIDevice+Hardware from https://github.com/erica/uidevice-extension)
 
@@ -540,13 +544,13 @@ static PocketAPI *sSharedAPI = nil;
 
 -(void)pocketAPI:(PocketAPI *)api savedURL:(NSURL *)url{
 	if(self.saveHandler){
-		self.saveHandler(api, url, nil, NO);
+		self.saveHandler(api, url, nil);
 	}
 }
 
--(void)pocketAPI:(PocketAPI *)api failedToSaveURL:(NSURL *)url error:(NSError *)error needsToRelogin:(BOOL)needsToRelogin{
+-(void)pocketAPI:(PocketAPI *)api failedToSaveURL:(NSURL *)url error:(NSError *)error{
 	if(self.saveHandler){
-		self.saveHandler(api, url, error, needsToRelogin);
+		self.saveHandler(api, url, error);
 	}
 }
 

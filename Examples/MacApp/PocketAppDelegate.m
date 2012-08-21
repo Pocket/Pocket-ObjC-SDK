@@ -50,15 +50,10 @@
 	NSURL *url = [NSURL URLWithString:URLField.stringValue];
 	
 	// perform the save
-	[[PocketAPI sharedAPI] saveURL:url handler:^(PocketAPI *api, NSURL *url, NSError *error, BOOL needsToRelogin){
+	[[PocketAPI sharedAPI] saveURL:url handler:^(PocketAPI *api, NSURL *url, NSError *error){
 		if(error){
-			if(needsToRelogin){
-				// the user's login information changed elsewhere, prompt them to login here
-				NSLog(@"User needs to login again. %@", error);
-			}else{
-				// a server issue happened, inform the user their URL will not be saved
-				NSLog(@"Could not save the item to Pocket: %@", error);
-			}
+			// a server issue happened or the user has rejected authorization, inform the user their URL will not be saved
+			NSLog(@"Could not save the item to Pocket: %@", error);
 		}else{
 			// URL saved successfully, update your UI here
 			NSLog(@"Saved URL %@", url);
