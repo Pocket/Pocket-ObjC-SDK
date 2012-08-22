@@ -70,7 +70,7 @@
 }
 
 -(NSURL *)redirectURL{
-	return [NSURL URLWithString:[NSString stringWithFormat:@"pocketapp%i:authorizationFinished", [self.API appID]]];
+	return [NSURL URLWithString:[NSString stringWithFormat:@"%@:authorizationFinished", [self.API URLScheme]]];
 }
 
 -(void)fetchRequestToken{

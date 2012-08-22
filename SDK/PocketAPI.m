@@ -72,7 +72,7 @@ static NSString *kPocketAPICurrentLoginKey = @"PocketAPICurrentLogin";
 
 @implementation PocketAPI
 
-@synthesize consumerKey, operationQueue;
+@synthesize consumerKey, URLScheme, operationQueue;
 
 #pragma mark Public API
 
@@ -120,17 +120,25 @@ static PocketAPI *sSharedAPI = nil;
 	[consumerKey release];
 	consumerKey = aConsumerKey;
 	
-#if DEBUG
-	if(!consumerKey) return;
+	if(!self.URLScheme && consumerKey){
+		NSString *expectedURLScheme = [NSString stringWithFormat:@"pocketapp%lu", (unsigned long)[self appID]];
+		[self setURLScheme:expectedURLScheme];
+	}
+}
+
+-(void)setURLScheme:(NSString *)aURLScheme{
+	[aURLScheme retain];
+	[URLScheme release];
+	URLScheme = aURLScheme;
 	
+#if DEBUG
 	// check to make sure 
-	NSString *expectedURLScheme = [self appURLScheme];
 	BOOL foundURLScheme = NO;
 	NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
 	NSArray *urlSchemeLists = [infoDict objectForKey:@"CFBundleURLTypes"];
 	for(NSDictionary *urlSchemeList in urlSchemeLists){
 		NSArray *urlSchemes = [urlSchemeList objectForKey:@"CFBundleURLSchemes"];
-		if([urlSchemes containsObject:expectedURLScheme]){
+		if([urlSchemes containsObject:URLScheme]){
 			foundURLScheme = YES;
 			break;
 		}
@@ -138,7 +146,7 @@ static PocketAPI *sSharedAPI = nil;
 	
 	if(!foundURLScheme){
 		NSLog(@"** WARNING: You haven't added a URL scheme for the Pocket SDK. This will prevent login from working. See the SDK readme.");
-		NSLog(@"** The URL scheme you need to register is: %@",expectedURLScheme);
+		NSLog(@"** The URL scheme you need to register is: %@",URLScheme);
 	}
 #endif
 }
@@ -167,7 +175,7 @@ static PocketAPI *sSharedAPI = nil;
 
 -(BOOL)handleOpenURL:(NSURL *)url{
 	// TODO implement
-	if([[url scheme] isEqualToString:[self appURLScheme]]){
+	if([[url scheme] isEqualToString:self.URLScheme]){
 		[self pkt_loadCurrentLoginFromDefaults];
 		[currentLogin convertRequestTokenToAccessToken];
 		return YES;
@@ -188,10 +196,6 @@ static PocketAPI *sSharedAPI = nil;
 		}
 	}
 	return appID;
-}
-
--(NSString *)appURLScheme{
-	return [NSString stringWithFormat:@"pocketapp%lu", (unsigned long)[self appID]];
 }
 
 -(BOOL)isLoggedIn{

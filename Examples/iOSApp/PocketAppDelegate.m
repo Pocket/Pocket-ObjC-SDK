@@ -42,6 +42,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+	// if you wish to register a custom URL scheme, do so here (before setConsumerKey:)
+	//[[PocketAPI sharedAPI] setURLScheme:@"pocket-test-app"];
+	
 	[[PocketAPI sharedAPI] setConsumerKey:CONSUMER_KEY];
 	
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
