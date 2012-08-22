@@ -121,7 +121,6 @@
 	requestToken = [aRequestToken copy];
 	[self  didChangeValueForKey:@"requestToken"];
 	
-	NSLog(@"Received request token %@",requestToken);
 	NSURL *authorizeURL = nil;
 	NSString *encodedRedirectURLString = [PocketAPIOperation encodeForURL:[[self redirectURL] absoluteString]];
 	if([PocketAPI hasPocketAppInstalled]){
