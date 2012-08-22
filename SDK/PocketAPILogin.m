@@ -127,7 +127,7 @@
 	if([PocketAPI hasPocketAppInstalled]){
 		authorizeURL = [NSURL URLWithString:[NSString stringWithFormat:@"pocket-oauth-v1:///authorize?request_token=%@&redirect_uri=%@",requestToken, encodedRedirectURLString]];
 	}else{
-		authorizeURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://web.steve.dev/oauth-tmp/authorize-mobile-web?request_token=%@&redirect_uri=%@",requestToken, encodedRedirectURLString]];
+		authorizeURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://getpocket.com/oauth-tmp/authorize?request_token=%@&redirect_uri=%@",requestToken, encodedRedirectURLString]];
 	}
 	
 #if TARGET_OS_IPHONE
