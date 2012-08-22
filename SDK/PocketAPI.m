@@ -121,8 +121,15 @@ static PocketAPI *sSharedAPI = nil;
 	consumerKey = aConsumerKey;
 	
 	if(!self.URLScheme && consumerKey){
-		NSString *expectedURLScheme = [NSString stringWithFormat:@"pocketapp%lu", (unsigned long)[self appID]];
-		[self setURLScheme:expectedURLScheme];
+		[self setURLScheme:[self URLScheme]];
+	}
+}
+
+-(NSString *)URLScheme{
+	if(!URLScheme){
+		return [NSString stringWithFormat:@"pocketapp%lu", (unsigned long)[self appID]];
+	}else{
+		return URLScheme;
 	}
 }
 
@@ -168,6 +175,7 @@ static PocketAPI *sSharedAPI = nil;
 	[operationQueue release], operationQueue = nil;
 
 	[consumerKey release], consumerKey = nil;
+	[URLScheme release], URLScheme = nil;
 	[userAgent release], userAgent = nil;
 	
 	[super dealloc];
