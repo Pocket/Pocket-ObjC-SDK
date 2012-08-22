@@ -23,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		456D82AF15E46395002779D3 /* PocketAPI+NSOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PocketAPI+NSOperation.h"; sourceTree = "<group>"; };
 		AA37FAF4157570ED00A63400 /* iOS Test App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS Test App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA37FAF8157570ED00A63400 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		AA37FAFA157570ED00A63400 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -122,6 +123,7 @@
 			isa = PBXGroup;
 			children = (
 				AA37FB3315769D5700A63400 /* PocketAPI.h */,
+				456D82AF15E46395002779D3 /* PocketAPI+NSOperation.h */,
 				AA37FB3415769D5700A63400 /* PocketAPI.m */,
 				AA9685EF15BDDED900E9F7F1 /* PocketAPILogin.h */,
 				AA9685F015BDDED900E9F7F1 /* PocketAPILogin.m */,

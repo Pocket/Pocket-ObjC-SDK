@@ -22,6 +22,7 @@
 //
 
 #import "PocketAPI.h"
+#import "PocketAPI+NSOperation.h"
 #import "PocketAPILogin.h"
 #import "PocketAPIOperation.h"
 #import <dispatch/dispatch.h>
@@ -71,7 +72,7 @@ static NSString *kPocketAPICurrentLoginKey = @"PocketAPICurrentLogin";
 
 @implementation PocketAPI
 
-@synthesize consumerKey;
+@synthesize consumerKey, operationQueue;
 
 #pragma mark Public API
 
@@ -140,6 +141,14 @@ static PocketAPI *sSharedAPI = nil;
 		NSLog(@"** The URL scheme you need to register is: %@",expectedURLScheme);
 	}
 #endif
+}
+
+- (void) setOperationQueue:(NSOperationQueue *)anOperationQueue {
+	if (consumerKey) {
+		NSLog(@"ERROR: PocketAPI operationQueue is being set after the consumer key was obtained.\n\tThis is probably a sever error.");
+	}
+	[operationQueue release];
+	operationQueue = [anOperationQueue retain];
 }
 
 -(void)applicationDidEnterBackground:(NSNotification *)notification{
@@ -369,10 +378,6 @@ static PocketAPI *sSharedAPI = nil;
 	[dict setObject:[NSNumber numberWithInteger:(NSInteger)([[NSDate date] timeIntervalSince1970])] forKey:@"time"];
 	
 	return dict;
-}
-
--(NSOperationQueue *)pkt_operationQueue{
-	return operationQueue;
 }
 
 #pragma mark -
