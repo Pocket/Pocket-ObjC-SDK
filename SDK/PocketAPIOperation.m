@@ -45,7 +45,6 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 -(void)pkt_loggedInWithUsername:(NSString *)username token:(NSString *)accessToken;
 -(NSString *)pkt_userAgent;
 -(NSString *)pkt_getToken;
--(NSOperationQueue *)pkt_operationQueue;
 @end
 
 @interface NSDictionary (PocketAdditions)
@@ -253,7 +252,7 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 #pragma mark Handling Re-login
 
 -(void)pocketAPILoggedIn:(PocketAPI *)api{
-	[[self.API pkt_operationQueue] addOperation:[[self copy] autorelease]];
+	[[self.API operationQueue] addOperation:[[self copy] autorelease]];
 }
 
 -(void)pocketAPI:(PocketAPI *)api hadLoginError:(NSError *)theError{

@@ -76,6 +76,8 @@
 @property (nonatomic, copy, readonly) NSString *username;
 @property (nonatomic, assign, readonly, getter=isLoggedIn) BOOL loggedIn;
 
+@property (nonatomic, retain) NSOperationQueue *operationQueue;
+
 +(PocketAPI *)sharedAPI;
 +(BOOL)hasPocketAppInstalled;
 
@@ -116,37 +118,5 @@
 -(void)logout;
 
 -(BOOL)handleOpenURL:(NSURL *)url;
-
-@end
-
-// Advanced use if you use your own NSOperationQueues for handling network traffic.
-// If you don't need tight control over network requests, just use the simple API.
-@interface PocketAPI (NSOperations)
-
--(NSOperation *)saveOperationWithURL:(NSURL *)url
-							delegate:(id<PocketAPIDelegate>)delegate;
-
--(NSOperation *)saveOperationWithURL:(NSURL *)url
-							   title:(NSString *)title
-							delegate:(id<PocketAPIDelegate>)delegate;
-
--(NSOperation *)methodOperationWithAPIMethod:(NSString *)APIMethod
-							   forHTTPMethod:(PocketAPIHTTPMethod)HTTPMethod
-								   arguments:(NSDictionary *)arguments
-									delegate:(id<PocketAPIDelegate>)delegate;
-
-#if NS_BLOCKS_AVAILABLE
--(NSOperation *)saveOperationWithURL:(NSURL *)url
-							 handler:(PocketAPISaveHandler)handler;
-
--(NSOperation *)saveOperationWithURL:(NSURL *)url
-							   title:(NSString *)title
-							 handler:(PocketAPISaveHandler)handler;
-
--(NSOperation *)methodOperationWithAPIMethod:(NSString *)APIMethod
-							   forHTTPMethod:(PocketAPIHTTPMethod)HTTPMethod
-								   arguments:(NSDictionary *)arguments
-									 handler:(PocketAPIResponseHandler)handler;
-#endif
 
 @end
