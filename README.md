@@ -45,7 +45,7 @@ If you have not obtained a consumer key yet, you can register one at [http://get
 
 Once you have the consumer key for the platform you are supporting, the application must register a URL scheme to receive login callbacks. By default, this is "pocketapp" plus your application's ID (which you can find at the beginning of the consumer key before the hyphen). So if your consumer key is 42-abcdef, your app ID is 42, and your URL scheme will be "pocketapp42". 
 
-If there are already URL schemes in your app’s Info.plist, you can either add the new URL scheme, or use an existing scheme by calling `[[PocketAPI sharedAPI] setURLScheme:@”YOUR-URL-SCHEME-HERE”]`. To add a URL Scheme, create a block like the one below in your Info.plist, updating it with the app’s scheme:
+If there are already URL schemes in your app’s Info.plist, you can either add the new URL scheme, or use an existing scheme by calling `[[PocketAPI sharedAPI] setURLScheme:@"YOUR-URL-SCHEME-HERE"]`. To add a URL Scheme, create a block like the one below in your Info.plist, updating it with the app’s scheme:
 
 	▾ URL Types (Array)
 		▾ Item 0 (Dictionary)
