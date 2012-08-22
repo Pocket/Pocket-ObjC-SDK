@@ -39,8 +39,20 @@
 		self.stories = [dataDictionary objectForKey:@"results"];
 		[self.tableView reloadData];
 	}];
+
+	// add an observer to notify when the logged in user changes
+	[[PocketAPI sharedAPI] addObserver:self forKeyPath:@"username" options:0 context:@"PocketAPIUsername"];
 	
 	[self updateNavigationBarTitle];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if (context == @"PocketAPIUsername") {
+        [self updateNavigationBarTitle];
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
 }
 
 - (void)viewDidUnload

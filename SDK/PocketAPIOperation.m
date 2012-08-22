@@ -240,6 +240,11 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 		else if([self.APIMethod isEqualToString:@"authorize"] || [self.APIMethod isEqualToString:@"oauth/authorize"]){
 			NSDictionary *responseDict = [self responseDictionary];
 			NSString *username = [responseDict objectForKey:@"username"];
+
+			if((!username || username == (id)[NSNull null]) && [[[self arguments] objectForKey:@"grant_type"] isEqualToString:@"credentials"]){
+				username = [[self arguments] objectForKey:@"username"];
+			}
+			
 			NSString *token = [responseDict objectForKey:@"access_token"];
 			
 			if((id)username == [NSNull null] && (id)token == [NSNull null]){

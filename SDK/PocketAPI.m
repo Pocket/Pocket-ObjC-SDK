@@ -365,14 +365,28 @@ static PocketAPI *sSharedAPI = nil;
 // Be prepared for this API to return errors at any time, even after you are in production.
 
 -(void)pkt_migrateAccountToAccessTokenWithUsername:(NSString *)username password:(NSString *)password delegate:(id<PocketAPIDelegate>)delegate{
-	[self callAPIMethod:@"oauth/authorize"
-		 withHTTPMethod:PocketAPIHTTPMethodPOST
-			  arguments:[NSDictionary dictionaryWithObjectsAndKeys:
-						 username, @"username",
-						 password, @"password",
-						 @"credentials", @"grant_type",
-						 nil]
-			   delegate:delegate];
+	PocketAPIOperation *operation = [[PocketAPIOperation alloc] init];
+	operation.API = self;
+	operation.delegate = delegate;
+	operation.domain = PocketAPIDomainAuth;
+	operation.HTTPMethod = PocketAPIHTTPMethodPOST;
+	operation.APIMethod = @"authorize";
+	
+	NSString *locale = [[NSLocale preferredLanguages] objectAtIndex:0];
+	NSString *country = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
+	int timeZone = round([[NSTimeZone systemTimeZone] secondsFromGMT] / 60);
+	
+	operation.arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+						   username, @"username",
+						   password, @"password",
+						   @"credentials", @"grant_type",
+						   locale, @"locale",
+						   country, @"country",
+						   [NSString stringWithFormat:@"%i", timeZone], @"timezone",
+						   nil];
+
+	[operationQueue addOperation:operation];
+	[operation release];
 }
 
 #if NS_BLOCKS_AVAILABLE
