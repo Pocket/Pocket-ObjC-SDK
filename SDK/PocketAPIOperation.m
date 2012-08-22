@@ -72,6 +72,12 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 -(void)start{
 	finishedLoading = NO;
 
+	// if there is no access token and this is not an auth method, fail and login
+	if(!self.API.loggedIn && !([APIMethod isEqualToString:@"request"] || [APIMethod isEqualToString:@"authorize"] || [APIMethod isEqualToString:@"oauth/authorize"])){
+		[self connectionFinishedWithStatusCode:401 error:nil];
+		return;
+	}
+
 	NSURLRequest *request = [self pkt_URLRequest];
 	connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
 	[connection scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
