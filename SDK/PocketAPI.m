@@ -182,7 +182,6 @@ static PocketAPI *sSharedAPI = nil;
 }
 
 -(BOOL)handleOpenURL:(NSURL *)url{
-	// TODO implement
 	if([[url scheme] isEqualToString:self.URLScheme]){
 		[self pkt_loadCurrentLoginFromDefaults];
 		[currentLogin convertRequestTokenToAccessToken];
