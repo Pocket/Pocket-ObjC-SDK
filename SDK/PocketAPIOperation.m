@@ -306,6 +306,8 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 	NSURL *url = [NSURL URLWithString:urlString];
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
 	[request setHTTPMethod:PocketAPINameForHTTPMethod(self.HTTPMethod)];
+	[request setTimeoutInterval:20.];
+	[request setCachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData];
 	
 	Class nsJSONSerialization = NSClassFromString(@"NSJSONSerialization");
 
