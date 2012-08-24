@@ -211,7 +211,7 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 			if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:hadLoginError:)]){
 				[self.delegate pocketAPI:self.API hadLoginError:error];
 			}
-		}else if([self.APIMethod isEqualToString:@"send"]){
+		}else if([self.APIMethod isEqualToString:@"add"]){
 			if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:failedToSaveURL:error:)]){
 				[self.delegate pocketAPI:self.API
 						 failedToSaveURL:[NSURL URLWithString:[self.arguments objectForKey:@"url"]]
@@ -225,9 +225,9 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 			if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPILoggedIn:)]){
 				[self.delegate pocketAPILoggedIn:self.API];
 			}
-		}else if([self.APIMethod isEqualToString:@"send"]){
+		}else if([self.APIMethod isEqualToString:@"add"]){
 			if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:savedURL:)]){
-				NSString *urlString = [[[self.arguments objectForKey:@"actions"] objectAtIndex:0] objectForKey:@"url"];
+				NSString *urlString = [self.arguments objectForKey:@"url"];
 				NSURL *url = urlString ? [NSURL URLWithString:urlString] : nil;
 				[self.delegate pocketAPI:self.API
 								savedURL:url];
@@ -361,6 +361,12 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 	[self  didChangeValueForKey:@"isExecuting"];
 
 	[delegate release], delegate = nil;
+}
+
++(NSError *)errorFromXError:(NSString *)xError
+			  withErrorCode:(NSUInteger)errorCode
+			 HTTPStatusCode:(NSUInteger)statusCode{
+	return nil;
 }
 
 #pragma mark NSCopying
