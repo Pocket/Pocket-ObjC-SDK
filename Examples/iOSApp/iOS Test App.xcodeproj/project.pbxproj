@@ -20,6 +20,7 @@
 		AA37FB4415769E8200A63400 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AA37FB04157570ED00A63400 /* main.m */; };
 		AA37FB4B15769F6700A63400 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA37FB4A15769F6700A63400 /* Security.framework */; };
 		AA9685F115BDDED900E9F7F1 /* PocketAPILogin.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9685F015BDDED900E9F7F1 /* PocketAPILogin.m */; };
+		AAD8655815E807BF001F0C0E /* PocketTweetsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAD8655715E807BF001F0C0E /* PocketTweetsViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,8 @@
 		AA5065DA15C1F9AC0081E12A /* PocketCredentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PocketCredentials.h; sourceTree = "<group>"; };
 		AA9685EF15BDDED900E9F7F1 /* PocketAPILogin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PocketAPILogin.h; sourceTree = "<group>"; };
 		AA9685F015BDDED900E9F7F1 /* PocketAPILogin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PocketAPILogin.m; sourceTree = "<group>"; };
+		AAD8655615E807BF001F0C0E /* PocketTweetsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PocketTweetsViewController.h; sourceTree = "<group>"; };
+		AAD8655715E807BF001F0C0E /* PocketTweetsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PocketTweetsViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +103,8 @@
 				AA5065DA15C1F9AC0081E12A /* PocketCredentials.h */,
 				AA37FB07157570ED00A63400 /* PocketAppDelegate.h */,
 				AA37FB08157570ED00A63400 /* PocketAppDelegate.m */,
+				AAD8655615E807BF001F0C0E /* PocketTweetsViewController.h */,
+				AAD8655715E807BF001F0C0E /* PocketTweetsViewController.m */,
 				AA37FB0A157570ED00A63400 /* PocketViewController.h */,
 				AA37FB0B157570ED00A63400 /* PocketViewController.m */,
 				AA37FAFF157570ED00A63400 /* Supporting Files */,
@@ -208,6 +213,7 @@
 				AA37FB4315769E8200A63400 /* PocketViewController.m in Sources */,
 				AA37FB4415769E8200A63400 /* main.m in Sources */,
 				AA9685F115BDDED900E9F7F1 /* PocketAPILogin.m in Sources */,
+				AAD8655815E807BF001F0C0E /* PocketTweetsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

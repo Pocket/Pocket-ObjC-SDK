@@ -23,16 +23,12 @@
 
 #import <UIKit/UIKit.h>
 #import "PocketAPI.h"
+#import "PocketTweetsViewController.h"
 
-@interface PocketViewController : UIViewController <PocketAPIDelegate, UITableViewDelegate, UITableViewDataSource>{
-	NSArray *stories;
-	UITableView *tableView;
+@interface PocketViewController : PocketTweetsViewController <PocketAPIDelegate>{
 	UIView *coverView;
 }
 
-@property (nonatomic, strong) NSArray *stories;
-@property (nonatomic, strong) IBOutlet UINavigationBar *navigationBar;
-@property (nonatomic, strong) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) IBOutlet UIView *coverView;
 
 -(IBAction)login:(id)sender;

@@ -26,21 +26,12 @@
 
 @implementation PocketViewController
 
-@synthesize stories, tableView, coverView, navigationBar;
+@synthesize coverView;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	
-	// Load some stories from Reddit
-	NSURLRequest *request = [[[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"http://search.twitter.com/search.json?q=pocket.co&result_type=recent&include_entities=true"]] autorelease];
-	[NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-		NSDictionary *dataDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-		self.stories = [dataDictionary objectForKey:@"results"];
-		[self.tableView reloadData];
-	}];
-
-	// add an observer to notify when the logged in user changes
 	[[PocketAPI sharedAPI] addObserver:self forKeyPath:@"username" options:0 context:@"PocketAPIUsername"];
 	
 	[self updateNavigationBarTitle];
@@ -53,78 +44,6 @@
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-	return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
-}
-
-#pragma mark UITableView
-
--(NSDictionary *)storyAtIndexPath:(NSIndexPath *)indexPath{
-	return [self.stories objectAtIndex:indexPath.row];
-}
-
--(NSString *)formattedTextForStory:(NSDictionary *)storyData{
-	NSMutableString *text = [[[storyData objectForKey:@"text"] mutableCopy] autorelease];
-	NSArray *urlEntities = [[storyData objectForKey:@"entities"] objectForKey:@"urls"];
-	for(NSDictionary *entity in urlEntities){
-		NSString *tcoURL = [entity objectForKey:@"url"];
-		NSString *displayURL = [entity objectForKey:@"expanded_url"];
-		[text replaceOccurrencesOfString:tcoURL withString:displayURL options:0 range:NSMakeRange(0, text.length)];
-	}
-	return text;
-}
-
--(NSURL *)URLForStory:(NSDictionary *)storyData{
-	NSArray *urlEntities = [[storyData objectForKey:@"entities"] objectForKey:@"urls"];
-	for(NSDictionary *entity in urlEntities){
-		NSString *urlString = [entity objectForKey:@"expanded_url"];
-		if([urlString rangeOfString:@"pocket.co"].location != NSNotFound){
-			return [NSURL URLWithString:urlString];
-		}
-	}
-	return nil;
-}
-
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-	return self.stories.count;
-}
-
--(UITableViewCell *)tableView:(UITableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-	UITableViewCell *cell = [aTableView dequeueReusableCellWithIdentifier:@"StoryCell"];
-	if(!cell){
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"StoryCell"] autorelease];
-	}
-	
-	NSDictionary *storyData = [self storyAtIndexPath:indexPath];
-	cell.textLabel.text = [self formattedTextForStory:storyData];
-	cell.detailTextLabel.text = [[self URLForStory:storyData] absoluteString];
-	
-	return cell;
-}
-
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-	NSDictionary *story = [self storyAtIndexPath:indexPath];
-	NSURL *url = [self URLForStory:story];
-	if(!url) return;
-	
-	NSString *title = [self formattedTextForStory:story];
-	NSLog(@"Saving URL: %@", url);
-	[[PocketAPI sharedAPI] saveURL:url withTitle:title handler:^(PocketAPI *api, NSURL *url, NSError *error) {
-		if(error){
-			NSLog(@"URL %@ could not be saved to %@'s Pocket account. Reason: %@", url, api.username, error.localizedDescription);
-		}else{
-			NSLog(@"URL %@ was saved to %@'s Pocket account", url, api.username);
-		}
-	}];
 }
 
 #pragma mark Pocket APIs
@@ -167,6 +86,22 @@
 	}
 	
 	self.navigationBar.topItem.title = title;
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+	NSDictionary *story = [self storyAtIndexPath:indexPath];
+	NSURL *url = [self URLForStory:story];
+	if(!url) return;
+	
+	NSString *title = [self formattedTextForStory:story];
+	NSLog(@"Saving URL: %@", url);
+	[[PocketAPI sharedAPI] saveURL:url withTitle:title handler:^(PocketAPI *api, NSURL *url, NSError *error) {
+		if(error){
+			NSLog(@"URL %@ could not be saved to %@'s Pocket account. Reason: %@", url, api.username, error.localizedDescription);
+		}else{
+			NSLog(@"URL %@ was saved to %@'s Pocket account", url, api.username);
+		}
+	}];
 }
 
 #pragma mark Pocket API callbacks
