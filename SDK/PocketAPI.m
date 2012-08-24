@@ -28,7 +28,7 @@
 #import <dispatch/dispatch.h>
 #include <sys/sysctl.h>
 
-#define POCKET_SDK_VERSION @"0.9"
+#define POCKET_SDK_VERSION @"0.9.1"
 
 static NSString *kPocketAPICurrentLoginKey = @"PocketAPICurrentLogin";
 
