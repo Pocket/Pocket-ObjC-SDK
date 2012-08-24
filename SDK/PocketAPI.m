@@ -233,20 +233,14 @@ static PocketAPI *sSharedAPI = nil;
 -(NSOperation *)saveOperationWithURL:(NSURL *)url title:(NSString *)title delegate:(id<PocketAPIDelegate>)delegate{
 	if(!url || !url.absoluteString) return nil;
 	
-	NSMutableDictionary *actionParameters = [NSMutableDictionary dictionary];
-	[actionParameters setObject:url.absoluteString forKey:@"url"];
-	
-	if(title){
-		[actionParameters setObject:title forKey:@"title"];
-	}
-	
-	NSDictionary *action = [self pkt_actionDictionaryWithName:@"add" parameters:actionParameters];
-	NSArray *actionsArray = [NSArray arrayWithObject:action];
-	
-	return [self methodOperationWithAPIMethod:@"send"
+	NSNumber *timestamp = [NSNumber numberWithInteger:(NSInteger)([[NSDate date] timeIntervalSince1970])];
+
+	return [self methodOperationWithAPIMethod:@"add"
 								forHTTPMethod:PocketAPIHTTPMethodPOST
 									arguments:[NSDictionary dictionaryWithObjectsAndKeys:
-											   actionsArray, @"actions",
+											   timestamp, @"time",
+											   url.absoluteString, @"url",
+											   title, @"title",
 											   nil]
 									 delegate:delegate];
 }
