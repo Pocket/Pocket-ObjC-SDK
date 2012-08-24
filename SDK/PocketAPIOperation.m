@@ -313,10 +313,10 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 
 	if(self.HTTPMethod != PocketAPIHTTPMethodGET && requestArgs.count > 0){
 		if(nsJSONSerialization != nil){
-			[request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+			[request addValue:@"application/json; charset=UTF-8" forHTTPHeaderField:@"Content-Type"];
 			[request setHTTPBody:[nsJSONSerialization dataWithJSONObject:requestArgs options:0 error:nil]];
 		}else{
-			[request addValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+			[request addValue:@"application/x-www-form-urlencoded; charset=UTF-8" forHTTPHeaderField:@"Content-Type"];
 			[request setHTTPBody:[[requestArgs pkt_URLEncodedFormString] dataUsingEncoding:NSUTF8StringEncoding]];
 		}
 	}
