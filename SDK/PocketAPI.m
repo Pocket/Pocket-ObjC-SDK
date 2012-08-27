@@ -106,6 +106,13 @@ static PocketAPI *sSharedAPI = nil;
 		if(sSharedAPI != self){
 			self.consumerKey = [sSharedAPI consumerKey];
 		}
+
+#if TARGET_OS_MAC && !TARGET_IPHONE_SIMULATOR
+		[[NSAppleEventManager sharedAppleEventManager] setEventHandler:self
+														   andSelector:@selector(receivedURL:withReplyEvent:)
+														 forEventClass:kInternetEventClass
+															andEventID:kAEGetURL];
+#endif
 		
 		// register for lifecycle notifications
 #if TARGET_OS_IPHONE
@@ -114,6 +121,16 @@ static PocketAPI *sSharedAPI = nil;
 	}
 	return self;
 }
+
+#if TARGET_OS_MAC && !TARGET_IPHONE_SIMULATOR
+- (void) receivedURL: (NSAppleEventDescriptor*)event withReplyEvent: (NSAppleEventDescriptor*)replyEvent
+{
+	NSString *urlString = [[event paramDescriptorForKeyword:keyDirectObject] stringValue];
+	if(urlString){
+		[self handleOpenURL:[NSURL URLWithString:urlString]];
+	}
+}
+#endif
 
 -(void)setConsumerKey:(NSString *)aConsumerKey{
 	[aConsumerKey retain];
