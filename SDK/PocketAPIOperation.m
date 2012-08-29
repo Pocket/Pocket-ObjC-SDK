@@ -74,7 +74,7 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 
 	// if there is no access token and this is not an auth method, fail and login
 	if(!self.API.loggedIn && !([APIMethod isEqualToString:@"request"] || [APIMethod isEqualToString:@"authorize"] || [APIMethod isEqualToString:@"oauth/authorize"])){
-		[self connectionFinishedWithStatusCode:401 error:nil];
+		[self connectionFinishedWithError:[NSError errorWithDomain:PocketSDKErrorDomain code:401 userInfo:nil]];
 		return;
 	}
 
@@ -170,25 +170,40 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)theError{
-	NSUInteger statusCode = [self.response statusCode];
-	[self connectionFinishedWithStatusCode:statusCode error:theError];
+	[self connectionFinishedWithError:theError];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection{
-	NSUInteger statusCode = [self.response statusCode];
-	[self connectionFinishedWithStatusCode:statusCode error:nil];
+	[self connectionFinishedWithError:nil];
 }
 
--(void)connectionFinishedWithStatusCode:(NSUInteger)statusCode error:(NSError *)theError{
+-(void)connectionFinishedWithError:(NSError *)theError{
+	NSInteger statusCode = (self.response ? self.response.statusCode : theError.code);
 	BOOL needsToRelogin = statusCode == 401;
 	BOOL needsToLogout = statusCode == 403;
-	if(!theError && statusCode >= 400){
-		theError = [NSError errorWithDomain:@"PocketSDK"
-									   code:statusCode
-								   userInfo:nil];
+
+	NSInteger errorCode = [[self.response.allHeaderFields objectForKey:@"X-Error-Code"] intValue];
+	NSString *errorDescription = [self.response.allHeaderFields objectForKey:@"X-Error"];
+	NSError *pocketError = nil;
+	if(errorCode){
+		pocketError = [NSError errorWithDomain:PocketSDKErrorDomain
+										  code:errorCode
+									  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+												errorDescription, @"localizedDescription",
+												theError, @"HTTPError",
+												nil]];
+	}else if(theError){
+		pocketError = [NSError errorWithDomain:PocketSDKErrorDomain
+										  code:statusCode
+									  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+												errorDescription, @"localizedDescription",
+												theError, @"HTTPError",
+												nil]];
+	}else if(needsToLogout){
+		pocketError = [NSError errorWithDomain:PocketSDKErrorDomain code:statusCode userInfo:nil];
 	}
 	
-	error = [theError retain];
+	error = [pocketError retain];
 	
 	if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:receivedResponse:forAPIMethod:error:)]){
 		[self.delegate pocketAPI:self.API receivedResponse:[self responseDictionary] forAPIMethod:self.APIMethod error:theError];
@@ -206,7 +221,7 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 		[self.API logout];
 	}
 	
-	if(theError){
+	if(error){
 		if([self.APIMethod rangeOfString:@"auth"].location != NSNotFound){
 			if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:hadLoginError:)]){
 				[self.delegate pocketAPI:self.API hadLoginError:error];
@@ -267,7 +282,7 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 }
 
 -(void)pocketAPI:(PocketAPI *)api hadLoginError:(NSError *)theError{
-	[self connectionFinishedWithStatusCode:403 error:theError];
+	[self connectionFinishedWithError:theError];
 }
 
 #pragma mark Private APIs

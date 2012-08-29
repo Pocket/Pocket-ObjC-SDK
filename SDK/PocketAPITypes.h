@@ -39,3 +39,27 @@ typedef enum {
 	PocketAPIHTTPMethodPUT,
 	PocketAPIHTTPMethodDELETE
 } PocketAPIHTTPMethod;
+
+typedef enum {
+	//OAuth Errors
+	PocketAPIErrorNoAccessToken = 107,
+	PocketAPIErrorNoConsumerKey = 136,
+	PocketAPIErrorInvalidRequest = 130,
+	PocketAPIErrorNoChangesMade = 131,
+	PocketAPIErrorConsumerKeyAccessTokenMismatch = 137,
+	PocketAPIErrorEndpointForbidden = 150,
+	PocketAPIErrorEndpointRequiresAdditionalPermissions = 151,
+	
+	// Signup Errors
+	PocketAPIErrorSignupInvalidUsernameAndPassword  = 100,
+	PocketAPIErrorSignupInvalidUsername = 101,
+	PocketAPIErrorSignupInvalidPassword = 102,
+	PocketAPIErrorSignupInvalidEmail    = 103,
+	PocketAPIErrorSignupUsernameTaken = 104,
+	PocketAPIErrorSignupEmailTaken = 105,
+
+	// Server Problems
+	PocketAPIErrorServerMaintenance = 199
+} PocketAPIError;
+
+#define PocketSDKErrorDomain @"PocketSDKErrorDomain"

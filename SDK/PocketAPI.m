@@ -107,7 +107,7 @@ static PocketAPI *sSharedAPI = nil;
 			self.consumerKey = [sSharedAPI consumerKey];
 		}
 
-#if TARGET_OS_MAC && !TARGET_IPHONE_SIMULATOR
+#if !TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR
 		[[NSAppleEventManager sharedAppleEventManager] setEventHandler:self
 														   andSelector:@selector(receivedURL:withReplyEvent:)
 														 forEventClass:kInternetEventClass
@@ -122,7 +122,7 @@ static PocketAPI *sSharedAPI = nil;
 	return self;
 }
 
-#if TARGET_OS_MAC && !TARGET_IPHONE_SIMULATOR
+#if !TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR
 - (void) receivedURL: (NSAppleEventDescriptor*)event withReplyEvent: (NSAppleEventDescriptor*)replyEvent
 {
 	NSString *urlString = [[event paramDescriptorForKeyword:keyDirectObject] stringValue];
@@ -543,13 +543,13 @@ static PocketAPI *sSharedAPI = nil;
 
 -(void)pkt_setKeychainValue:(id)value forKey:(NSString *)key{
 	if(value){
-#if TARGET_IPHONE_SIMULATOR
+#if TARGET_IPHONE_SIMULATOR || (TARGET_OS_MAC && DEBUG)
 		[[NSUserDefaults standardUserDefaults] setObject:value forKey:[NSString stringWithFormat:@"%@.%@", PocketGlobalKeychainServiceName, key]];
 #else
 		[SFHFKeychainUtils storeUsername:key andPassword:value forServiceName:PocketGlobalKeychainServiceName updateExisting:YES error:nil];
 #endif
 	}else{
-#if TARGET_IPHONE_SIMULATOR
+#if TARGET_IPHONE_SIMULATOR || (TARGET_OS_MAC && DEBUG)
 		[[NSUserDefaults standardUserDefaults] removeObjectForKey:[NSString stringWithFormat:@"%@.%@", PocketGlobalKeychainServiceName, key]];
 #else
 		[SFHFKeychainUtils deleteItemForUsername:key andServiceName:PocketGlobalKeychainServiceName error:nil];
@@ -558,7 +558,7 @@ static PocketAPI *sSharedAPI = nil;
 }
 
 -(id)pkt_getKeychainValueForKey:(NSString *)key{
-#if TARGET_IPHONE_SIMULATOR
+#if TARGET_IPHONE_SIMULATOR || (TARGET_OS_MAC && DEBUG)
 	return [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"%@.%@", PocketGlobalKeychainServiceName, key]];
 #else
 	return [SFHFKeychainUtils getPasswordForUsername:key andServiceName:PocketGlobalKeychainServiceName error:nil];
