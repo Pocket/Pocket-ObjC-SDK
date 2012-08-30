@@ -26,7 +26,8 @@
 #import "PocketAPILogin.h"
 #import "PocketAPIOperation.h"
 #import <dispatch/dispatch.h>
-#include <sys/sysctl.h>
+#import <sys/sysctl.h>
+#import <CommonCrypto/CommonDigest.h>
 
 #define POCKET_SDK_VERSION @"0.9.1"
 
@@ -35,6 +36,9 @@ static NSString *kPocketAPICurrentLoginKey = @"PocketAPICurrentLogin";
 #pragma mark Private APIs (please do not call these directly)
 
 @interface PocketAPI  ()
+
++(NSString *)pkt_hashForConsumerKey:(NSString *)consumerKey accessToken:(NSString *)accessToken;
+
 -(NSString *)pkt_getToken;
 
 -(void)pkt_loadCurrentLoginFromDefaults;
@@ -98,6 +102,20 @@ static PocketAPI *sSharedAPI = nil;
 #endif
 }
 
++(NSString *)pkt_hashForConsumerKey:(NSString *)consumerKey accessToken:(NSString *)accessToken{
+	NSString *string = [NSString stringWithFormat:@"%@-%@",consumerKey, accessToken];
+	NSData *stringData = [string dataUsingEncoding:NSUTF8StringEncoding];
+	
+	uint8_t digest[CC_SHA1_DIGEST_LENGTH];
+	OSStatus status = CC_SHA1(stringData.bytes, stringData.length, digest);
+
+	NSMutableString *hashString = [NSMutableString stringWithCapacity:CC_SHA1_DIGEST_LENGTH];
+	for(int i=0; i < CC_SHA1_DIGEST_LENGTH; i++){
+		[hashString appendFormat:@"%02x",digest[i]];
+	}
+	return hashString;
+}
+
 -(id)init{
 	if(self = [super init]){
 		operationQueue = [[NSOperationQueue alloc] init];
@@ -139,6 +157,17 @@ static PocketAPI *sSharedAPI = nil;
 	
 	if(!self.URLScheme && consumerKey){
 		[self setURLScheme:[self URLScheme]];
+	}
+	
+	// ensure the access token stored matches the consumer key that generated it
+	if(self.isLoggedIn){
+		NSString *existingHash = [self pkt_getKeychainValueForKey:@"tokenDigest"];
+		NSString *currentHash = [[self class] pkt_hashForConsumerKey:self.consumerKey accessToken:[self pkt_getToken]];
+		
+		if(![existingHash isEqualToString:currentHash]){
+			NSLog(@"*** ERROR: The access token that exists does not match the consumer key. The user has been logged out.");
+			[self logout];
+		}
 	}
 }
 
@@ -325,6 +354,7 @@ static PocketAPI *sSharedAPI = nil;
 	
 	[self pkt_setKeychainValue:username forKey:@"username"];
 	[self pkt_setKeychainValue:token forKey:@"token"];
+	[self pkt_setKeychainValue:[[self class] pkt_hashForConsumerKey:self.consumerKey accessToken:token] forKey:@"tokenDigest"];
 	
 	[self  didChangeValueForKey:@"isLoggedIn"];
 	[self  didChangeValueForKey:@"username"];
@@ -336,6 +366,7 @@ static PocketAPI *sSharedAPI = nil;
 	
 	[self pkt_setKeychainValue:nil forKey:@"username"];
 	[self pkt_setKeychainValue:nil forKey:@"token"];
+	[self pkt_setKeychainValue:nil forKey:@"tokenDigest"];
 	
 	[self  didChangeValueForKey:@"isLoggedIn"];
 	[self  didChangeValueForKey:@"username"];
