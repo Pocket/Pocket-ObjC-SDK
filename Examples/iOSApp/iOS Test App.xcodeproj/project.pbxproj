@@ -125,7 +125,7 @@
 				AA37FB3915769D5700A63400 /* SFHFKeychainUtils.m */,
 			);
 			name = "Pocket SDK";
-			path = ../SDK;
+			path = ../../SDK;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
