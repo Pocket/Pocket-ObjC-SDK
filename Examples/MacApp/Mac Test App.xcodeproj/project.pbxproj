@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4545405A15F6B4B900731E40 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4545405915F6B4B900731E40 /* SenTestingKit.framework */; };
+		4545405B15F6B4B900731E40 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADD9BAD1576B18400D7D20C /* Cocoa.framework */; };
+		4545406115F6B4B900731E40 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4545405F15F6B4B900731E40 /* InfoPlist.strings */; };
+		4545406415F6B4B900731E40 /* pocketsdk_osx_unit_tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4545406315F6B4B900731E40 /* pocketsdk_osx_unit_tests.m */; };
+		4545406D15F6CC2D00731E40 /* PocketTestStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 4545406C15F6CC2D00731E40 /* PocketTestStatus.m */; };
 		AADD9BAE1576B18400D7D20C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADD9BAD1576B18400D7D20C /* Cocoa.framework */; };
 		AADD9BB81576B18400D7D20C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AADD9BB61576B18400D7D20C /* InfoPlist.strings */; };
 		AADD9BBA1576B18400D7D20C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AADD9BB91576B18400D7D20C /* main.m */; };
@@ -19,7 +24,26 @@
 		AADD9BDF1576B25400D7D20C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADD9BDE1576B25400D7D20C /* Security.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		4545406915F6B8E700731E40 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AADD9BA01576B18400D7D20C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AADD9BA81576B18400D7D20C;
+			remoteInfo = PocketSDK;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		4545405815F6B4B900731E40 /* pocketsdk.osx.unit-tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "pocketsdk.osx.unit-tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4545405915F6B4B900731E40 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		4545405E15F6B4B900731E40 /* pocketsdk.osx.unit-tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "pocketsdk.osx.unit-tests-Info.plist"; sourceTree = "<group>"; };
+		4545406015F6B4B900731E40 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		4545406215F6B4B900731E40 /* pocketsdk_osx_unit_tests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pocketsdk_osx_unit_tests.h; sourceTree = "<group>"; };
+		4545406315F6B4B900731E40 /* pocketsdk_osx_unit_tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = pocketsdk_osx_unit_tests.m; sourceTree = "<group>"; };
+		4545406515F6B4B900731E40 /* pocketsdk.osx.unit-tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "pocketsdk.osx.unit-tests-Prefix.pch"; sourceTree = "<group>"; };
+		4545406B15F6CC2D00731E40 /* PocketTestStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PocketTestStatus.h; sourceTree = "<group>"; };
+		4545406C15F6CC2D00731E40 /* PocketTestStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PocketTestStatus.m; sourceTree = "<group>"; };
 		AADD9BA91576B18400D7D20C /* PocketSDK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PocketSDK.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AADD9BAD1576B18400D7D20C /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		AADD9BB01576B18400D7D20C /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -44,6 +68,15 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		4545405415F6B4B900731E40 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4545405A15F6B4B900731E40 /* SenTestingKit.framework in Frameworks */,
+				4545405B15F6B4B900731E40 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AADD9BA61576B18400D7D20C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -56,11 +89,34 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4545405C15F6B4B900731E40 /* pocketsdk.osx.unit-tests */ = {
+			isa = PBXGroup;
+			children = (
+				4545406215F6B4B900731E40 /* pocketsdk_osx_unit_tests.h */,
+				4545406315F6B4B900731E40 /* pocketsdk_osx_unit_tests.m */,
+				4545405D15F6B4B900731E40 /* Supporting Files */,
+				4545406B15F6CC2D00731E40 /* PocketTestStatus.h */,
+				4545406C15F6CC2D00731E40 /* PocketTestStatus.m */,
+			);
+			path = "pocketsdk.osx.unit-tests";
+			sourceTree = "<group>";
+		};
+		4545405D15F6B4B900731E40 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4545405E15F6B4B900731E40 /* pocketsdk.osx.unit-tests-Info.plist */,
+				4545405F15F6B4B900731E40 /* InfoPlist.strings */,
+				4545406515F6B4B900731E40 /* pocketsdk.osx.unit-tests-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		AADD9B9E1576B18400D7D20C = {
 			isa = PBXGroup;
 			children = (
 				AADD9BD31576B23500D7D20C /* Pocket SDK */,
 				AADD9BB31576B18400D7D20C /* Test App */,
+				4545405C15F6B4B900731E40 /* pocketsdk.osx.unit-tests */,
 				AADD9BAC1576B18400D7D20C /* Frameworks */,
 				AADD9BAA1576B18400D7D20C /* Products */,
 			);
@@ -70,6 +126,7 @@
 			isa = PBXGroup;
 			children = (
 				AADD9BA91576B18400D7D20C /* PocketSDK.app */,
+				4545405815F6B4B900731E40 /* pocketsdk.osx.unit-tests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -79,6 +136,7 @@
 			children = (
 				AADD9BDE1576B25400D7D20C /* Security.framework */,
 				AADD9BAD1576B18400D7D20C /* Cocoa.framework */,
+				4545405915F6B4B900731E40 /* SenTestingKit.framework */,
 				AADD9BAF1576B18400D7D20C /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -135,6 +193,25 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		4545405715F6B4B900731E40 /* pocketsdk.osx.unit-tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4545406615F6B4B900731E40 /* Build configuration list for PBXNativeTarget "pocketsdk.osx.unit-tests" */;
+			buildPhases = (
+				4545405315F6B4B900731E40 /* Sources */,
+				4545405415F6B4B900731E40 /* Frameworks */,
+				4545405515F6B4B900731E40 /* Resources */,
+				4545405615F6B4B900731E40 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4545406A15F6B8E700731E40 /* PBXTargetDependency */,
+			);
+			name = "pocketsdk.osx.unit-tests";
+			productName = "pocketsdk.osx.unit-tests";
+			productReference = 4545405815F6B4B900731E40 /* pocketsdk.osx.unit-tests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
 		AADD9BA81576B18400D7D20C /* PocketSDK */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AADD9BC71576B18400D7D20C /* Build configuration list for PBXNativeTarget "PocketSDK" */;
@@ -175,11 +252,20 @@
 			projectRoot = "";
 			targets = (
 				AADD9BA81576B18400D7D20C /* PocketSDK */,
+				4545405715F6B4B900731E40 /* pocketsdk.osx.unit-tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		4545405515F6B4B900731E40 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4545406115F6B4B900731E40 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AADD9BA71576B18400D7D20C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -192,7 +278,32 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		4545405615F6B4B900731E40 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		4545405315F6B4B900731E40 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4545406415F6B4B900731E40 /* pocketsdk_osx_unit_tests.m in Sources */,
+				4545406D15F6CC2D00731E40 /* PocketTestStatus.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AADD9BA51576B18400D7D20C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -207,7 +318,23 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		4545406A15F6B8E700731E40 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AADD9BA81576B18400D7D20C /* PocketSDK */;
+			targetProxy = 4545406915F6B8E700731E40 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
+		4545405F15F6B4B900731E40 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4545406015F6B4B900731E40 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		AADD9BB61576B18400D7D20C /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -235,6 +362,44 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		4545406715F6B4B900731E40 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/PocketSDK.app/Contents/MacOS/PocketSDK";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "pocketsdk.osx.unit-tests/pocketsdk.osx.unit-tests-Prefix.pch";
+				INFOPLIST_FILE = "pocketsdk.osx.unit-tests/pocketsdk.osx.unit-tests-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		4545406815F6B4B900731E40 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/PocketSDK.app/Contents/MacOS/PocketSDK";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "pocketsdk.osx.unit-tests/pocketsdk.osx.unit-tests-Prefix.pch";
+				INFOPLIST_FILE = "pocketsdk.osx.unit-tests/pocketsdk.osx.unit-tests-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
 		AADD9BC51576B18400D7D20C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -305,6 +470,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		4545406615F6B4B900731E40 /* Build configuration list for PBXNativeTarget "pocketsdk.osx.unit-tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4545406715F6B4B900731E40 /* Debug */,
+				4545406815F6B4B900731E40 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		AADD9BA31576B18400D7D20C /* Build configuration list for PBXProject "Mac Test App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

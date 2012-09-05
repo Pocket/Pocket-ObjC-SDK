@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'pocketsdk.osx.unit-tests' target in the 'pocketsdk.osx.unit-tests' project
+//
+
+#ifdef __OBJC__
+	#import <Cocoa/Cocoa.h>
+#endif
