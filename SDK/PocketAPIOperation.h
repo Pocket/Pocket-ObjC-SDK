@@ -25,6 +25,13 @@
 #import "PocketAPI.h"
 #import "PocketAPITypes.h"
 
+@interface NSDictionary (PocketAdditions)
+
+-(NSString *)pkt_URLEncodedFormString;
++(NSDictionary *)pkt_dictionaryByParsingURLEncodedFormString:(NSString *)formString;
+
+@end
+
 @interface PocketAPIOperation : NSOperation <NSURLConnectionDelegate, NSCopying, PocketAPIDelegate> {
 	PocketAPI *API;
 	id<PocketAPIDelegate> delegate;

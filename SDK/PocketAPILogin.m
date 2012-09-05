@@ -34,6 +34,13 @@
 	return self;
 }
 
+-(void)_setRequestToken:(NSString *)aRequestToken{
+	[self willChangeValueForKey:@"requestToken"];
+	[requestToken autorelease];
+	requestToken = [aRequestToken copy];
+	[self  didChangeValueForKey:@"requestToken"];
+}
+
 -(void)dealloc{
 	[operationQueue waitUntilAllOperationsAreFinished];
 	[operationQueue release], operationQueue = nil;
@@ -116,10 +123,7 @@
 #pragma mark Pocket API Delegate
 
 -(void)pocketAPI:(PocketAPI *)api receivedRequestToken:(NSString *)aRequestToken{
-	[self willChangeValueForKey:@"requestToken"];
-	[requestToken autorelease];
-	requestToken = [aRequestToken copy];
-	[self  didChangeValueForKey:@"requestToken"];
+	[self _setRequestToken:aRequestToken];
 	
 	NSURL *authorizeURL = nil;
 	NSString *encodedRedirectURLString = [PocketAPIOperation encodeForURL:[[self redirectURL] absoluteString]];

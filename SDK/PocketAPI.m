@@ -55,6 +55,10 @@ static NSString *kPocketAPICurrentLoginKey = @"PocketAPICurrentLogin";
 
 @end
 
+@interface PocketAPILogin (Private)
+-(void)_setRequestToken:(NSString *)requestToken;
+@end
+
 #if NS_BLOCKS_AVAILABLE
 @interface PocketAPIBlockDelegate : NSObject <PocketAPIDelegate>{
 	PocketAPILoginHandler loginHandler;
@@ -107,7 +111,7 @@ static PocketAPI *sSharedAPI = nil;
 	NSData *stringData = [string dataUsingEncoding:NSUTF8StringEncoding];
 	
 	uint8_t digest[CC_SHA1_DIGEST_LENGTH];
-	OSStatus status = CC_SHA1(stringData.bytes, stringData.length, digest);
+	CC_SHA1(stringData.bytes, stringData.length, digest);
 
 	NSMutableString *hashString = [NSMutableString stringWithCapacity:CC_SHA1_DIGEST_LENGTH];
 	for(int i=0; i < CC_SHA1_DIGEST_LENGTH; i++){
@@ -229,7 +233,16 @@ static PocketAPI *sSharedAPI = nil;
 
 -(BOOL)handleOpenURL:(NSURL *)url{
 	if([[url scheme] isEqualToString:self.URLScheme]){
-		[self pkt_loadCurrentLoginFromDefaults];
+		NSDictionary *urlQuery = [NSDictionary pkt_dictionaryByParsingURLEncodedFormString:[url query]];
+
+		if([[url path] isEqualToString:@"/reverse"] && [urlQuery objectForKey:@"code"]){
+			NSString *requestToken = [urlQuery objectForKey:@"code"];
+
+			currentLogin = [[PocketAPILogin alloc] initWithAPI:self delegate:nil];
+			[currentLogin _setRequestToken:requestToken];
+		}else{
+			[self pkt_loadCurrentLoginFromDefaults];
+		}
 		[currentLogin convertRequestTokenToAccessToken];
 		return YES;
 	}

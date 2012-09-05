@@ -47,13 +47,6 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 -(NSString *)pkt_getToken;
 @end
 
-@interface NSDictionary (PocketAdditions)
-
--(NSString *)pkt_URLEncodedFormString;
-+(NSDictionary *)pkt_dictionaryByParsingURLEncodedFormString:(NSString *)formString;
-
-@end
-
 @interface PocketAPIOperation ()
 
 -(void)pkt_connectionFinishedLoading;
