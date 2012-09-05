@@ -376,6 +376,7 @@
 				INFOPLIST_FILE = "pocketsdk.osx.unit-tests/pocketsdk.osx.unit-tests-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_AFTER_BUILD = YES;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
 			};
@@ -395,6 +396,7 @@
 				INFOPLIST_FILE = "pocketsdk.osx.unit-tests/pocketsdk.osx.unit-tests-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_AFTER_BUILD = YES;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
 			};
