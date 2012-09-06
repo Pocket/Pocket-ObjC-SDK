@@ -215,7 +215,7 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 	}
 	
 	if(error){
-		if([self.APIMethod rangeOfString:@"auth"].location != NSNotFound){
+		if([self.APIMethod rangeOfString:@"auth"].location != NSNotFound || [self.APIMethod isEqualToString:@"request"]){
 			if(self.delegate && [self.delegate respondsToSelector:@selector(pocketAPI:hadLoginError:)]){
 				[self.delegate pocketAPI:self.API hadLoginError:error];
 			}

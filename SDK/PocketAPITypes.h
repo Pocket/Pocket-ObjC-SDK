@@ -42,8 +42,9 @@ typedef enum {
 
 typedef enum {
 	//OAuth Errors
+	PocketAPIErrorNoConsumerKey = 138,
 	PocketAPIErrorNoAccessToken = 107,
-	PocketAPIErrorNoConsumerKey = 136,
+	PocketAPIErrorInvalidConsumerKey = 136,
 	PocketAPIErrorInvalidRequest = 130,
 	PocketAPIErrorNoChangesMade = 131,
 	PocketAPIErrorConsumerKeyAccessTokenMismatch = 137,
