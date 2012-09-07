@@ -29,7 +29,7 @@
 #import <sys/sysctl.h>
 #import <CommonCrypto/CommonDigest.h>
 
-#define POCKET_SDK_VERSION @"0.9.1"
+#define POCKET_SDK_VERSION @"0.9.2"
 
 static NSString *kPocketAPICurrentLoginKey = @"PocketAPICurrentLogin";
 

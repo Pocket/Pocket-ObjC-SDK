@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.readitlater.${PRODUCT_NAME:rfc1034identifier}</string>
+	<string>com.ideashower.readitlater.oauthtest</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -41,7 +41,7 @@
 			<string>com.readitlater</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>pocket-test-app</string>
+				<string>pocketapp2695</string>
 			</array>
 		</dict>
 	</array>
