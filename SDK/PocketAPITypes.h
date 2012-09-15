@@ -22,6 +22,12 @@
 -(void)pocketAPI:(PocketAPI *)api receivedResponse:(NSDictionary *)response forAPIMethod:(NSString *)APIMethod error:(NSError *)error;
 @end
 
+@protocol PocketAPISupport <NSObject>
+
+-(BOOL)shouldAllowPocketReverseAuth;
+
+@end
+
 #if NS_BLOCKS_AVAILABLE
 typedef void(^PocketAPILoginHandler)(PocketAPI *api, NSError *error);
 typedef void(^PocketAPISaveHandler)(PocketAPI *api, NSURL *url, NSError *error);

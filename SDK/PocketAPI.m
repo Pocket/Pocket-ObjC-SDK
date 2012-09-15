@@ -41,7 +41,7 @@ static NSString *kPocketAPICurrentLoginKey = @"PocketAPICurrentLogin";
 
 -(NSString *)pkt_getToken;
 
--(void)pkt_loadCurrentLoginFromDefaults;
+-(PocketAPILogin *)pkt_loadCurrentLoginFromDefaults;
 -(void)pkt_saveCurrentLoginToDefaults;
 
 -(NSDictionary *)pkt_actionDictionaryWithName:(NSString *)name parameters:(NSDictionary *)params;
@@ -111,7 +111,7 @@ static PocketAPI *sSharedAPI = nil;
 	NSData *stringData = [string dataUsingEncoding:NSUTF8StringEncoding];
 	
 	uint8_t digest[CC_SHA1_DIGEST_LENGTH];
-	CC_SHA1(stringData.bytes, stringData.length, digest);
+	CC_SHA1(stringData.bytes, (unsigned int)(stringData.length), digest);
 
 	NSMutableString *hashString = [NSMutableString stringWithCapacity:CC_SHA1_DIGEST_LENGTH];
 	for(int i=0; i < CC_SHA1_DIGEST_LENGTH; i++){
@@ -235,14 +235,34 @@ static PocketAPI *sSharedAPI = nil;
 	if([[url scheme] isEqualToString:self.URLScheme]){
 		NSDictionary *urlQuery = [NSDictionary pkt_dictionaryByParsingURLEncodedFormString:[url query]];
 
+		PocketAPILogin *login = nil;
 		if([[url path] isEqualToString:@"/reverse"] && [urlQuery objectForKey:@"code"]){
-			NSString *requestToken = [urlQuery objectForKey:@"code"];
-
-			currentLogin = [[PocketAPILogin alloc] initWithAPI:self delegate:nil];
-			[currentLogin _setRequestToken:requestToken];
-		}else{
-			[self pkt_loadCurrentLoginFromDefaults];
+			BOOL allowReverseLogin = YES;
+#if TARGET_OS_MAC && !TARGET_IPHONE_SIMULATOR
+			id<PocketAPISupport> appDelegate = (id<PocketAPISupport>)[[NSApplication sharedApplication] delegate];
+#else
+			id<PocketAPISupport> appDelegate = (id<PocketAPISupport>)[[UIApplication sharedApplication] delegate];
+#endif
+			
+			if(appDelegate && [appDelegate respondsToSelector:@selector(shouldAllowPocketReverseAuth)]){
+				if(![appDelegate shouldAllowPocketReverseAuth]){
+					allowReverseLogin = NO;
+				}
+			}
+			
+			if(allowReverseLogin){
+				NSString *requestToken = [urlQuery objectForKey:@"code"];
+				login = [[[PocketAPILogin alloc] initWithAPI:self delegate:nil] autorelease];
+				[login _setRequestToken:requestToken];
+			}
 		}
+		
+		if(!login){
+			login = [self pkt_loadCurrentLoginFromDefaults];
+		}
+		
+		currentLogin = [login retain];
+		
 		[currentLogin convertRequestTokenToAccessToken];
 		return YES;
 	}
@@ -385,20 +405,24 @@ static PocketAPI *sSharedAPI = nil;
 	[self  didChangeValueForKey:@"username"];
 }
 
--(void)pkt_loadCurrentLoginFromDefaults{
+-(PocketAPILogin *)pkt_loadCurrentLoginFromDefaults{
 	NSUserDefaults *defaults = [[NSUserDefaults alloc] init];
 	
-	if(!currentLogin){
+	PocketAPILogin *login = nil;
+	if(!login){
 		NSData *data = [defaults dataForKey:kPocketAPICurrentLoginKey];
 		if(data){
-			PocketAPILogin *newLogin = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-			currentLogin = [newLogin retain];
+			login = [NSKeyedUnarchiver unarchiveObjectWithData:data];
 		}
 	}
 
-	[defaults removeObjectForKey:kPocketAPICurrentLoginKey];
-	[defaults synchronize];
-	[defaults release];
+	if(login){
+		[defaults removeObjectForKey:kPocketAPICurrentLoginKey];
+		[defaults synchronize];
+		[defaults release];
+	}
+	
+	return login;
 }
 
 -(void)pkt_saveCurrentLoginToDefaults{
