@@ -9,9 +9,24 @@
 #import "PocketAPILogin.h"
 #import "PocketAPIOperation.h"
 
+const NSString *PocketAPIErrorDomain = @"PocketAPIErrorDomain";
+
+const NSString *PocketAPILoginStartedNotification = @"PocketAPILoginStartedNotification";
+const NSString *PocketAPILoginFinishedNotification = @"PocketAPILoginFinishedNotification";
+const NSString *PocketAPILoginFailedNotification = @"PocketAPILoginFailedNotification";
+
 @interface PocketAPIOperation (Private)
 
 -(void)pkt_setBaseURLPath:(NSString *)baseURLPath;
+
+@end
+
+@interface PocketAPILogin (Private)
+
+-(void)loginDidStart;
+-(void)loginDidFinish:(BOOL)success;
+
+-(void)_setReverseAuth:(BOOL)isReverseAuth;
 
 @end
 
@@ -39,6 +54,18 @@
 	[requestToken autorelease];
 	requestToken = [aRequestToken copy];
 	[self  didChangeValueForKey:@"requestToken"];
+}
+
+-(void)_setReverseAuth:(BOOL)isReverseAuth{
+	reverseAuth = isReverseAuth;
+}
+
+-(void)openURL:(NSURL *)url{
+#if TARGET_OS_IPHONE
+	[[UIApplication sharedApplication] openURL:url];
+#else
+	[[NSWorkspace sharedWorkspace] openURL:url];
+#endif
 }
 
 -(void)dealloc{
@@ -81,6 +108,8 @@
 }
 
 -(void)fetchRequestToken{
+	[self loginDidStart];
+	
 	PocketAPIOperation *operation = [[PocketAPIOperation alloc] init];
 	operation.API = API;
 	operation.delegate = self;
@@ -133,11 +162,7 @@
 		authorizeURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://getpocket.com/auth/authorize?request_token=%@&redirect_uri=%@",requestToken, encodedRedirectURLString]];
 	}
 	
-#if TARGET_OS_IPHONE
-	[[UIApplication sharedApplication] openURL:authorizeURL];
-#else
-	[[NSWorkspace sharedWorkspace] openURL:authorizeURL];
-#endif
+	[self openURL:authorizeURL];
 }
 
 -(void)pocketAPILoggedIn:(PocketAPI *)api{
@@ -145,6 +170,8 @@
 		[delegate pocketAPILoggedIn:self.API];
 	}
 	
+	[self loginDidFinish:YES];
+
 	[delegate release], delegate = nil;
 }
 
@@ -153,7 +180,39 @@
 		[delegate pocketAPI:api hadLoginError:error];
 	}
 	
+	[self loginDidFinish:NO];
+	
 	[delegate release], delegate = nil;
+}
+
+-(void)loginDidStart{
+	if(!didStart){
+		didStart = YES;
+		
+		if(delegate && [delegate respondsToSelector:@selector(pocketAPIDidStartLogin:)]){
+			[delegate pocketAPIDidStartLogin:self.API];
+		}
+		
+		[[NSNotificationCenter defaultCenter] postNotificationName:(NSString *)PocketAPILoginStartedNotification object:nil];
+	}
+}
+
+-(void)loginDidFinish:(BOOL)success{
+	if(!didFinish){
+		didFinish = YES;
+		
+		if(delegate && [delegate respondsToSelector:@selector(pocketAPIDidFinishLogin:)]){
+			[delegate pocketAPIDidFinishLogin:self.API];
+		}
+		
+		[[NSNotificationCenter defaultCenter] postNotificationName:(NSString *)PocketAPILoginFinishedNotification object:nil];
+		
+		if(reverseAuth && [PocketAPI hasPocketAppInstalled]){
+			NSString *responseURLString = [NSString stringWithFormat:@"%@://reverse/%@/%i",[PocketAPI pocketAppURLScheme], (success ? @"success" : @"failed"), (int)[self.API appID]];
+			NSURL *responseURL = [NSURL URLWithString:responseURLString];
+			[self openURL:responseURL];
+		}
+	}
 }
 
 @end

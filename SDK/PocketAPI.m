@@ -57,6 +57,7 @@ static NSString *kPocketAPICurrentLoginKey = @"PocketAPICurrentLogin";
 
 @interface PocketAPILogin (Private)
 -(void)_setRequestToken:(NSString *)requestToken;
+-(void)_setReverseAuth:(BOOL)isReverseAuth;
 @end
 
 #if NS_BLOCKS_AVAILABLE
@@ -98,9 +99,13 @@ static PocketAPI *sSharedAPI = nil;
     return(sSharedAPI);
 }
 
++(NSString *)pocketAppURLScheme{
+	return @"pocket-oauth-v1";
+}
+
 +(BOOL)hasPocketAppInstalled{
 #if TARGET_OS_IPHONE
-	return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"pocket-oauth-v1:"]];
+	return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:[[self pocketAppURLScheme] stringByAppendingString:@":"]]];
 #else
 	return NO;
 #endif
@@ -254,6 +259,7 @@ static PocketAPI *sSharedAPI = nil;
 				NSString *requestToken = [urlQuery objectForKey:@"code"];
 				login = [[[PocketAPILogin alloc] initWithAPI:self delegate:nil] autorelease];
 				[login _setRequestToken:requestToken];
+				[login _setReverseAuth:YES];
 			}
 		}
 		
@@ -419,8 +425,9 @@ static PocketAPI *sSharedAPI = nil;
 	if(login){
 		[defaults removeObjectForKey:kPocketAPICurrentLoginKey];
 		[defaults synchronize];
-		[defaults release];
 	}
+
+	[defaults release];
 	
 	return login;
 }

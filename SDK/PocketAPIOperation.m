@@ -67,7 +67,7 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 
 	// if there is no access token and this is not an auth method, fail and login
 	if(!self.API.loggedIn && !([APIMethod isEqualToString:@"request"] || [APIMethod isEqualToString:@"authorize"] || [APIMethod isEqualToString:@"oauth/authorize"])){
-		[self connectionFinishedWithError:[NSError errorWithDomain:PocketSDKErrorDomain code:401 userInfo:nil]];
+		[self connectionFinishedWithError:[NSError errorWithDomain:(NSString *)PocketAPIErrorDomain code:401 userInfo:nil]];
 		return;
 	}
 
@@ -120,11 +120,11 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 -(NSString *)baseURLPath{
 	switch (self.domain) {
 		case PocketAPIDomainAuth:
-			return @"getpocket.com/v3/oauth";
+			return @"web.steve.dev/v3/oauth";
 			break;
 		case PocketAPIDomainDefault:
 		default:
-			return @"getpocket.com/v3";
+			return @"web.steve.dev/v3";
 			break;
 	}
 }
@@ -179,21 +179,21 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 	NSString *errorDescription = [self.response.allHeaderFields objectForKey:@"X-Error"];
 	NSError *pocketError = nil;
 	if(errorCode){
-		pocketError = [NSError errorWithDomain:PocketSDKErrorDomain
+		pocketError = [NSError errorWithDomain:(NSString *)PocketAPIErrorDomain
 										  code:errorCode
 									  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
 												errorDescription, @"localizedDescription",
 												theError, @"HTTPError",
 												nil]];
 	}else if(theError){
-		pocketError = [NSError errorWithDomain:PocketSDKErrorDomain
+		pocketError = [NSError errorWithDomain:(NSString *)PocketAPIErrorDomain
 										  code:statusCode
 									  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
 												errorDescription, @"localizedDescription",
 												theError, @"HTTPError",
 												nil]];
 	}else if(needsToLogout){
-		pocketError = [NSError errorWithDomain:PocketSDKErrorDomain code:statusCode userInfo:nil];
+		pocketError = [NSError errorWithDomain:(NSString *)PocketAPIErrorDomain code:statusCode userInfo:nil];
 	}
 	
 	error = [pocketError retain];
@@ -295,7 +295,7 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 }
 
 -(NSMutableURLRequest *)pkt_URLRequest{
-	NSString *urlString = [NSString stringWithFormat:@"https://%@/%@", self.baseURLPath, self.APIMethod];
+	NSString *urlString = [NSString stringWithFormat:@"http://%@/%@", self.baseURLPath, self.APIMethod];
 	
 	NSDictionary *requestArgs = [self pkt_requestArguments];
 

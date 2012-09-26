@@ -66,6 +66,7 @@
 
 +(PocketAPI *)sharedAPI;
 +(BOOL)hasPocketAppInstalled;
++(NSString *)pocketAppURLScheme;
 
 -(void)setConsumerKey:(NSString *)consumerKey;
 

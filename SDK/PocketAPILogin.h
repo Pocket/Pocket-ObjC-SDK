@@ -20,6 +20,11 @@
 	NSOperationQueue *operationQueue;
 	
 	id<PocketAPIDelegate> delegate;
+	
+	BOOL didStart;
+	BOOL didFinish;
+	
+	BOOL reverseAuth;
 }
 
 -(id)initWithAPI:(PocketAPI *)api delegate:(id<PocketAPIDelegate>)delegate;

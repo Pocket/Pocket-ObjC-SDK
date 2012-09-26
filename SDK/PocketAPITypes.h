@@ -13,6 +13,7 @@
 @protocol PocketAPIDelegate <NSObject>
 @optional
 -(void)pocketAPI:(PocketAPI *)api receivedRequestToken:(NSString *)requestToken;
+
 -(void)pocketAPILoggedIn:(PocketAPI *)api;
 -(void)pocketAPI:(PocketAPI *)api hadLoginError:(NSError *)error;
 
@@ -20,6 +21,9 @@
 -(void)pocketAPI:(PocketAPI *)api failedToSaveURL:(NSURL *)url error:(NSError *)error;
 
 -(void)pocketAPI:(PocketAPI *)api receivedResponse:(NSDictionary *)response forAPIMethod:(NSString *)APIMethod error:(NSError *)error;
+
+-(void)pocketAPIDidStartLogin:(PocketAPI *)api;
+-(void)pocketAPIDidFinishLogin:(PocketAPI *)api;
 @end
 
 @protocol PocketAPISupport <NSObject>
@@ -69,4 +73,7 @@ typedef enum {
 	PocketAPIErrorServerMaintenance = 199
 } PocketAPIError;
 
-#define PocketSDKErrorDomain @"PocketSDKErrorDomain"
+extern const NSString *PocketAPIErrorDomain;
+
+extern const NSString *PocketAPILoginStartedNotification;
+extern const NSString *PocketAPILoginFinishedNotification;
