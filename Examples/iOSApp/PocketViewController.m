@@ -37,6 +37,20 @@
 	[self updateNavigationBarTitle];
 }
 
+-(void)viewDidAppear:(BOOL)animated{
+	[super viewDidAppear:animated];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showLoginCoverView) name:(NSString *)PocketAPILoginStartedNotification  object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideLoginCoverView) name:(NSString *)PocketAPILoginFinishedNotification object:nil];
+}
+
+-(void)viewDidDisappear:(BOOL)animated{
+	[super viewDidDisappear:animated];
+	
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:(NSString *)PocketAPILoginStartedNotification object:nil];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:(NSString *)PocketAPILoginFinishedNotification object:nil];
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if (context == @"PocketAPIUsername") {
@@ -46,12 +60,18 @@
     }
 }
 
+-(void)showLoginCoverView{
+	[self.coverView setHidden:NO];
+}
+
+-(void)hideLoginCoverView{
+	[self.coverView setHidden:YES];
+}
+
 #pragma mark Pocket APIs
 
 -(IBAction)login:(id)sender{
-	[self.coverView setHidden:NO];
 	[[PocketAPI sharedAPI] loginWithHandler:^(PocketAPI *api, NSError *error) {
-		[self.coverView setHidden:YES];
 		NSLog(@"API logged in with error %@: %@", error, api.username);
 
 		UIAlertView *alertView = nil;
