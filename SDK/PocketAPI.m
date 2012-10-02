@@ -407,12 +407,12 @@ static PocketAPI *sSharedAPI = nil;
 	[self pkt_setKeychainValue:nil forKey:@"token"];
 	[self pkt_setKeychainValue:nil forKey:@"tokenDigest"];
 	
-	[self  didChangeValueForKey:@"isLoggedIn"];
-	[self  didChangeValueForKey:@"username"];
+	[self didChangeValueForKey:@"isLoggedIn"];
+	[self didChangeValueForKey:@"username"];
 }
 
 -(PocketAPILogin *)pkt_loadCurrentLoginFromDefaults{
-	NSUserDefaults *defaults = [[NSUserDefaults alloc] init];
+	NSUserDefaults *defaults = [[[NSUserDefaults alloc] init] autorelease];
 	
 	PocketAPILogin *login = nil;
 	if(!login){
@@ -431,8 +431,6 @@ static PocketAPI *sSharedAPI = nil;
 		[defaults removeObjectForKey:kPocketAPICurrentLoginKey];
 		[defaults synchronize];
 	}
-
-	[defaults release];
 	
 	return login;
 }
