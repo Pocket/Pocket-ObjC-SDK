@@ -417,8 +417,13 @@ static PocketAPI *sSharedAPI = nil;
 	PocketAPILogin *login = nil;
 	if(!login){
 		NSData *data = [defaults dataForKey:kPocketAPICurrentLoginKey];
-		if(data){
-			login = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+		if (data) {
+			@try {
+				login = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+			}
+			@catch (NSException *exception) {
+				NSLog(@"Encountered an exception reading Pocket login: %@", [exception description]);
+			}
 		}
 	}
 
