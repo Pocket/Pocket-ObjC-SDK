@@ -295,7 +295,7 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 }
 
 -(NSMutableURLRequest *)pkt_URLRequest{
-	NSString *urlString = [NSString stringWithFormat:@"http://%@/%@", self.baseURLPath, self.APIMethod];
+	NSString *urlString = [NSString stringWithFormat:@"https://%@/%@", self.baseURLPath, self.APIMethod];
 	
 	NSDictionary *requestArgs = [self pkt_requestArguments];
 
