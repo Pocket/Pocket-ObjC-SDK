@@ -27,7 +27,7 @@
 @end
 
 @protocol PocketAPISupport <NSObject>
-
+@optional
 -(BOOL)shouldAllowPocketReverseAuth;
 
 @end
