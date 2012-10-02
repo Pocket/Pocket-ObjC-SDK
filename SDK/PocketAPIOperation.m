@@ -120,11 +120,11 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 -(NSString *)baseURLPath{
 	switch (self.domain) {
 		case PocketAPIDomainAuth:
-			return @"web.steve.dev/v3/oauth";
+			return @"getpocket.com/v3/oauth";
 			break;
 		case PocketAPIDomainDefault:
 		default:
-			return @"web.steve.dev/v3";
+			return @"getpocket.com/v3";
 			break;
 	}
 }
