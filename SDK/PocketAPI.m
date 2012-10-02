@@ -243,10 +243,10 @@ static PocketAPI *sSharedAPI = nil;
 		PocketAPILogin *login = nil;
 		if([[url path] isEqualToString:@"/reverse"] && [urlQuery objectForKey:@"code"]){
 			BOOL allowReverseLogin = YES;
-#if TARGET_OS_MAC && !TARGET_IPHONE_SIMULATOR
-			id<PocketAPISupport> appDelegate = (id<PocketAPISupport>)[[NSApplication sharedApplication] delegate];
-#else
+#if TARGET_OS_IPHONE
 			id<PocketAPISupport> appDelegate = (id<PocketAPISupport>)[[UIApplication sharedApplication] delegate];
+#else
+			id<PocketAPISupport> appDelegate = (id<PocketAPISupport>)[[NSApplication sharedApplication] delegate];
 #endif
 			
 			if(appDelegate && [appDelegate respondsToSelector:@selector(shouldAllowPocketReverseAuth)]){
