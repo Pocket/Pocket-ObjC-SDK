@@ -226,6 +226,8 @@ static PocketAPI *sSharedAPI = nil;
 }
 
 -(void)dealloc{
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	
 	[operationQueue waitUntilAllOperationsAreFinished];
 	[operationQueue release], operationQueue = nil;
 
