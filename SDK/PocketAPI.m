@@ -623,13 +623,13 @@ static PocketAPI *sSharedAPI = nil;
 
 -(void)pkt_setKeychainValue:(id)value forKey:(NSString *)key{
 	if(value){
-#if TARGET_IPHONE_SIMULATOR || (TARGET_OS_MAC && DEBUG)
+#if TARGET_IPHONE_SIMULATOR || (DEBUG && !TARGET_OS_IPHONE)
 		[[NSUserDefaults standardUserDefaults] setObject:value forKey:[NSString stringWithFormat:@"%@.%@", PocketGlobalKeychainServiceName, key]];
 #else
 		[SFHFKeychainUtils storeUsername:key andPassword:value forServiceName:PocketGlobalKeychainServiceName updateExisting:YES error:nil];
 #endif
 	}else{
-#if TARGET_IPHONE_SIMULATOR || (TARGET_OS_MAC && DEBUG)
+#if TARGET_IPHONE_SIMULATOR || (DEBUG && !TARGET_OS_IPHONE)
 		[[NSUserDefaults standardUserDefaults] removeObjectForKey:[NSString stringWithFormat:@"%@.%@", PocketGlobalKeychainServiceName, key]];
 #else
 		[SFHFKeychainUtils deleteItemForUsername:key andServiceName:PocketGlobalKeychainServiceName error:nil];
@@ -638,7 +638,7 @@ static PocketAPI *sSharedAPI = nil;
 }
 
 -(id)pkt_getKeychainValueForKey:(NSString *)key{
-#if TARGET_IPHONE_SIMULATOR || (TARGET_OS_MAC && DEBUG)
+#if TARGET_IPHONE_SIMULATOR || (DEBUG && !TARGET_OS_IPHONE)
 	return [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"%@.%@", PocketGlobalKeychainServiceName, key]];
 #else
 	return [SFHFKeychainUtils getPasswordForUsername:key andServiceName:PocketGlobalKeychainServiceName error:nil];
