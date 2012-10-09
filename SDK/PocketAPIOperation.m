@@ -174,9 +174,15 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 	NSInteger statusCode = (self.response ? self.response.statusCode : theError.code);
 	BOOL needsToRelogin = statusCode == 401;
 	BOOL needsToLogout = statusCode == 403;
+	BOOL serverError = statusCode >= 500;
 
 	NSInteger errorCode = [[self.response.allHeaderFields objectForKey:@"X-Error-Code"] intValue];
 	NSString *errorDescription = [self.response.allHeaderFields objectForKey:@"X-Error"];
+	if(serverError){
+		errorCode = PocketAPIErrorServerMaintenance;
+		errorDescription = @"There was a server error.";
+	}
+
 	NSError *pocketError = nil;
 	if(errorCode){
 		pocketError = [NSError errorWithDomain:(NSString *)PocketAPIErrorDomain
