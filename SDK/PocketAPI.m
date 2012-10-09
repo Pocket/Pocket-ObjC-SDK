@@ -164,7 +164,7 @@ static PocketAPI *sSharedAPI = nil;
 	[consumerKey release];
 	consumerKey = aConsumerKey;
 	
-	if(!self.URLScheme && consumerKey){
+	if(!URLScheme && consumerKey){
 		[self setURLScheme:[self URLScheme]];
 	}
 	
@@ -242,7 +242,7 @@ static PocketAPI *sSharedAPI = nil;
 	if([[url scheme] isEqualToString:self.URLScheme]){
 		NSDictionary *urlQuery = [NSDictionary pkt_dictionaryByParsingURLEncodedFormString:[url query]];
 
-		PocketAPILogin *login = nil;
+		PocketAPILogin *login = currentLogin;
 		if([[url path] isEqualToString:@"/reverse"] && [urlQuery objectForKey:@"code"]){
 			BOOL allowReverseLogin = YES;
 #if TARGET_OS_IPHONE
@@ -312,27 +312,43 @@ static PocketAPI *sSharedAPI = nil;
 	[operationQueue addOperation:[self saveOperationWithURL:url title:title delegate:delegate]];
 }
 
+-(void)saveURL:(NSURL *)url withTitle:(NSString *)title tweetID:(NSString *)tweetID delegate:(id<PocketAPIDelegate>)delegate{
+	[operationQueue addOperation:[self saveOperationWithURL:url title:title tweetID:tweetID delegate:delegate]];
+}
+
 -(void)callAPIMethod:(NSString *)APIMethod withHTTPMethod:(PocketAPIHTTPMethod)HTTPMethod arguments:(NSDictionary *)arguments delegate:(id<PocketAPIDelegate>)delegate{
 	[operationQueue addOperation:[self methodOperationWithAPIMethod:APIMethod forHTTPMethod:HTTPMethod arguments:arguments delegate:delegate]];
 }
 
--(NSOperation *)saveOperationWithURL:(NSURL *)url title:(NSString *)title delegate:(id<PocketAPIDelegate>)delegate{
+-(NSOperation *)saveOperationWithURL:(NSURL *)url title:(NSString *)title tweetID:(NSString *)tweetID delegate:(id<PocketAPIDelegate>)delegate{
 	if(!url || !url.absoluteString) return nil;
 	
 	NSNumber *timestamp = [NSNumber numberWithInteger:(NSInteger)([[NSDate date] timeIntervalSince1970])];
-
+	
+	NSMutableDictionary *arguments = [NSMutableDictionary dictionary];
+	[arguments setObject:timestamp forKey:@"time"];
+	[arguments setObject:url.absoluteString forKey:@"url"];
+	
+	if(title){
+		[arguments setObject:title forKey:@"title"];
+	}
+	
+	if(tweetID && ![tweetID isEqualToString:@""] && ![tweetID isEqualToString:@"0"]){
+		[arguments setObject:tweetID forKey:@"ref_id"];
+	}
+	
 	return [self methodOperationWithAPIMethod:@"add"
 								forHTTPMethod:PocketAPIHTTPMethodPOST
-									arguments:[NSDictionary dictionaryWithObjectsAndKeys:
-											   timestamp, @"time",
-											   url.absoluteString, @"url",
-											   title, @"title",
-											   nil]
+									arguments:[[arguments copy] autorelease]
 									 delegate:delegate];
 }
 
+-(NSOperation *)saveOperationWithURL:(NSURL *)url title:(NSString *)title delegate:(id<PocketAPIDelegate>)delegate{
+	return [self saveOperationWithURL:url title:title tweetID:nil delegate:delegate];
+}
+
 -(NSOperation *)saveOperationWithURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate{
-	return [self saveOperationWithURL:url title:nil delegate:delegate];
+	return [self saveOperationWithURL:url title:nil tweetID:nil delegate:delegate];
 }
 
 -(NSOperation *)methodOperationWithAPIMethod:(NSString *)APIMethod forHTTPMethod:(PocketAPIHTTPMethod)HTTPMethod arguments:(NSDictionary *)arguments delegate:(id<PocketAPIDelegate>)delegate{
@@ -359,6 +375,10 @@ static PocketAPI *sSharedAPI = nil;
 	[self saveURL:url withTitle:title delegate:[PocketAPIBlockDelegate delegateWithSaveHandler:handler]];
 }
 
+-(void)saveURL:(NSURL *)url withTitle:(NSString *)title tweetID:(NSString *)tweetID handler:(PocketAPISaveHandler)handler{
+	[self saveURL:url withTitle:title tweetID:tweetID delegate:[PocketAPIBlockDelegate delegateWithSaveHandler:handler]];
+}
+
 -(void)callAPIMethod:(NSString *)APIMethod withHTTPMethod:(PocketAPIHTTPMethod)HTTPMethod arguments:(NSDictionary *)arguments handler:(PocketAPIResponseHandler)handler{
 	[self callAPIMethod:APIMethod withHTTPMethod:HTTPMethod arguments:arguments delegate:[PocketAPIBlockDelegate delegateWithResponseHandler:handler]];
 }
@@ -371,6 +391,10 @@ static PocketAPI *sSharedAPI = nil;
 
 -(NSOperation *)saveOperationWithURL:(NSURL *)url title:(NSString *)title handler:(PocketAPISaveHandler)handler{
 	return [self saveOperationWithURL:url title:title delegate:[PocketAPIBlockDelegate delegateWithSaveHandler:handler]];
+}
+
+-(NSOperation *)saveOperationWithURL:(NSURL *)url title:(NSString *)title tweetID:(NSString *)tweetID handler:(PocketAPISaveHandler)handler{
+	return [self saveOperationWithURL:url title:title tweetID:tweetID delegate:[PocketAPIBlockDelegate delegateWithSaveHandler:handler]];
 }
 
 -(NSOperation *)methodOperationWithAPIMethod:(NSString *)APIMethod forHTTPMethod:(PocketAPIHTTPMethod)httpMethod arguments:(NSDictionary *)arguments handler:(PocketAPIResponseHandler)handler{
@@ -710,3 +734,7 @@ static PocketAPI *sSharedAPI = nil;
 
 @end
 #endif
+
+NSString *PocketAPITweetID(unsigned long long tweetID){
+	return [NSString stringWithFormat:@"%llu", tweetID];
+}

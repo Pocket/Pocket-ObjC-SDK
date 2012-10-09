@@ -80,6 +80,10 @@
 -(void)saveURL:(NSURL *)url
 	 withTitle:(NSString *)title
 	  delegate:(id<PocketAPIDelegate>)delegate;
+-(void)saveURL:(NSURL *)url
+	 withTitle:(NSString *)title
+	   tweetID:(NSString *)tweetID
+	  delegate:(id<PocketAPIDelegate>)delegate;
 
 -(void)callAPIMethod:(NSString *)apiMethod
 	  withHTTPMethod:(PocketAPIHTTPMethod)HTTPMethod
@@ -94,6 +98,10 @@
 -(void)saveURL:(NSURL *)url
 	 withTitle:(NSString *)title
 	   handler:(PocketAPISaveHandler)handler;
+-(void)saveURL:(NSURL *)url
+	 withTitle:(NSString *)title
+	   tweetID:(NSString *)tweetID
+	   handler:(PocketAPISaveHandler)handler;
 
 -(void)callAPIMethod:(NSString *)apiMethod
 	  withHTTPMethod:(PocketAPIHTTPMethod)HTTPMethod
@@ -106,3 +114,5 @@
 -(BOOL)handleOpenURL:(NSURL *)url;
 
 @end
+
+extern NSString *PocketAPITweetID(unsigned long long tweetID);

@@ -35,6 +35,11 @@
 							   title:(NSString *)title
 							delegate:(id<PocketAPIDelegate>)delegate;
 
+-(NSOperation *)saveOperationWithURL:(NSURL *)url
+							   title:(NSString *)title
+							 tweetID:(NSString *)tweetID
+							delegate:(id<PocketAPIDelegate>)delegate;
+
 -(NSOperation *)methodOperationWithAPIMethod:(NSString *)APIMethod
 							   forHTTPMethod:(PocketAPIHTTPMethod)HTTPMethod
 								   arguments:(NSDictionary *)arguments
@@ -46,6 +51,11 @@
 
 -(NSOperation *)saveOperationWithURL:(NSURL *)url
 							   title:(NSString *)title
+							 handler:(PocketAPISaveHandler)handler;
+
+-(NSOperation *)saveOperationWithURL:(NSURL *)url
+							   title:(NSString *)title
+							 tweetID:(NSString *)tweetID
 							 handler:(PocketAPISaveHandler)handler;
 
 -(NSOperation *)methodOperationWithAPIMethod:(NSString *)APIMethod
