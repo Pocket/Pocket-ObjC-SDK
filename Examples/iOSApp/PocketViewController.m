@@ -113,9 +113,11 @@
 	NSURL *url = [self URLForStory:story];
 	if(!url) return;
 	
+	unsigned long long tweetID = [(NSNumber *)[story objectForKey:@"id"] unsignedLongLongValue];
+	
 	NSString *title = [self formattedTextForStory:story];
 	NSLog(@"Saving URL: %@", url);
-	[[PocketAPI sharedAPI] saveURL:url withTitle:title handler:^(PocketAPI *api, NSURL *url, NSError *error) {
+	[[PocketAPI sharedAPI] saveURL:url withTitle:title tweetID:PocketAPITweetID(tweetID) handler:^(PocketAPI *api, NSURL *url, NSError *error) {
 		if(error){
 			NSLog(@"URL %@ could not be saved to %@'s Pocket account. Reason: %@", url, api.username, error.localizedDescription);
 		}else{
