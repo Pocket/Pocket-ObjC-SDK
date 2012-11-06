@@ -37,7 +37,7 @@
 {
 	[_window release];
 	[_viewController release];
-    [super dealloc];
+	[super dealloc];
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -45,12 +45,12 @@
 	// if you wish to register a custom URL scheme, do so here (before setConsumerKey:)
 	[[PocketAPI sharedAPI] setConsumerKey:CONSUMER_KEY];
 	
-    self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
-    // Override point for customization after application launch.
+	self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+	// Override point for customization after application launch.
 	self.viewController = [[[PocketViewController alloc] initWithNibName:@"PocketViewController" bundle:nil] autorelease];
 	self.window.rootViewController = self.viewController;
-    [self.window makeKeyAndVisible];
-    return YES;
+	[self.window makeKeyAndVisible];
+	return YES;
 }
 
 -(BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation{

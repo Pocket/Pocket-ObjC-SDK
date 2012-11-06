@@ -89,14 +89,14 @@ static PocketAPI *sSharedAPI = nil;
 
 +(PocketAPI *)sharedAPI{
 	@synchronized(self)
-    {
-        if (sSharedAPI == NULL){
-            sSharedAPI = [self alloc];
+	{
+		if (sSharedAPI == NULL){
+			sSharedAPI = [self alloc];
 			[sSharedAPI init];
 		}
-    }
+	}
 	
-    return(sSharedAPI);
+	return(sSharedAPI);
 }
 
 +(NSString *)pocketAppURLScheme{
@@ -559,64 +559,64 @@ static PocketAPI *sSharedAPI = nil;
 #if TARGET_OS_IPHONE
 	size_t size;
 	const char *typeSpecifier = "hw.machine";
-    sysctlbyname(typeSpecifier, NULL, &size, NULL, 0);
-    
-    char *answer = malloc(size);
-    sysctlbyname(typeSpecifier, answer, &size, NULL, 0);
-    
-    NSString *platform = [NSString stringWithCString:answer encoding: NSUTF8StringEncoding];
-    free(answer);
+	sysctlbyname(typeSpecifier, NULL, &size, NULL, 0);
+	
+	char *answer = malloc(size);
+	sysctlbyname(typeSpecifier, answer, &size, NULL, 0);
+	
+	NSString *platform = [NSString stringWithCString:answer encoding: NSUTF8StringEncoding];
+	free(answer);
 
 	if ([platform isEqualToString:@"iFPGA"])        return @"iFPGA";
 	
-    // iPhone
-    if ([platform isEqualToString:@"iPhone1,1"])    return @"iPhone 1G";
-    if ([platform isEqualToString:@"iPhone1,2"])    return @"iPhone 3G";
-    if ([platform hasPrefix:@"iPhone2"])            return @"iPhone 3GS";
-    if ([platform hasPrefix:@"iPhone3"])            return @"iPhone 4";
-    if ([platform hasPrefix:@"iPhone4"])            return @"iPhone 4S";
-    
-    // iPod
-    if ([platform hasPrefix:@"iPod1"])             return @"iPod touch 1G";
-    if ([platform hasPrefix:@"iPod2"])              return @"iPod touch 2G";
-    if ([platform hasPrefix:@"iPod3"])              return @"iPod touch 3G";
-    if ([platform hasPrefix:@"iPod4"])              return @"iPod touch 4G";
+	// iPhone
+	if ([platform isEqualToString:@"iPhone1,1"])    return @"iPhone 1G";
+	if ([platform isEqualToString:@"iPhone1,2"])    return @"iPhone 3G";
+	if ([platform hasPrefix:@"iPhone2"])            return @"iPhone 3GS";
+	if ([platform hasPrefix:@"iPhone3"])            return @"iPhone 4";
+	if ([platform hasPrefix:@"iPhone4"])            return @"iPhone 4S";
 	
-    // iPad
-    if ([platform hasPrefix:@"iPad1"])              return @"iPad 1G";
-    if ([platform hasPrefix:@"iPad2"])              return @"iPad 2G";
-    if ([platform hasPrefix:@"iPad3"])              return @"iPad 3G";
-    
-    // Apple TV
-    if ([platform hasPrefix:@"AppleTV2"])           return @"Apple TV 2G";
+	// iPod
+	if ([platform hasPrefix:@"iPod1"])              return @"iPod touch 1G";
+	if ([platform hasPrefix:@"iPod2"])              return @"iPod touch 2G";
+	if ([platform hasPrefix:@"iPod3"])              return @"iPod touch 3G";
+	if ([platform hasPrefix:@"iPod4"])              return @"iPod touch 4G";
 	
-    if ([platform hasPrefix:@"iPhone"])             return @"Unknown iPhone";
-    if ([platform hasPrefix:@"iPod"])               return @"Unknown iPod touch";
-    if ([platform hasPrefix:@"iPad"])               return @"Unknown iPad";
-    
+	// iPad
+	if ([platform hasPrefix:@"iPad1"])              return @"iPad 1G";
+	if ([platform hasPrefix:@"iPad2"])              return @"iPad 2G";
+	if ([platform hasPrefix:@"iPad3"])              return @"iPad 3G";
+	
+	// Apple TV
+	if ([platform hasPrefix:@"AppleTV2"])           return @"Apple TV 2G";
+	
+	if ([platform hasPrefix:@"iPhone"])             return @"Unknown iPhone";
+	if ([platform hasPrefix:@"iPod"])               return @"Unknown iPod touch";
+	if ([platform hasPrefix:@"iPad"])               return @"Unknown iPad";
+	
 	// Simulator thanks Jordan Breeding
-    if ([platform hasSuffix:@"86"] || [platform isEqual:@"x86_64"]) return UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"iPad Simulator" : @"iPhone Simulator";
+	if ([platform hasSuffix:@"86"] || [platform isEqual:@"x86_64"]) return UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @"iPad Simulator" : @"iPhone Simulator";
 	
-    return @"Unknown iOS Device";
+	return @"Unknown iOS Device";
 #else
 	NSString *modelIdentifier = @"";
-    
-    int nameSuccess = 0;
-    const int SUCCEEDED = 0;
-    
-    size_t size = 0;
-    nameSuccess = sysctlbyname("hw.machine", NULL, &size, NULL, 0);
-    if (nameSuccess != SUCCEEDED || size == 0)
-        return modelIdentifier;
-    
-    char *machine = malloc(size);
-    nameSuccess = sysctlbyname("hw.machine", machine, &size, NULL, 0);
-    if (nameSuccess == SUCCEEDED) {
-        modelIdentifier = [NSString stringWithUTF8String:machine];
-    }
-    free(machine);
-    
-    return modelIdentifier;
+	
+	int nameSuccess = 0;
+	const int SUCCEEDED = 0;
+	
+	size_t size = 0;
+	nameSuccess = sysctlbyname("hw.machine", NULL, &size, NULL, 0);
+	if (nameSuccess != SUCCEEDED || size == 0)
+		return modelIdentifier;
+	
+	char *machine = malloc(size);
+	nameSuccess = sysctlbyname("hw.machine", machine, &size, NULL, 0);
+	if (nameSuccess == SUCCEEDED) {
+		modelIdentifier = [NSString stringWithUTF8String:machine];
+	}
+	free(machine);
+	
+	return modelIdentifier;
 #endif
 }
 
@@ -625,12 +625,12 @@ static PocketAPI *sSharedAPI = nil;
 	return [[UIDevice currentDevice] systemVersion];
 #else
 	SInt32 versionMajor = 0;
-    SInt32 versionMinor = 0;
-    SInt32 versionBugFix = 0;
-    Gestalt( gestaltSystemVersionMajor, &versionMajor );
-    Gestalt( gestaltSystemVersionMinor, &versionMinor );
-    Gestalt( gestaltSystemVersionBugFix, &versionBugFix );
-    return [NSString stringWithFormat:@"%d.%d.%d", versionMajor, versionMinor, versionBugFix];
+	SInt32 versionMinor = 0;
+	SInt32 versionBugFix = 0;
+	Gestalt( gestaltSystemVersionMajor, &versionMajor );
+	Gestalt( gestaltSystemVersionMinor, &versionMinor );
+	Gestalt( gestaltSystemVersionBugFix, &versionBugFix );
+	return [NSString stringWithFormat:@"%d.%d.%d", versionMajor, versionMinor, versionBugFix];
 #endif
 }
 
