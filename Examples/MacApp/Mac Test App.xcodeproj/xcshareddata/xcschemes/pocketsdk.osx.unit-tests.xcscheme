@@ -17,7 +17,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "4545405715F6B4B900731E40"
-               BuildableName = "pocketsdk.osx.unit-tests.octest"
+               BuildableName = "pocketsdk.osx.unit-tests"
                BlueprintName = "pocketsdk.osx.unit-tests"
                ReferencedContainer = "container:Mac Test App.xcodeproj">
             </BuildableReference>
