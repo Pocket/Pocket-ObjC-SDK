@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA0FCA8B1648A8FB005AE7DA /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AA0FCA8A1648A8FB005AE7DA /* Default-568h@2x.png */; };
 		AA37FAF9157570ED00A63400 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA37FAF8157570ED00A63400 /* UIKit.framework */; };
 		AA37FAFB157570ED00A63400 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA37FAFA157570ED00A63400 /* Foundation.framework */; };
 		AA37FAFD157570ED00A63400 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA37FAFC157570ED00A63400 /* CoreGraphics.framework */; };
@@ -25,6 +26,7 @@
 
 /* Begin PBXFileReference section */
 		456D82AF15E46395002779D3 /* PocketAPI+NSOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PocketAPI+NSOperation.h"; sourceTree = "<group>"; };
+		AA0FCA8A1648A8FB005AE7DA /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		AA37FAF4157570ED00A63400 /* iOS Test App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS Test App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA37FAF8157570ED00A63400 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		AA37FAFA157570ED00A63400 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -115,6 +117,7 @@
 		AA37FAFF157570ED00A63400 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				AA0FCA8A1648A8FB005AE7DA /* Default-568h@2x.png */,
 				AA37FB0D157570ED00A63400 /* PocketViewController.xib */,
 				AA37FB00157570ED00A63400 /* PocketSDK-Info.plist */,
 				AA37FB01157570ED00A63400 /* InfoPlist.strings */,
@@ -196,6 +199,7 @@
 			files = (
 				AA37FB03157570ED00A63400 /* InfoPlist.strings in Resources */,
 				AA37FB0F157570ED00A63400 /* PocketViewController.xib in Resources */,
+				AA0FCA8B1648A8FB005AE7DA /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
