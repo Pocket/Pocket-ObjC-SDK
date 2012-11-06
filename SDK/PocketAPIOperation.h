@@ -23,12 +23,22 @@
 
 #import <Foundation/Foundation.h>
 #import "PocketAPI.h"
+#import "PocketAPITypes.h"
 
-@interface PocketAPIOperation : NSOperation <NSURLConnectionDelegate> {
+@interface NSDictionary (PocketAdditions)
+
+-(NSString *)pkt_URLEncodedFormString;
++(NSDictionary *)pkt_dictionaryByParsingURLEncodedFormString:(NSString *)formString;
+
+@end
+
+@interface PocketAPIOperation : NSOperation <NSURLConnectionDelegate, NSCopying, PocketAPIDelegate> {
 	PocketAPI *API;
 	id<PocketAPIDelegate> delegate;
 	
-	NSString *method;
+	PocketAPIDomain domain;
+	PocketAPIHTTPMethod HTTPMethod;
+	NSString *APIMethod;
 	NSDictionary *arguments;
 	
 	NSURLConnection *connection;
@@ -36,19 +46,28 @@
 	NSMutableData *data;
 	NSError *error;
 	
+	NSString *baseURLPath;
+	
 	BOOL finishedLoading;
-
 }
 
 @property (nonatomic, retain) PocketAPI *API;
 @property (nonatomic, retain) id<PocketAPIDelegate> delegate; // we break convention here to ensure the delegate exists for operation lifetime, release on complete
 
-@property (nonatomic, retain) NSString *method;
+@property (nonatomic, readonly, retain) NSString *baseURLPath;
+@property (nonatomic, assign) PocketAPIDomain domain;
+@property (nonatomic, assign) PocketAPIHTTPMethod HTTPMethod;
+@property (nonatomic, retain) NSString *APIMethod;
 @property (nonatomic, retain) NSDictionary *arguments;
 
 @property (nonatomic, readonly, retain) NSURLConnection *connection;
 @property (nonatomic, readonly, retain) NSHTTPURLResponse *response;
 @property (nonatomic, readonly, retain) NSMutableData *data;
+
 @property (nonatomic, readonly, retain) NSError *error;
 
++(NSString *)encodeForURL:(NSString *)urlStr;
+
 @end
+
+NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method);

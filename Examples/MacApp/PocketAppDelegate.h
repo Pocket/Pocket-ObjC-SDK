@@ -12,8 +12,7 @@
 
 @property (assign) IBOutlet NSWindow *window;
 
-@property (assign) IBOutlet NSTextField *usernameField;
-@property (assign) IBOutlet NSTextField *passwordField;
+@property (assign) IBOutlet NSTextField *loggedInField;
 @property (assign) IBOutlet NSTextField *URLField;
 
 -(IBAction)login:(id)sender;

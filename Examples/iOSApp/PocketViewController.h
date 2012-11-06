@@ -23,18 +23,16 @@
 
 #import <UIKit/UIKit.h>
 #import "PocketAPI.h"
+#import "PocketTweetsViewController.h"
 
-@interface PocketViewController : UIViewController <PocketAPIDelegate>{
-	UITextField *usernameField;
-	UITextField *passwordField;
-	UITextField *URLField;
+@interface PocketViewController : PocketTweetsViewController <PocketAPIDelegate>{
+	UIView *coverView;
 }
 
-@property (nonatomic, retain) IBOutlet UITextField *usernameField;
-@property (nonatomic, retain) IBOutlet UITextField *passwordField;
-@property (nonatomic, retain) IBOutlet UITextField *URLField;
+@property (nonatomic, strong) IBOutlet UIView *coverView;
 
 -(IBAction)login:(id)sender;
--(IBAction)saveURL:(id)sender;
+-(IBAction)logout:(id)sender;
+
 
 @end

@@ -38,22 +38,6 @@
  *
  * You can find more information on these in PocketAPITypes.h
  *
- * You will have to present your own login form to the user using UI appropriate for your app.
- * You should check the loggedIn property on the PocketAPI to see if you should present a login UI.
- * Once you have a username and password, call one of the login methods below. If it succeeds,
- * your delegate or block will be notified and the user's credentials will be saved automatically
- * to the keychain.
- *
- * Once the user is logged in, and manually decides to save a URL to their Pocket list, you can
- * call one of the save APIs to save the URL. If you get no error back, the save succeeded, and
- * you should notify the user that their item was saved successfully to their Pocket list.
- * If you get an error back, there are a few status codes you should keep an eye out for:
- * 
- * - 401: This means the user's account information is invalid and you should prompt to login again.
- * - 503: This means the server is temporarily down. The error will contain a message explaining why.
- *
- * The Save API also will inform you through an argument that the user needs to login again or not.
- *
  * These classes are not implemented as ARC, but will interoperate with ARC. You will need to add the
  * -fno-objc-arc compiler flag to each of the files in the SDK.
  */
@@ -61,41 +45,74 @@
 #import <Foundation/Foundation.h>
 #import "PocketAPITypes.h"
 
+@class PocketAPILogin;
+
 @interface PocketAPI : NSObject {
-	NSString *APIKey;
+	NSString *consumerKey;
+	NSString *URLScheme;
 	NSOperationQueue *operationQueue;
+	
+	PocketAPILogin *currentLogin;
+	NSString *userAgent;
 }
 
-@property (nonatomic, retain) NSString *APIKey;
+@property (nonatomic, retain) NSString *consumerKey;
+@property (nonatomic, retain) NSString *URLScheme; // if you do not set this, it is derived from your consumer key
 
 @property (nonatomic, copy, readonly) NSString *username;
 @property (nonatomic, assign, readonly, getter=isLoggedIn) BOOL loggedIn;
 
-+(PocketAPI *)sharedAPI;
+@property (nonatomic, retain) NSOperationQueue *operationQueue;
 
--(void)setAPIKey:(NSString *)APIKey;
++(PocketAPI *)sharedAPI;
++(BOOL)hasPocketAppInstalled;
++(NSString *)pocketAppURLScheme;
+
+-(void)setConsumerKey:(NSString *)consumerKey;
+
+-(NSUInteger)appID;
 
 // Simple API
--(void)loginWithUsername:(NSString *)username password:(NSString *)password delegate:(id<PocketAPIDelegate>)delegate;
--(void)saveURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate;
+-(void)loginWithDelegate:(id<PocketAPIDelegate>)delegate;
+
+-(void)saveURL:(NSURL *)url
+	  delegate:(id<PocketAPIDelegate>)delegate;
+-(void)saveURL:(NSURL *)url
+	 withTitle:(NSString *)title
+	  delegate:(id<PocketAPIDelegate>)delegate;
+-(void)saveURL:(NSURL *)url
+	 withTitle:(NSString *)title
+	   tweetID:(NSString *)tweetID
+	  delegate:(id<PocketAPIDelegate>)delegate;
+
+-(void)callAPIMethod:(NSString *)apiMethod
+	  withHTTPMethod:(PocketAPIHTTPMethod)HTTPMethod
+		   arguments:(NSDictionary *)arguments
+			delegate:(id<PocketAPIDelegate>)delegate;
 
 #if NS_BLOCKS_AVAILABLE
--(void)loginWithUsername:(NSString *)username password:(NSString *)password handler:(PocketAPILoginHandler)handler;
--(void)saveURL:(NSURL *)url handler:(PocketAPISaveHandler)handler;
+-(void)loginWithHandler:(PocketAPILoginHandler)handler;
+
+-(void)saveURL:(NSURL *)url
+	   handler:(PocketAPISaveHandler)handler;
+-(void)saveURL:(NSURL *)url
+	 withTitle:(NSString *)title
+	   handler:(PocketAPISaveHandler)handler;
+-(void)saveURL:(NSURL *)url
+	 withTitle:(NSString *)title
+	   tweetID:(NSString *)tweetID
+	   handler:(PocketAPISaveHandler)handler;
+
+-(void)callAPIMethod:(NSString *)apiMethod
+	  withHTTPMethod:(PocketAPIHTTPMethod)HTTPMethod
+		   arguments:(NSDictionary *)arguments
+			 handler:(PocketAPIResponseHandler)handler;
 #endif
+
+-(void)logout;
+
+-(BOOL)handleOpenURL:(NSURL *)url;
 
 @end
 
-// Advanced use if you use your own NSOperationQueues for handling network traffic.
-// If you don't need tight control over network requests, just use the simple API.
-@interface PocketAPI (NSOperations)
-
--(NSOperation *)loginOperationWithUsername:(NSString *)username password:(NSString *)password delegate:(id<PocketAPIDelegate>)delegate;
--(NSOperation *)saveOperationWithURL:(NSURL *)url delegate:(id<PocketAPIDelegate>)delegate;
-
-#if NS_BLOCKS_AVAILABLE
--(NSOperation *)loginOperationWithUsername:(NSString *)username password:(NSString *)password handler:(PocketAPILoginHandler)handler;
--(NSOperation *)saveOperationWithURL:(NSURL *)url handler:(PocketAPISaveHandler)handler;
-#endif
-
-@end
+extern NSString *PocketAPITweetID(unsigned long long tweetID);
