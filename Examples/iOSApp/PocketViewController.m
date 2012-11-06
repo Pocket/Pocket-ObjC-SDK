@@ -72,31 +72,38 @@
 
 -(IBAction)login:(id)sender{
 	[[PocketAPI sharedAPI] loginWithHandler:^(PocketAPI *api, NSError *error) {
-		NSLog(@"API logged in with error %@: %@", error, api.username);
-
-		UIAlertView *alertView = nil;
 		if(error){
-			alertView = [[UIAlertView alloc] initWithTitle:@"Error logging in"
-												   message:[NSString stringWithFormat:@"There was an error logging in: %@", [error localizedDescription]]
-												  delegate:nil
-										 cancelButtonTitle:nil
-										 otherButtonTitles:@"Awww", nil];
+			[self loginFailed:error];
 		}else{
-			alertView = [[UIAlertView alloc] initWithTitle:@"Logged in"
-												   message:[NSString stringWithFormat:@"You are logged in for the Pocket user %@.", api.username]
-												  delegate:nil
-										 cancelButtonTitle:nil
-										 otherButtonTitles:@"Woo hoo!", nil];
+			[self loggedInSuccessfully];
 		}
-		[self updateNavigationBarTitle];
-		[alertView show];
-		[alertView autorelease];
 	}];
 }
 
 -(IBAction)logout:(id)sender{
 	[[PocketAPI sharedAPI] logout];
-	[self updateNavigationBarTitle];
+}
+
+-(void)loggedInSuccessfully{
+	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Logged in"
+											   message:[NSString stringWithFormat:@"You are logged in for the Pocket user %@.", [PocketAPI sharedAPI].username]
+											  delegate:nil
+									 cancelButtonTitle:nil
+									 otherButtonTitles:@"Woo hoo!", nil];
+
+	[alertView show];
+	[alertView autorelease];
+}
+
+-(void)loginFailed:(NSError *)error{
+	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error logging in"
+														message:[NSString stringWithFormat:@"There was an error logging in: %@", [error localizedDescription]]
+													   delegate:nil
+											  cancelButtonTitle:nil
+											  otherButtonTitles:@"Awww", nil];
+	
+	[alertView show];
+	[alertView autorelease];
 }
 
 -(void)updateNavigationBarTitle{
@@ -124,6 +131,29 @@
 			NSLog(@"URL %@ was saved to %@'s Pocket account", url, api.username);
 		}
 	}];
+}
+
+
+-(void)storySaved:(NSDictionary *)story{
+	NSString *title = [self formattedTextForStory:story];
+	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Saved!"
+														message:[NSString stringWithFormat:@"Saved %@ successfully", title]
+													   delegate:nil
+											  cancelButtonTitle:nil
+											  otherButtonTitles:@"Yay!", nil];
+	[alertView show];
+	[alertView release];
+}
+
+-(void)storyFailed:(NSDictionary *)story withError:(NSError *)error{
+	NSString *errorMessage = error.localizedDescription;
+	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Save Failed"
+														message:errorMessage
+													   delegate:nil
+											  cancelButtonTitle:nil
+											  otherButtonTitles:@"Aww…", nil];
+	[alertView show];
+	[alertView release];
 }
 
 #pragma mark Pocket API callbacks
