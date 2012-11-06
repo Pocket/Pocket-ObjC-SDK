@@ -132,7 +132,7 @@
 <p>Following Pocket’s API best practices, you’ll want to provide a way for the user to manage what account they are logged into. This is most commonly handled by adding a setting in your app’s option screen that lets the user configure their Pocket account. When the user taps this, you can simply call one line of code which will handle the entire authorization process:</p>
 
 <pre><code>[[PocketAPI sharedAPI] loginWithHandler: ^(PocketAPI *API, NSError *error){
-if (error == nil)
+if (error != nil)
 {
     // There was an error when authorizing the user. The most common error is that the user denied access to your application.
     // The error object will contain a human readable error message that you should display to the user
