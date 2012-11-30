@@ -49,6 +49,7 @@
 	NSString *baseURLPath;
 	
 	BOOL finishedLoading;
+	BOOL attemptedRelogin;
 }
 
 @property (nonatomic, retain) PocketAPI *API;

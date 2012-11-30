@@ -172,7 +172,7 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 
 -(void)connectionFinishedWithError:(NSError *)theError{
 	NSInteger statusCode = (self.response ? self.response.statusCode : theError.code);
-	BOOL needsToRelogin = statusCode == 401;
+	BOOL needsToRelogin = !attemptedRelogin && statusCode == 401;
 	BOOL needsToLogout = statusCode == 403;
 	BOOL serverError = statusCode >= 500;
 
@@ -213,6 +213,7 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 	// if it fails, then prompt for an error next time
 	if(needsToRelogin){
 		[self.API loginWithDelegate:self];
+		attemptedRelogin = YES;
 		return;
 	}
 	
