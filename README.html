@@ -17,13 +17,13 @@
 
 <p>You can download the SDK at: <a href="http://getpocket.com/api/v3/pocket-objc-sdk.zip">http://getpocket.com/api/v3/pocket-objc-sdk.zip</a></p>
 
-<p>You can also watch/checkout the SDK from GitHub at: <a href="http://github.com/pocketco/Pocket-ObjC-SDK">http://github.com/pocketco/Pocket-ObjC-SDK</a></p>
+<p>You can also watch/checkout the SDK from GitHub at: <a href="http://github.com/pocketco/Pocket-ObjC-SDK">http://github.com/pocketco/Pocket-ObjC-SDK</a>. If you use recommend adding the Pocket SDK as a git submodule of your project by running <code>git submodule add git://github.com/Pocket/Pocket-ObjC-SDK.git &lt;path&gt;</code> from the root directory of your repository, replacing the <code>&lt;path&gt;</code> with the path you'd like it installed to.</p>
+
+<p>If you use <a href="http://cocoapods.org/">CocoaPods</a>, you can add the <code>PocketAPI</code> pod to your Podfile. Then run <code>pod install</code>, and the Pocket SDK will be available in your project. See the documentation on the CocoaPods website if you want to set up a new or existing project.</p>
 
 <p>The project download includes the SDK and an example project.</p>
 
 <h3 id="step2:addthepocketsdktoyourproject">Step 2: Add the Pocket SDK to your project</h3>
-
-<p>(<strong>Images below</strong>)</p>
 
 <ul>
 <li>Open your existing project. </li>
@@ -44,7 +44,7 @@
 
 <p>If you have not obtained a consumer key yet, you can register one at <a href="http://getpocket.com/api/signup">http://getpocket.com/api/signup</a></p>
 
-<h3 id="step4:addthepocketurl-scheme">Step 4: Add the Pocket url-scheme</h3>
+<h3 id="step4:addthepocketurl-scheme">Step 4: Add the Pocket URL scheme</h3>
 
 <p>Once you have the consumer key for the platform you are supporting, the application must register a URL scheme to receive login callbacks. By default, this is &#8220;pocketapp&#8221; plus your application&#8217;s ID (which you can find at the beginning of the consumer key before the hyphen). So if your consumer key is 42-abcdef, your app ID is 42, and your URL scheme will be &#8220;pocketapp42&#8221;. </p>
 

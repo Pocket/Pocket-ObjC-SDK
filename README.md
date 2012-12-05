@@ -11,13 +11,13 @@ The Pocket SDK is the fastest way to add Pocket integration to any iOS or Mac ap
 
 You can download the SDK at: [http://getpocket.com/api/v3/pocket-objc-sdk.zip](http://getpocket.com/api/v3/pocket-objc-sdk.zip)
 
-You can also watch/checkout the SDK from GitHub at: [http://github.com/pocketco/Pocket-ObjC-SDK](http://github.com/pocketco/Pocket-ObjC-SDK)
+You can also watch/checkout the SDK from GitHub at: [http://github.com/pocketco/Pocket-ObjC-SDK](http://github.com/pocketco/Pocket-ObjC-SDK). If you use recommend adding the Pocket SDK as a git submodule of your project by running `git submodule add git://github.com/Pocket/Pocket-ObjC-SDK.git <path>` from the root directory of your repository, replacing the `<path>` with the path you'd like it installed to.
+
+If you use [CocoaPods](http://cocoapods.org/), you can add the `PocketAPI` pod to your Podfile. Then run `pod install`, and the Pocket SDK will be available in your project. See the documentation on the CocoaPods website if you want to set up a new or existing project.
 
 The project download includes the SDK and an example project.
 
 ###Step 2: Add the Pocket SDK to your project###
-
-(**Images below**)
 
 - Open your existing project. 
 - Drag the SDK folder from the example project into your Xcode project.
@@ -40,7 +40,7 @@ When you register your app with Pocket, it will provide you with a platform cons
 If you have not obtained a consumer key yet, you can register one at [http://getpocket.com/api/signup](http://getpocket.com/api/signup)
 
 
-###Step 4: Add the Pocket url-scheme###
+###Step 4: Add the Pocket URL scheme###
 
 
 Once you have the consumer key for the platform you are supporting, the application must register a URL scheme to receive login callbacks. By default, this is "pocketapp" plus your application's ID (which you can find at the beginning of the consumer key before the hyphen). So if your consumer key is 42-abcdef, your app ID is 42, and your URL scheme will be "pocketapp42". 
