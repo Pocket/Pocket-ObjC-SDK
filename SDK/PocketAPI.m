@@ -31,6 +31,12 @@
 
 #define POCKET_SDK_VERSION @"1.0.2"
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#define PocketGlobalKeychainServiceName @"PocketAPI"
+#else
+#define PocketGlobalKeychainServiceName [NSString stringWithFormat:@"%@.PocketAPI", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleIdentifierKey]]
+#endif
+
 static NSString *kPocketAPICurrentLoginKey = @"PocketAPICurrentLogin";
 
 #pragma mark Private APIs (please do not call these directly)
@@ -52,6 +58,9 @@ static NSString *kPocketAPICurrentLoginKey = @"PocketAPICurrentLogin";
 
 -(void)pkt_setKeychainValue:(id)value forKey:(NSString *)key;
 -(id)pkt_getKeychainValueForKey:(NSString *)key;
+
+-(void)pkt_setKeychainValue:(id)value forKey:(NSString *)key serviceName:(NSString *)serviceName;
+-(id)pkt_getKeychainValueForKey:(NSString *)key serviceName:(NSString *)serviceName;
 
 @end
 
@@ -167,6 +176,30 @@ static PocketAPI *sSharedAPI = nil;
 	if(!URLScheme && consumerKey){
 		[self setURLScheme:[self URLScheme]];
 	}
+	
+	// if on a Mac, and this user was logged in with a pre-1.0.2 SDK, attempt to migrate the keychain values if the token/digest pair matches
+#if !DEBUG && TARGET_OS_MAC && !TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR
+	if(![self pkt_getToken]){ // if we don't already have a token
+		NSString *existingHash = [self pkt_getKeychainValueForKey:@"tokenDigest" serviceName:@"PocketAPI"];
+		if(existingHash){ // ...but we do have an unmigrated token
+			NSString *token = [self pkt_getKeychainValueForKey:@"token" serviceName:@"PocketAPI"];
+			NSString *currentHash = [[self class] pkt_hashForConsumerKey:self.consumerKey accessToken:token];
+			if([existingHash isEqualToString:currentHash]){ // ...and the hash matches our consumer key
+				// migrate the token to the new location in the keychain
+				NSString *username = [self pkt_getKeychainValueForKey:@"username" serviceName:@"PocketAPI"];
+				
+				[self pkt_setKeychainValue:username forKey:@"username"];
+				[self pkt_setKeychainValue:nil forKey:@"username" serviceName:@"PocketAPI"];
+				
+				[self pkt_setKeychainValue:token forKey:@"token"];
+				[self pkt_setKeychainValue:nil forKey:@"token" serviceName:@"PocketAPI"];
+				
+				[self pkt_setKeychainValue:currentHash forKey:@"tokenDigest"];
+				[self pkt_setKeychainValue:nil forKey:@"tokenDigest" serviceName:@"PocketAPI"];
+			}
+		}
+	}
+#endif
 	
 	// ensure the access token stored matches the consumer key that generated it
 	if(self.isLoggedIn){
@@ -643,33 +676,35 @@ static PocketAPI *sSharedAPI = nil;
 
 @implementation PocketAPI (Credentials)
 
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-#define PocketGlobalKeychainServiceName @"PocketAPI"
-#else
-#define PocketGlobalKeychainServiceName [NSString stringWithFormat:@"%@.PocketAPI", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleIdentifierKey]]
-#endif
-
 -(void)pkt_setKeychainValue:(id)value forKey:(NSString *)key{
+	[self pkt_setKeychainValue:value forKey:key serviceName:PocketGlobalKeychainServiceName];
+}
+
+-(id)pkt_getKeychainValueForKey:(NSString *)key{
+	return [self pkt_getKeychainValueForKey:key serviceName:PocketGlobalKeychainServiceName];
+}
+
+-(void)pkt_setKeychainValue:(id)value forKey:(NSString *)key serviceName:(NSString *)serviceName{
 	if(value){
 #if TARGET_IPHONE_SIMULATOR || (DEBUG && !TARGET_OS_IPHONE && TARGET_OS_MAC)
-		[[NSUserDefaults standardUserDefaults] setObject:value forKey:[NSString stringWithFormat:@"%@.%@", PocketGlobalKeychainServiceName, key]];
+		[[NSUserDefaults standardUserDefaults] setObject:value forKey:[NSString stringWithFormat:@"%@.%@", serviceName, key]];
 #else
-		[SFHFKeychainUtils storeUsername:key andPassword:value forServiceName:PocketGlobalKeychainServiceName updateExisting:YES error:nil];
+		[SFHFKeychainUtils storeUsername:key andPassword:value forServiceName:serviceName updateExisting:YES error:nil];
 #endif
 	}else{
 #if TARGET_IPHONE_SIMULATOR || (DEBUG && !TARGET_OS_IPHONE && TARGET_OS_MAC)
-		[[NSUserDefaults standardUserDefaults] removeObjectForKey:[NSString stringWithFormat:@"%@.%@", PocketGlobalKeychainServiceName, key]];
+		[[NSUserDefaults standardUserDefaults] removeObjectForKey:[NSString stringWithFormat:@"%@.%@", serviceName, key]];
 #else
-		[SFHFKeychainUtils deleteItemForUsername:key andServiceName:PocketGlobalKeychainServiceName error:nil];
+		[SFHFKeychainUtils deleteItemForUsername:key andServiceName:serviceName error:nil];
 #endif
 	}
 }
 
--(id)pkt_getKeychainValueForKey:(NSString *)key{
-#if TARGET_IPHONE_SIMULATOR || (DEBUG && !TARGET_OS_IPHONE)
-	return [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"%@.%@", PocketGlobalKeychainServiceName, key]];
+-(id)pkt_getKeychainValueForKey:(NSString *)key serviceName:(NSString *)serviceName{
+#if TARGET_IPHONE_SIMULATOR || (DEBUG && !TARGET_OS_IPHONE && TARGET_OS_MAC)
+	return [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"%@.%@", serviceName, key]];
 #else
-	return [SFHFKeychainUtils getPasswordForUsername:key andServiceName:PocketGlobalKeychainServiceName error:nil];
+	return [SFHFKeychainUtils getPasswordForUsername:key andServiceName:serviceName error:nil];
 #endif
 }
 
