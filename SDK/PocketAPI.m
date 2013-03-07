@@ -561,6 +561,9 @@ static PocketAPI *sSharedAPI = nil;
 		
 		NSString *productName   = @"PocketSDK:" POCKET_SDK_VERSION;
 		NSString *appName       = [bundleInfo objectForKey:@"CFBundleDisplayName"];
+		if(!appName){
+			appName             = [bundleInfo objectForKey:(NSString *)kCFBundleNameKey];
+		}
 		NSString *appVersion    = [bundleInfo objectForKey:@"CFBundleVersion"];
 		NSString *deviceMfg     = @"Apple";
 		NSString *storeName     = @"App Store";
@@ -583,7 +586,19 @@ static PocketAPI *sSharedAPI = nil;
 		}
 #endif
 		
-		userAgent = [[[NSArray arrayWithObjects:productName,appName,appVersion,osType,osVersion,deviceMfg,deviceName,deviceType,storeName,nil] componentsJoinedByString:@";"] retain];
+#define PKTAtLeastEmptyString(__str) ((__str) == nil ? @"" : (__str))
+		userAgent = [[[NSArray arrayWithObjects:
+					   PKTAtLeastEmptyString(productName),
+					   PKTAtLeastEmptyString(appName),
+					   PKTAtLeastEmptyString(appVersion),
+					   PKTAtLeastEmptyString(osType),
+					   PKTAtLeastEmptyString(osVersion),
+					   PKTAtLeastEmptyString(deviceMfg),
+					   PKTAtLeastEmptyString(deviceName),
+					   PKTAtLeastEmptyString(deviceType),
+					   PKTAtLeastEmptyString(storeName),
+					   nil] componentsJoinedByString:@";"] retain];
+#undef PKTAtLeastEmptyString
 	}
 	return userAgent;
 }
