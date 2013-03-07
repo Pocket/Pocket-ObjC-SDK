@@ -643,17 +643,21 @@ static PocketAPI *sSharedAPI = nil;
 
 @implementation PocketAPI (Credentials)
 
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #define PocketGlobalKeychainServiceName @"PocketAPI"
+#else
+#define PocketGlobalKeychainServiceName [NSString stringWithFormat:@"%@.PocketAPI", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleIdentifierKey]]
+#endif
 
 -(void)pkt_setKeychainValue:(id)value forKey:(NSString *)key{
 	if(value){
-#if TARGET_IPHONE_SIMULATOR || (DEBUG && !TARGET_OS_IPHONE)
+#if TARGET_IPHONE_SIMULATOR || (DEBUG && !TARGET_OS_IPHONE && TARGET_OS_MAC)
 		[[NSUserDefaults standardUserDefaults] setObject:value forKey:[NSString stringWithFormat:@"%@.%@", PocketGlobalKeychainServiceName, key]];
 #else
 		[SFHFKeychainUtils storeUsername:key andPassword:value forServiceName:PocketGlobalKeychainServiceName updateExisting:YES error:nil];
 #endif
 	}else{
-#if TARGET_IPHONE_SIMULATOR || (DEBUG && !TARGET_OS_IPHONE)
+#if TARGET_IPHONE_SIMULATOR || (DEBUG && !TARGET_OS_IPHONE && TARGET_OS_MAC)
 		[[NSUserDefaults standardUserDefaults] removeObjectForKey:[NSString stringWithFormat:@"%@.%@", PocketGlobalKeychainServiceName, key]];
 #else
 		[SFHFKeychainUtils deleteItemForUsername:key andServiceName:PocketGlobalKeychainServiceName error:nil];
