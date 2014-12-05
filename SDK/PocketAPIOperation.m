@@ -279,6 +279,10 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 
 -(void)pocketAPILoggedIn:(PocketAPI *)api{
 	[[self.API operationQueue] addOperation:[[self copy] autorelease]];
+    
+    // Copy of the current operation is scheduled on the operationQueue, so we have to
+    // mark the current operation as finished to let it be removed from the operationQueue.
+    [self pkt_connectionFinishedLoading];
 }
 
 -(void)pocketAPI:(PocketAPI *)api hadLoginError:(NSError *)theError{
