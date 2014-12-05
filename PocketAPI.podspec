@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   s.authors      = { "Steve Streza" => "steve@getpocket.com", "James Yopp" => "james@getpocket.com", "Nate Weiner" => "nate@getpocket.com" }
   s.source       = { :git => "https://github.com/Pocket/Pocket-ObjC-SDK.git", :tag => "sdk/1.0.2" }
 
-  s.ios.deployment_target = '3.0'
+  s.ios.deployment_target = '4.3'
   s.osx.deployment_target = '10.6'
 
   s.source_files = 'SDK/**/*.{h,m}'
