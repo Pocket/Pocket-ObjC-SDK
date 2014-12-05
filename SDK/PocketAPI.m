@@ -672,13 +672,9 @@ static PocketAPI *sSharedAPI = nil;
 #if TARGET_OS_IPHONE
 	return [[UIDevice currentDevice] systemVersion];
 #else
-	SInt32 versionMajor = 0;
-	SInt32 versionMinor = 0;
-	SInt32 versionBugFix = 0;
-	Gestalt( gestaltSystemVersionMajor, &versionMajor );
-	Gestalt( gestaltSystemVersionMinor, &versionMinor );
-	Gestalt( gestaltSystemVersionBugFix, &versionBugFix );
-	return [NSString stringWithFormat:@"%d.%d.%d", versionMajor, versionMinor, versionBugFix];
+    // Gestalt is deprecated in 10.8 with no sane replacement API. This is the currently recommended solution.
+    // via http://stackoverflow.com/questions/11072804/mac-os-x-10-8-replacement-for-gestalt-for-testing-os-version-at-runtime/11072974
+    return [[NSDictionary dictionaryWithContentsOfFile:@"/System/Library/CoreServices/SystemVersion.plist"] objectForKey:@"ProductVersion"];
 #endif
 }
 
