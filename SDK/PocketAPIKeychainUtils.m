@@ -27,28 +27,28 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "SFHFKeychainUtils.h"
+#import "PocketAPIKeychainUtils.h"
 #import <Security/Security.h>
 
-static NSString *SFHFKeychainUtilsErrorDomain = @"SFHFKeychainUtilsErrorDomain";
+static NSString *PocketAPIKeychainUtilsErrorDomain = @"PocketAPIKeychainUtilsErrorDomain";
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 30000 && TARGET_IPHONE_SIMULATOR
-@interface SFHFKeychainUtils (PrivateMethods)
+@interface PocketAPIKeychainUtils (PrivateMethods)
 + (SecKeychainItemRef) getKeychainItemReferenceForUsername: (NSString *) username andServiceName: (NSString *) serviceName error: (NSError **) error;
 @end
 #endif
 
-@implementation SFHFKeychainUtils
+@implementation PocketAPIKeychainUtils
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 30000 && TARGET_IPHONE_SIMULATOR
 
 + (NSString *) getPasswordForUsername: (NSString *) username andServiceName: (NSString *) serviceName error: (NSError **) error {
 	if (!username || !serviceName) {
-		*error = [NSError errorWithDomain: SFHFKeychainUtilsErrorDomain code: -2000 userInfo: nil];
+		*error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: -2000 userInfo: nil];
 		return nil;
 	}
 	
-	SecKeychainItemRef item = [SFHFKeychainUtils getKeychainItemReferenceForUsername: username andServiceName: serviceName error: error];
+	SecKeychainItemRef item = [PocketAPIKeychainUtils getKeychainItemReferenceForUsername: username andServiceName: serviceName error: error];
 	
 	if (*error || !item) {
 		return nil;
@@ -71,7 +71,7 @@ static NSString *SFHFKeychainUtilsErrorDomain = @"SFHFKeychainUtilsErrorDomain";
   OSStatus status = SecKeychainItemCopyContent(item, NULL, &list, &length, (void **)&password);
 	
 	if (status != noErr) {
-		*error = [NSError errorWithDomain: SFHFKeychainUtilsErrorDomain code: status userInfo: nil];
+		*error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: status userInfo: nil];
 		return nil;
   }
   
@@ -98,13 +98,13 @@ static NSString *SFHFKeychainUtilsErrorDomain = @"SFHFKeychainUtilsErrorDomain";
 
 + (void) storeUsername: (NSString *) username andPassword: (NSString *) password forServiceName: (NSString *) serviceName updateExisting: (BOOL) updateExisting error: (NSError **) error {	
 	if (!username || !password || !serviceName) {
-		*error = [NSError errorWithDomain: SFHFKeychainUtilsErrorDomain code: -2000 userInfo: nil];
+		*error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: -2000 userInfo: nil];
 		return;
 	}
 	
 	OSStatus status = noErr;
 	
-	SecKeychainItemRef item = [SFHFKeychainUtils getKeychainItemReferenceForUsername: username andServiceName: serviceName error: error];
+	SecKeychainItemRef item = [PocketAPIKeychainUtils getKeychainItemReferenceForUsername: username andServiceName: serviceName error: error];
 	
 	if (*error && [*error code] != noErr) {
 		return;
@@ -132,19 +132,19 @@ static NSString *SFHFKeychainUtilsErrorDomain = @"SFHFKeychainUtilsErrorDomain";
 	}
 	
 	if (status != noErr) {
-		*error = [NSError errorWithDomain: SFHFKeychainUtilsErrorDomain code: status userInfo: nil];
+		*error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: status userInfo: nil];
 	}
 }
 
 + (void) deleteItemForUsername: (NSString *) username andServiceName: (NSString *) serviceName error: (NSError **) error {
 	if (!username || !serviceName) {
-		*error = [NSError errorWithDomain: SFHFKeychainUtilsErrorDomain code: 2000 userInfo: nil];
+		*error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: 2000 userInfo: nil];
 		return;
 	}
 	
 	*error = nil;
 	
-	SecKeychainItemRef item = [SFHFKeychainUtils getKeychainItemReferenceForUsername: username andServiceName: serviceName error: error];
+	SecKeychainItemRef item = [PocketAPIKeychainUtils getKeychainItemReferenceForUsername: username andServiceName: serviceName error: error];
 	
 	if (*error && [*error code] != noErr) {
 		return;
@@ -159,13 +159,13 @@ static NSString *SFHFKeychainUtilsErrorDomain = @"SFHFKeychainUtilsErrorDomain";
 	}
 	
 	if (status != noErr) {
-		*error = [NSError errorWithDomain: SFHFKeychainUtilsErrorDomain code: status userInfo: nil];
+		*error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: status userInfo: nil];
 	}
 }
 
 + (SecKeychainItemRef) getKeychainItemReferenceForUsername: (NSString *) username andServiceName: (NSString *) serviceName error: (NSError **) error {
 	if (!username || !serviceName) {
-		*error = [NSError errorWithDomain: SFHFKeychainUtilsErrorDomain code: -2000 userInfo: nil];
+		*error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: -2000 userInfo: nil];
 		return nil;
 	}
 	
@@ -184,7 +184,7 @@ static NSString *SFHFKeychainUtilsErrorDomain = @"SFHFKeychainUtilsErrorDomain";
 	
 	if (status != noErr) {
 		if (status != errSecItemNotFound) {
-			*error = [NSError errorWithDomain: SFHFKeychainUtilsErrorDomain code: status userInfo: nil];
+			*error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: status userInfo: nil];
 		}
 		
 		return nil;		
@@ -198,7 +198,7 @@ static NSString *SFHFKeychainUtilsErrorDomain = @"SFHFKeychainUtilsErrorDomain";
 + (NSString *) getPasswordForUsername: (NSString *) username andServiceName: (NSString *) serviceName error: (NSError **) error {
 	if (!username || !serviceName) {
 		if (error != nil) {
-			*error = [NSError errorWithDomain: SFHFKeychainUtilsErrorDomain code: -2000 userInfo: nil];
+			*error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: -2000 userInfo: nil];
 		}
 		return nil;
 	}
@@ -230,7 +230,7 @@ static NSString *SFHFKeychainUtilsErrorDomain = @"SFHFKeychainUtilsErrorDomain";
 		// No existing item found--simply return nil for the password
 		if (error != nil && status != errSecItemNotFound) {
 			//Only return an error if a real exception happened--not simply for "not found."
-			*error = [NSError errorWithDomain: SFHFKeychainUtilsErrorDomain code: status userInfo: nil];
+			*error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: status userInfo: nil];
 		}
 		
 		return nil;
@@ -256,13 +256,13 @@ static NSString *SFHFKeychainUtilsErrorDomain = @"SFHFKeychainUtilsErrorDomain";
 			// the old, incorrect entry will be deleted and a new one with a properly encrypted
 			// password will be added.
 			if (error != nil) {
-				*error = [NSError errorWithDomain: SFHFKeychainUtilsErrorDomain code: -1999 userInfo: nil];
+				*error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: -1999 userInfo: nil];
 			}
 		}
 		else {
 			// Something else went wrong. Simply return the normal Keychain API error code.
 			if (error != nil) {
-				*error = [NSError errorWithDomain: SFHFKeychainUtilsErrorDomain code: status userInfo: nil];
+				*error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: status userInfo: nil];
 			}
 		}
 		
@@ -279,7 +279,7 @@ static NSString *SFHFKeychainUtilsErrorDomain = @"SFHFKeychainUtilsErrorDomain";
 		// Possibly as a result of an item being incorrectly entered by the previous code.
 		// Set the -1999 error so the code above us can prompt the user again.
 		if (error != nil) {
-			*error = [NSError errorWithDomain: SFHFKeychainUtilsErrorDomain code: -1999 userInfo: nil];
+			*error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: -1999 userInfo: nil];
 		}
 	}
   
@@ -292,14 +292,14 @@ static NSString *SFHFKeychainUtilsErrorDomain = @"SFHFKeychainUtilsErrorDomain";
   {
 		if (error != nil) 
     {
-			*error = [NSError errorWithDomain: SFHFKeychainUtilsErrorDomain code: -2000 userInfo: nil];
+			*error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: -2000 userInfo: nil];
 		}
 		return NO;
 	}
 	
 	// See if we already have a password entered for these credentials.
 	NSError *getError = nil;
-	NSString *existingPassword = [SFHFKeychainUtils getPasswordForUsername: username andServiceName: serviceName error:&getError];
+	NSString *existingPassword = [PocketAPIKeychainUtils getPasswordForUsername: username andServiceName: serviceName error:&getError];
   
 	if ([getError code] == -1999) 
   {
@@ -389,7 +389,7 @@ static NSString *SFHFKeychainUtilsErrorDomain = @"SFHFKeychainUtilsErrorDomain";
   {
 		// Something went wrong with adding the new item. Return the Keychain error code.
 		if (error != nil) {
-			*error = [NSError errorWithDomain: SFHFKeychainUtilsErrorDomain code: status userInfo: nil];
+			*error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: status userInfo: nil];
 		}
     
     return NO;
@@ -404,7 +404,7 @@ static NSString *SFHFKeychainUtilsErrorDomain = @"SFHFKeychainUtilsErrorDomain";
   {
 		if (error != nil) 
     {
-			*error = [NSError errorWithDomain: SFHFKeychainUtilsErrorDomain code: -2000 userInfo: nil];
+			*error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: -2000 userInfo: nil];
 		}
 		return NO;
 	}
@@ -424,7 +424,7 @@ static NSString *SFHFKeychainUtilsErrorDomain = @"SFHFKeychainUtilsErrorDomain";
 	if (status != noErr) 
   {
 	  if (error != nil) {
-		  *error = [NSError errorWithDomain: SFHFKeychainUtilsErrorDomain code: status userInfo: nil];
+		  *error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: status userInfo: nil];
 	  }
     
     return NO;

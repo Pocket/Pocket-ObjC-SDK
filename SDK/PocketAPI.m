@@ -683,7 +683,7 @@ static PocketAPI *sSharedAPI = nil;
 #pragma mark Keychain Credentials
 
 #import <TargetConditionals.h>
-#import "SFHFKeychainUtils.h"
+#import "PocketAPIKeychainUtils.h"
 
 @implementation PocketAPI (Credentials)
 
@@ -700,13 +700,13 @@ static PocketAPI *sSharedAPI = nil;
 #if TARGET_IPHONE_SIMULATOR || (DEBUG && !TARGET_OS_IPHONE && TARGET_OS_MAC)
 		[[NSUserDefaults standardUserDefaults] setObject:value forKey:[NSString stringWithFormat:@"%@.%@", serviceName, key]];
 #else
-		[SFHFKeychainUtils storeUsername:key andPassword:value forServiceName:serviceName updateExisting:YES error:nil];
+		[PocketAPIKeychainUtils storeUsername:key andPassword:value forServiceName:serviceName updateExisting:YES error:nil];
 #endif
 	}else{
 #if TARGET_IPHONE_SIMULATOR || (DEBUG && !TARGET_OS_IPHONE && TARGET_OS_MAC)
 		[[NSUserDefaults standardUserDefaults] removeObjectForKey:[NSString stringWithFormat:@"%@.%@", serviceName, key]];
 #else
-		[SFHFKeychainUtils deleteItemForUsername:key andServiceName:serviceName error:nil];
+		[PocketAPIKeychainUtils deleteItemForUsername:key andServiceName:serviceName error:nil];
 #endif
 	}
 }
@@ -715,7 +715,7 @@ static PocketAPI *sSharedAPI = nil;
 #if TARGET_IPHONE_SIMULATOR || (DEBUG && !TARGET_OS_IPHONE && TARGET_OS_MAC)
 	return [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"%@.%@", serviceName, key]];
 #else
-	return [SFHFKeychainUtils getPasswordForUsername:key andServiceName:serviceName error:nil];
+	return [PocketAPIKeychainUtils getPasswordForUsername:key andServiceName:serviceName error:nil];
 #endif
 }
 
