@@ -390,7 +390,7 @@ static PocketAPI *sSharedAPI = nil;
 	operation.delegate = delegate;
 	operation.APIMethod = APIMethod;
 	operation.HTTPMethod = HTTPMethod;
-	operation.arguments = arguments;
+	operation.arguments = [NSDictionary dictionaryWithDictionary:arguments];
 	return operation;
 }
 
