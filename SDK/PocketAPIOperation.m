@@ -114,7 +114,7 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 }
 
 -(NSString *)description{
-	return [NSString stringWithFormat:@"<%@: %p https://%@%@ %@>", [self class], self, self.baseURLPath, self.APIMethod, self.arguments];
+	return [NSString stringWithFormat:@"<%@: %p https://%@/%@ %@>", [self class], self, self.baseURLPath, self.APIMethod, self.arguments];
 }
 
 -(NSString *)baseURLPath{
