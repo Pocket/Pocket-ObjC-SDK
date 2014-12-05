@@ -80,7 +80,7 @@
 
 <p>At the top of your app delegate source file (and anywhere you call the PocketAPI object),  you&#8217;ll need to include the PocketAPI header. At the top of your class you&#8217;ll probably see other imports already. Simply add this line:</p>
 
-<pre><code>#import “PocketAPI.h”
+<pre><code>#import "PocketAPI.h"
 </code></pre>
 
 <h4 id="setyourplatformconsumerkey">Set Your Platform Consumer Key</h4>
@@ -94,7 +94,7 @@
 
 <p>The final step is to give the SDK an opportunity to handle incoming URLs.  If you do not already implement this method on your app delegate, simply add the following method:</p>
 
-<pre><code>-(BOOL)application:(UIApplication *)application 
+<pre><code>-(BOOL)application:(UIApplication *)application
            openURL:(NSURL *)url
  sourceApplication:(NSString *)sourceApplication
         annotation:(id)annotation{
@@ -156,8 +156,8 @@ else
  PocketAPIHTTPmethod httpMethod = ...; // usually PocketAPIHTTPMethodPOST
  NSDictionary *arguments = ...;
 
- [[PocketAPI sharedAPI] callAPIMethod:apiMethod 
-                       withHTTPMethod:httpMethod 
+ [[PocketAPI sharedAPI] callAPIMethod:apiMethod
+                       withHTTPMethod:httpMethod
                             arguments:arguments
                               handler: ^(PocketAPI *api, NSString *apiMethod, NSDictionary *response, NSError *error){
     // handle the response here

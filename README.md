@@ -19,7 +19,7 @@ The project download includes the SDK and an example project.
 
 ###Step 2: Add the Pocket SDK to your project###
 
-- Open your existing project. 
+- Open your existing project.
 - Drag the SDK folder from the example project into your Xcode project.
 - Make sure the “Copy items into destination group’s folder (if needed)” checkbox is checked.
 - Select your Xcode project in the Project Navigator, select your application target, select “Build Phases”, and add Security.framework to your “Link Binary With Libraries” phase.
@@ -43,7 +43,7 @@ If you have not obtained a consumer key yet, you can register one at [http://get
 ###Step 4: Add the Pocket URL scheme###
 
 
-Once you have the consumer key for the platform you are supporting, the application must register a URL scheme to receive login callbacks. By default, this is "pocketapp" plus your application's ID (which you can find at the beginning of the consumer key before the hyphen). So if your consumer key is 42-abcdef, your app ID is 42, and your URL scheme will be "pocketapp42". 
+Once you have the consumer key for the platform you are supporting, the application must register a URL scheme to receive login callbacks. By default, this is "pocketapp" plus your application's ID (which you can find at the beginning of the consumer key before the hyphen). So if your consumer key is 42-abcdef, your app ID is 42, and your URL scheme will be "pocketapp42".
 
 If there are already URL schemes in your app’s Info.plist, you can either add the new URL scheme, or use an existing scheme by calling `[[PocketAPI sharedAPI] setURLScheme:@"YOUR-URL-SCHEME-HERE"]`. To add a URL Scheme, create a block like the one below in your Info.plist, updating it with the app’s scheme:
 
@@ -76,7 +76,7 @@ The final steps to set up the Pocket SDK requires adding a few lines of code to 
 
 At the top of your app delegate source file (and anywhere you call the PocketAPI object),  you'll need to include the PocketAPI header. At the top of your class you'll probably see other imports already. Simply add this line:
 
-	#import “PocketAPI.h”
+	#import "PocketAPI.h"
 
 ####Set Your Platform Consumer Key####
 
@@ -88,18 +88,18 @@ The Pocket SDK requires your consumer key in order to make any requests to the A
 
 The final step is to give the SDK an opportunity to handle incoming URLs.  If you do not already implement this method on your app delegate, simply add the following method:
 
-	-(BOOL)application:(UIApplication *)application 
+	-(BOOL)application:(UIApplication *)application
 	           openURL:(NSURL *)url
 	 sourceApplication:(NSString *)sourceApplication
 	        annotation:(id)annotation{
-	
+
 	    if([[PocketAPI sharedAPI] handleOpenURL:url]){
 	        return YES;
 	    }else{
 	        // if you handle your own custom url-schemes, do it here
 	        return NO;
 	    }
-	
+
 	}
 
 
@@ -107,7 +107,7 @@ The final step is to give the SDK an opportunity to handle incoming URLs.  If yo
 
 At this point you’ve properly installed the SDK and can now start making requests and saving urls to Pocket. Here is a two line example:
 
-	NSURL *url = [NSURL URLWithString:@”http://google.com”];
+	NSURL *url = [NSURL URLWithString:@"http://google.com"];
 	[[PocketAPI sharedAPI] saveURL:url handler: ^(PocketAPI *API, NSURL *URL, NSError *error){
 	    if(error){
 	        // there was an issue connecting to Pocket
@@ -150,8 +150,8 @@ To call other arbitrary APIs, pass the API's method name, the HTTP method name, 
 	 PocketAPIHTTPmethod httpMethod = ...; // usually PocketAPIHTTPMethodPOST
 	 NSDictionary *arguments = ...;
 
-	 [[PocketAPI sharedAPI] callAPIMethod:apiMethod 
-	                       withHTTPMethod:httpMethod 
+	 [[PocketAPI sharedAPI] callAPIMethod:apiMethod
+	                       withHTTPMethod:httpMethod
 	                            arguments:arguments
 	                              handler: ^(PocketAPI *api, NSString *apiMethod, NSDictionary *response, NSError *error){
 	    // handle the response here
