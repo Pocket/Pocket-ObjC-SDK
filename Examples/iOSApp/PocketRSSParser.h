@@ -1,9 +1,9 @@
 //
-//  PocketTweetsViewController.h
+//  PocketRSSParser.h
 //  iOS Test App
 //
-//  Created by Steve Streza on 8/24/12.
-//  Copyright (c) 2012 Read It Later, Inc.
+//  Created by Michael Schneider
+//  Copyright (c) 2014 Read It Later, Inc.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy of this
 //  software and associated documentation files (the "Software"), to deal in the Software
@@ -20,26 +20,28 @@
 //  DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-//  This file does not contain any Pocket-specific logic, it just loads some data into a
-//  table view for the purposes of testing the SDK.
-//
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
-@interface PocketTweetsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource> {
-	NSArray *stories;
+extern NSString * const PocketRSSParserItemElementName;
+extern NSString * const PocketRSSParserItemTitleName;
+extern NSString * const PocketRSSParserItemLinkName;
 
-	UITableView *tableView;
-	UINavigationBar *navigationBar;
-}
+@interface PocketRSSItem : NSObject
+@property (copy, nonatomic, readonly) NSString *title;
+@property (strong, nonatomic, readonly) NSURL *url;
+- (void)resolveURLCompletionHandler:(void(^)(void))completionHandler;
+@end
 
-@property (nonatomic, retain) NSArray *stories;
+@interface PocketRSSParser : NSObject
 
-@property (nonatomic, strong) IBOutlet UINavigationBar *navigationBar;
-@property (nonatomic, strong) IBOutlet UITableView *tableView;
+/// Feed entries after parsing
+@property (copy, nonatomic, readonly) NSArray *entries;
 
--(NSDictionary *)storyAtIndexPath:(NSIndexPath *)indexPath;
--(NSString *)formattedTextForStory:(NSDictionary *)storyData;
--(NSURL *)URLForStory:(NSDictionary *)storyData;
+/// Designated Initalizer
+- (instancetype)initWithURL:(NSURL *)url NS_DESIGNATED_INITIALIZER;;
+
+/// Start parsing the feed and handle completion
+- (void)parseWithCompletionHandler:(void (^)(PocketRSSParser *parser))completionHandler;
 
 @end

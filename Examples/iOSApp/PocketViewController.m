@@ -23,10 +23,20 @@
 
 #import "PocketViewController.h"
 #import "PocketAPI.h"
+#import "PocketRSSParser.h"
+
+#if !__has_feature(objc_arc)
+#error This file must be compiled with ARC, add -fobjc-arc to its compiler flags in the Compile Sources build phase.
+#endif
+
+@interface PocketViewController () <PocketAPIDelegate>
+
+@end
 
 @implementation PocketViewController
 
-@synthesize coverView;
+
+#pragma mark - UIViewController
 
 - (void)viewDidLoad
 {
@@ -37,54 +47,72 @@
 	[self updateNavigationBarTitle];
 }
 
--(void)viewDidAppear:(BOOL)animated{
+- (void)viewDidAppear:(BOOL)animated
+{
 	[super viewDidAppear:animated];
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showLoginCoverView) name:(NSString *)PocketAPILoginStartedNotification  object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideLoginCoverView) name:(NSString *)PocketAPILoginFinishedNotification object:nil];
+    NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
+	[defaultCenter addObserver:self selector:@selector(showLoginCoverView) name:(NSString *)PocketAPILoginStartedNotification  object:nil];
+	[defaultCenter addObserver:self selector:@selector(hideLoginCoverView) name:(NSString *)PocketAPILoginFinishedNotification object:nil];
 }
 
--(void)viewDidDisappear:(BOOL)animated{
+- (void)viewDidDisappear:(BOOL)animated
+{
 	[super viewDidDisappear:animated];
 	
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:(NSString *)PocketAPILoginStartedNotification object:nil];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:(NSString *)PocketAPILoginFinishedNotification object:nil];
+    NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
+	[defaultCenter removeObserver:self name:(NSString *)PocketAPILoginStartedNotification object:nil];
+	[defaultCenter removeObserver:self name:(NSString *)PocketAPILoginFinishedNotification object:nil];
 }
+
+
+#pragma mark - KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
 	if (context == @"PocketAPIUsername") {
 		[self updateNavigationBarTitle];
-	} else {
-		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+        return;
 	}
+    
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
--(void)showLoginCoverView{
-	[self.coverView setHidden:NO];
+
+#pragma mark - Actions
+
+- (void)showLoginCoverView
+{
+    self.coverView.hidden = NO;
 }
 
--(void)hideLoginCoverView{
-	[self.coverView setHidden:YES];
+- (void)hideLoginCoverView
+{
+    self.coverView.hidden = YES;
 }
 
-#pragma mark Pocket APIs
 
--(IBAction)login:(id)sender{
+#pragma mark - Pocket APIs
+
+- (IBAction)login:(id)sender
+{
 	[[PocketAPI sharedAPI] loginWithHandler:^(PocketAPI *api, NSError *error) {
-		if(error){
+		if (error) {
 			[self loginFailed:error];
-		}else{
-			[self loggedInSuccessfully];
+            return;
 		}
+        
+        [self loggedInSuccessfully];
 	}];
 }
 
--(IBAction)logout:(id)sender{
+- (IBAction)logout:(id)sender
+{
 	[[PocketAPI sharedAPI] logout];
 }
 
--(void)loggedInSuccessfully{
+- (void)loggedInSuccessfully
+{
 	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Logged in"
 											   message:[NSString stringWithFormat:@"You are logged in for the Pocket user %@.", [PocketAPI sharedAPI].username]
 											  delegate:nil
@@ -92,10 +120,10 @@
 									 otherButtonTitles:@"Woo hoo!", nil];
 
 	[alertView show];
-	[alertView autorelease];
 }
 
--(void)loginFailed:(NSError *)error{
+- (void)loginFailed:(NSError *)error
+{
 	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error logging in"
 														message:[NSString stringWithFormat:@"There was an error logging in: %@", [error localizedDescription]]
 													   delegate:nil
@@ -103,74 +131,61 @@
 											  otherButtonTitles:@"Awww", nil];
 	
 	[alertView show];
-	[alertView autorelease];
 }
 
--(void)updateNavigationBarTitle{
+- (void)updateNavigationBarTitle
+{
 	NSString *title = [PocketAPI sharedAPI].username;
-	if(!title || !title.length){
+	if (!title || !title.length) {
 		title = @"Not Logged In";
 	}
 	
 	self.navigationBar.topItem.title = title;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-	NSDictionary *story = [self storyAtIndexPath:indexPath];
-	NSURL *url = [self URLForStory:story];
-	if(!url) return;
+
+#pragma mark - UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	PocketRSSItem *feedItem = [self feedItemAtIndexPath:indexPath];
+    NSURL *url = feedItem.url;
+	if (url == nil) return;
 	
-	unsigned long long tweetID = [(NSNumber *)[story objectForKey:@"id"] unsignedLongLongValue];
-	
-	NSString *title = [self formattedTextForStory:story];
+    NSString *title = feedItem.title;
 	NSLog(@"Saving URL: %@", url);
-	[[PocketAPI sharedAPI] saveURL:url withTitle:title tweetID:PocketAPITweetID(tweetID) handler:^(PocketAPI *api, NSURL *url, NSError *error) {
-		if(error){
+	[[PocketAPI sharedAPI] saveURL:url withTitle:title handler:^(PocketAPI *api, NSURL *url, NSError *error) {
+		if (error != nil) {
 			NSLog(@"URL %@ could not be saved to %@'s Pocket account. Reason: %@", url, api.username, error.localizedDescription);
-		}else{
-			NSLog(@"URL %@ was saved to %@'s Pocket account", url, api.username);
 		}
+        else {
+            NSLog(@"URL %@ was saved to %@'s Pocket account", url, api.username);
+        }
+        
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
 	}];
 }
 
 
--(void)storySaved:(NSDictionary *)story{
-	NSString *title = [self formattedTextForStory:story];
-	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Saved!"
-														message:[NSString stringWithFormat:@"Saved %@ successfully", title]
-													   delegate:nil
-											  cancelButtonTitle:nil
-											  otherButtonTitles:@"Yay!", nil];
-	[alertView show];
-	[alertView release];
-}
+#pragma mark - Pocket API callbacks
 
--(void)storyFailed:(NSDictionary *)story withError:(NSError *)error{
-	NSString *errorMessage = error.localizedDescription;
-	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Save Failed"
-														message:errorMessage
-													   delegate:nil
-											  cancelButtonTitle:nil
-											  otherButtonTitles:@"Aww…", nil];
-	[alertView show];
-	[alertView release];
-}
-
-#pragma mark Pocket API callbacks
-
--(void)pocketAPILoggedIn:(PocketAPI *)api{
+- (void)pocketAPILoggedIn:(PocketAPI *)api
+{
 	NSLog(@"Pocket API logged in for user %@", [api username]);
 }
 
--(void)pocketAPI:(PocketAPI *)api hadLoginError:(NSError *)error{
+- (void)pocketAPI:(PocketAPI *)api hadLoginError:(NSError *)error
+{
 	NSLog(@"Pocket API could not log in: %@", [error localizedDescription]);
 }
 
--(void)pocketAPI:(PocketAPI *)api savedURL:(NSURL *)url{
+- (void)pocketAPI:(PocketAPI *)api savedURL:(NSURL *)url
+{
 	NSLog(@"Pocket API saved URL %@ for user %@", url, [api username]);
 }
 
--(void)pocketAPI:(PocketAPI *)api failedToSaveURL:(NSURL *)url error:(NSError *)error{
+- (void)pocketAPI:(PocketAPI *)api failedToSaveURL:(NSURL *)url error:(NSError *)error
+{
 	NSLog(@"Pocket API could not save URL %@ for user %@: %@.", url, [api username], [error localizedDescription]);
 }
 

@@ -22,17 +22,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "PocketAPI.h"
-#import "PocketTweetsViewController.h"
+#import "PocketRSSViewController.h"
 
-@interface PocketViewController : PocketTweetsViewController <PocketAPIDelegate>{
-	UIView *coverView;
-}
+@interface PocketViewController : PocketRSSViewController
 
 @property (nonatomic, strong) IBOutlet UIView *coverView;
 
--(IBAction)login:(id)sender;
--(IBAction)logout:(id)sender;
+- (IBAction)login:(id)sender;
+- (IBAction)logout:(id)sender;
 
 
 @end
