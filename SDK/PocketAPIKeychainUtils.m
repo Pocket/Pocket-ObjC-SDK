@@ -32,7 +32,7 @@
 
 static NSString *PocketAPIKeychainUtilsErrorDomain = @"PocketAPIKeychainUtilsErrorDomain";
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < 30000 && TARGET_IPHONE_SIMULATOR
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED < 30000 && TARGET_IPHONE_SIMULATOR
 @interface PocketAPIKeychainUtils (PrivateMethods)
 + (SecKeychainItemRef) getKeychainItemReferenceForUsername: (NSString *) username andServiceName: (NSString *) serviceName error: (NSError **) error;
 @end
@@ -40,7 +40,7 @@ static NSString *PocketAPIKeychainUtilsErrorDomain = @"PocketAPIKeychainUtilsErr
 
 @implementation PocketAPIKeychainUtils
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < 30000 && TARGET_IPHONE_SIMULATOR
+#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && __IPHONE_OS_VERSION_MIN_REQUIRED < 30000 && TARGET_IPHONE_SIMULATOR
 
 + (NSString *) getPasswordForUsername: (NSString *) username andServiceName: (NSString *) serviceName error: (NSError **) error {
 	if (!username || !serviceName) {
