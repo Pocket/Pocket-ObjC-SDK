@@ -178,7 +178,7 @@ static PocketAPI *sSharedAPI = nil;
 	}
 	
 	// if on a Mac, and this user was logged in with a pre-1.0.2 SDK, attempt to migrate the keychain values if the token/digest pair matches
-#if !DEBUG && TARGET_OS_MAC && !TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR
+#if !(defined(DEBUG) && DEBUG) && TARGET_OS_MAC && !TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR
 	if(![self pkt_getToken]){ // if we don't already have a token
 		NSString *existingHash = [self pkt_getKeychainValueForKey:@"tokenDigest" serviceName:@"PocketAPI"];
 		if(existingHash){ // ...but we do have an unmigrated token
@@ -226,7 +226,7 @@ static PocketAPI *sSharedAPI = nil;
 	[URLScheme release];
 	URLScheme = aURLScheme;
 	
-#if DEBUG
+#if defined(DEBUG) && DEBUG
 	// check to make sure 
 	BOOL foundURLScheme = NO;
 	NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
@@ -697,13 +697,13 @@ static PocketAPI *sSharedAPI = nil;
 
 -(void)pkt_setKeychainValue:(id)value forKey:(NSString *)key serviceName:(NSString *)serviceName{
 	if(value){
-#if TARGET_IPHONE_SIMULATOR || (DEBUG && !TARGET_OS_IPHONE && TARGET_OS_MAC)
+#if TARGET_IPHONE_SIMULATOR || (defined(DEBUG) && DEBUG && !TARGET_OS_IPHONE && TARGET_OS_MAC)
 		[[NSUserDefaults standardUserDefaults] setObject:value forKey:[NSString stringWithFormat:@"%@.%@", serviceName, key]];
 #else
 		[PocketAPIKeychainUtils storeUsername:key andPassword:value forServiceName:serviceName updateExisting:YES error:nil];
 #endif
 	}else{
-#if TARGET_IPHONE_SIMULATOR || (DEBUG && !TARGET_OS_IPHONE && TARGET_OS_MAC)
+#if TARGET_IPHONE_SIMULATOR || (defined(DEBUG) && DEBUG && !TARGET_OS_IPHONE && TARGET_OS_MAC)
 		[[NSUserDefaults standardUserDefaults] removeObjectForKey:[NSString stringWithFormat:@"%@.%@", serviceName, key]];
 #else
 		[PocketAPIKeychainUtils deleteItemForUsername:key andServiceName:serviceName error:nil];
@@ -712,7 +712,7 @@ static PocketAPI *sSharedAPI = nil;
 }
 
 -(id)pkt_getKeychainValueForKey:(NSString *)key serviceName:(NSString *)serviceName{
-#if TARGET_IPHONE_SIMULATOR || (DEBUG && !TARGET_OS_IPHONE && TARGET_OS_MAC)
+#if TARGET_IPHONE_SIMULATOR || (defined(DEBUG) && DEBUG && !TARGET_OS_IPHONE && TARGET_OS_MAC)
 	return [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"%@.%@", serviceName, key]];
 #else
 	return [PocketAPIKeychainUtils getPasswordForUsername:key andServiceName:serviceName error:nil];

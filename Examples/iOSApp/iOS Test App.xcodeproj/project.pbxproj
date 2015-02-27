@@ -301,6 +301,7 @@
 				INFOPLIST_FILE = "PocketSDK-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				WARNING_CFLAGS = "-Wundef";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -316,6 +317,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				WARNING_CFLAGS = "-Wundef";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
