@@ -34,9 +34,13 @@ static NSString *PocketAPIKeychainUtilsErrorDomain = @"PocketAPIKeychainUtilsErr
 
 @implementation PocketAPIKeychainUtils
 
++ (NSString *)getPasswordForUsername:(NSString *)username andServiceName:(NSString *)serviceName error: (NSError **)error
+{
+    return [self getPasswordForUsername:username andServiceName:serviceName inAccessGroup:nil error:error];
 }
 
-+ (NSString *) getPasswordForUsername: (NSString *) username andServiceName: (NSString *) serviceName error: (NSError **) error {
++ (NSString *)getPasswordForUsername: (NSString *)username andServiceName: (NSString *) serviceName inAccessGroup:(NSString *)accessGroup error: (NSError **)error
+{
 	if (!username || !serviceName) {
 		if (error != nil) {
 			*error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: -2000 userInfo: nil];
@@ -55,6 +59,21 @@ static NSString *PocketAPIKeychainUtilsErrorDomain = @"PocketAPIKeychainUtilsErr
 	
 	NSMutableDictionary *query = [[[NSMutableDictionary alloc] initWithObjects: objects forKeys: keys] autorelease];
 	
+    if (accessGroup != nil) {
+#if TARGET_IPHONE_SIMULATOR
+        // Ignore the access group if running on the iPhone simulator.
+        //
+        // Apps that are built for the simulator aren't signed, so there's no keychain access group
+        // for the simulator to check. This means that all apps can see all keychain items when run
+        // on the simulator.
+        //
+        // If a SecItem contains an access group attribute, SecItemAdd and SecItemUpdate on the
+        // simulator will return -25243 (errSecNoAccessForItem).
+#else
+        query[(NSString *)kSecAttrAccessGroup] = accessGroup;
+#endif
+    }
+    
 	// First do a query for attributes, in case we already have a Keychain item with no password data set.
 	// One likely way such an incorrect item could have come about is due to the previous (incorrect)
 	// version of this code (which set the password as a generic attribute instead of password data).
@@ -127,12 +146,15 @@ static NSString *PocketAPIKeychainUtilsErrorDomain = @"PocketAPIKeychainUtilsErr
 	return [password autorelease];
 }
 
-+ (BOOL) storeUsername: (NSString *) username andPassword: (NSString *) password forServiceName: (NSString *) serviceName updateExisting: (BOOL) updateExisting error: (NSError **) error 
++ (BOOL)storeUsername:(NSString *)username andPassword:(NSString *)password forServiceName: (NSString *)serviceName updateExisting:(BOOL)updateExisting error: (NSError **)error
+{
+    return [self storeUsername:username andPassword:password forServiceName:serviceName inAccessGroup:nil updateExisting:updateExisting error:error];
+}
+
++ (BOOL)storeUsername:(NSString *)username andPassword:(NSString *)password forServiceName: (NSString *)serviceName inAccessGroup:(NSString *)accessGroup updateExisting:(BOOL)updateExisting error: (NSError **)error
 {		
-	if (!username || !password || !serviceName) 
-  {
-		if (error != nil) 
-    {
+	if (!username || !password || !serviceName)  {
+        if (error != nil) {
 			*error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: -2000 userInfo: nil];
 		}
 		return NO;
@@ -142,8 +164,7 @@ static NSString *PocketAPIKeychainUtilsErrorDomain = @"PocketAPIKeychainUtilsErr
 	NSError *getError = nil;
 	NSString *existingPassword = [PocketAPIKeychainUtils getPasswordForUsername: username andServiceName: serviceName error:&getError];
   
-	if ([getError code] == -1999) 
-  {
+	if ([getError code] == -1999) {
 		// There is an existing entry without a password properly stored (possibly as a result of the previous incorrect version of this code.
 		// Delete the existing item before moving on entering a correct one.
     
@@ -151,38 +172,31 @@ static NSString *PocketAPIKeychainUtilsErrorDomain = @"PocketAPIKeychainUtilsErr
 		
 		[self deleteItemForUsername: username andServiceName: serviceName error: &getError];
     
-		if ([getError code] != noErr) 
-    {
-			if (error != nil) 
-      {
+		if ([getError code] != noErr) {
+			if (error != nil) {
 				*error = getError;
 			}
 			return NO;
 		}
 	}
-	else if ([getError code] != noErr) 
-  {
-		if (error != nil) 
-    {
+	else if ([getError code] != noErr) {
+		if (error != nil) {
 			*error = getError;
 		}
 		return NO;
 	}
 	
-	if (error != nil) 
-  {
+	if (error != nil) {
 		*error = nil;
 	}
 	
 	OSStatus status = noErr;
   
-	if (existingPassword) 
-  {
+	if (existingPassword) {
 		// We have an existing, properly entered item with a password.
 		// Update the existing item.
 		
-		if (![existingPassword isEqualToString:password] && updateExisting) 
-    {
+		if (![existingPassword isEqualToString:password] && updateExisting) {
 			//Only update if we're allowed to update existing.  If not, simply do nothing.
 			
 			NSArray *keys = [[[NSArray alloc] initWithObjects: (NSString *) kSecClass, 
@@ -197,13 +211,27 @@ static NSString *PocketAPIKeychainUtilsErrorDomain = @"PocketAPIKeychainUtilsErr
                            username,
                            nil] autorelease];
 			
-			NSDictionary *query = [[[NSDictionary alloc] initWithObjects: objects forKeys: keys] autorelease];			
+			NSMutableDictionary *query = [[[NSMutableDictionary alloc] initWithObjects: objects forKeys: keys] autorelease];
+            if (accessGroup != nil) {
+#if TARGET_IPHONE_SIMULATOR
+                // Ignore the access group if running on the iPhone simulator.
+                //
+                // Apps that are built for the simulator aren't signed, so there's no keychain access group
+                // for the simulator to check. This means that all apps can see all keychain items when run
+                // on the simulator.
+                //
+                // If a SecItem contains an access group attribute, SecItemAdd and SecItemUpdate on the
+                // simulator will return -25243 (errSecNoAccessForItem).
+#else
+                query[(NSString *)kSecAttrAccessGroup] = accessGroup;
+#endif
+            }
+        
 			
 			status = SecItemUpdate((CFDictionaryRef) query, (CFDictionaryRef) [NSDictionary dictionaryWithObject: [password dataUsingEncoding: NSUTF8StringEncoding] forKey: (NSString *) kSecValueData]);
 		}
 	}
-	else 
-  {
+	else {
 		// No existing entry (or an existing, improperly entered, and therefore now
 		// deleted, entry).  Create a new entry.
 		
@@ -221,13 +249,27 @@ static NSString *PocketAPIKeychainUtilsErrorDomain = @"PocketAPIKeychainUtilsErr
                          [password dataUsingEncoding: NSUTF8StringEncoding],
                          nil] autorelease];
 		
-		NSDictionary *query = [[[NSDictionary alloc] initWithObjects: objects forKeys: keys] autorelease];			
+		NSMutableDictionary *query = [[[NSMutableDictionary alloc] initWithObjects: objects forKeys: keys] autorelease];
+      
+      if (accessGroup != nil) {
+#if TARGET_IPHONE_SIMULATOR
+          // Ignore the access group if running on the iPhone simulator.
+          //
+          // Apps that are built for the simulator aren't signed, so there's no keychain access group
+          // for the simulator to check. This means that all apps can see all keychain items when run
+          // on the simulator.
+          //
+          // If a SecItem contains an access group attribute, SecItemAdd and SecItemUpdate on the
+          // simulator will return -25243 (errSecNoAccessForItem).
+#else
+          query[(NSString *)kSecAttrAccessGroup] = accessGroup;
+#endif
+      }
     
 		status = SecItemAdd((CFDictionaryRef) query, NULL);
 	}
 	
-	if (status != noErr) 
-  {
+	if (status != noErr) {
 		// Something went wrong with adding the new item. Return the Keychain error code.
 		if (error != nil) {
 			*error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: status userInfo: nil];
@@ -239,39 +281,58 @@ static NSString *PocketAPIKeychainUtilsErrorDomain = @"PocketAPIKeychainUtilsErr
   return YES;
 }
 
-+ (BOOL) deleteItemForUsername: (NSString *) username andServiceName: (NSString *) serviceName error: (NSError **) error 
++ (BOOL)deleteItemForUsername: (NSString *)username andServiceName:(NSString *)serviceName error:(NSError **)error
 {
-	if (!username || !serviceName) 
-  {
-		if (error != nil) 
-    {
+    return [self deleteItemForUsername:username andServiceName:serviceName inAccessGroup:nil error:error];
+}
+
++ (BOOL)deleteItemForUsername: (NSString *)username andServiceName:(NSString *)serviceName inAccessGroup:(NSString *)accessGroup error:(NSError **)error
+{
+	if (!username || !serviceName) {
+		if (error != nil) {
 			*error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: -2000 userInfo: nil];
 		}
 		return NO;
 	}
 	
-	if (error != nil) 
-  {
+	if (error != nil) {
 		*error = nil;
 	}
   
 	NSArray *keys = [[[NSArray alloc] initWithObjects: (NSString *) kSecClass, kSecAttrAccount, kSecAttrService, kSecReturnAttributes, nil] autorelease];
 	NSArray *objects = [[[NSArray alloc] initWithObjects: (NSString *) kSecClassGenericPassword, username, serviceName, kCFBooleanTrue, nil] autorelease];
+    
+    
 	
-	NSDictionary *query = [[[NSDictionary alloc] initWithObjects: objects forKeys: keys] autorelease];
+	NSMutableDictionary *query = [[[NSMutableDictionary alloc] initWithObjects: objects forKeys: keys] autorelease];
+    
+    if (accessGroup != nil) {
+#if TARGET_IPHONE_SIMULATOR
+        // Ignore the access group if running on the iPhone simulator.
+        //
+        // Apps that are built for the simulator aren't signed, so there's no keychain access group
+        // for the simulator to check. This means that all apps can see all keychain items when run
+        // on the simulator.
+        //
+        // If a SecItem contains an access group attribute, SecItemAdd and SecItemUpdate on the
+        // simulator will return -25243 (errSecNoAccessForItem).
+#else
+        query[(NSString *)kSecAttrAccessGroup] = accessGroup;
+#endif
+        
+    }
 	
 	OSStatus status = SecItemDelete((CFDictionaryRef) query);
 	
-	if (status != noErr) 
-  {
-	  if (error != nil) {
-		  *error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: status userInfo: nil];
-	  }
+	if (status != noErr) {
+        if (error != nil) {
+            *error = [NSError errorWithDomain: PocketAPIKeychainUtilsErrorDomain code: status userInfo: nil];
+        }
     
-    return NO;
+        return NO;
 	}
   
-  return YES;
+    return YES;
 }
 
 @end

@@ -22,6 +22,7 @@
 //
 
 #import "PocketAPI.h"
+#import "PocketAPIExtensionSafe.h"
 #import "PocketAPI+NSOperation.h"
 #import "PocketAPILogin.h"
 #import "PocketAPIOperation.h"
@@ -38,6 +39,9 @@
 #endif
 
 static NSString *kPocketAPICurrentLoginKey = @"PocketAPICurrentLogin";
+static NSString *kPocketAPIKeychainKeyUsername = @"username";
+static NSString *kPocketAPIKeychainKeyToken = @"token";
+static NSString *kPocketAPIKeychainKeyTokenDigest = @"tokenDigest";
 
 #pragma mark Private APIs (please do not call these directly)
 
@@ -61,6 +65,9 @@ static NSString *kPocketAPICurrentLoginKey = @"PocketAPICurrentLogin";
 
 -(void)pkt_setKeychainValue:(id)value forKey:(NSString *)key serviceName:(NSString *)serviceName;
 -(id)pkt_getKeychainValueForKey:(NSString *)key serviceName:(NSString *)serviceName;
+
+-(void)pkt_setKeychainValue:(id)value forKey:(NSString *)key accessGroup:(NSString *)accessGroup;
+-(id)pkt_getKeychainValueForKey:(NSString *)key accessGroup:(NSString *)accessGroup;
 
 @end
 
@@ -90,7 +97,7 @@ static NSString *kPocketAPICurrentLoginKey = @"PocketAPICurrentLogin";
 
 @implementation PocketAPI
 
-@synthesize consumerKey, URLScheme, operationQueue;
+@synthesize consumerKey, URLScheme, operationQueue, keychainAccessGroup;
 
 #pragma mark Public API
 
@@ -114,7 +121,8 @@ static PocketAPI *sSharedAPI = nil;
 
 +(BOOL)hasPocketAppInstalled{
 #if TARGET_OS_IPHONE
-	return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:[[self pocketAppURLScheme] stringByAppendingString:@":"]]];
+    NSURL *pktURLScheme = [NSURL URLWithString:[[self pocketAppURLScheme] stringByAppendingString:@":"]];
+	return [[UIApplication pkt_sharedApplication] pkt_canOpenURL:pktURLScheme];
 #else
 	return NO;
 #endif
@@ -173,29 +181,29 @@ static PocketAPI *sSharedAPI = nil;
 	[consumerKey release];
 	consumerKey = aConsumerKey;
 	
-	if(!URLScheme && consumerKey){
+	if(!URLScheme && consumerKey && ![NSBundle pkt_isApplicationExtension]){
 		[self setURLScheme:[self URLScheme]];
 	}
 	
 	// if on a Mac, and this user was logged in with a pre-1.0.2 SDK, attempt to migrate the keychain values if the token/digest pair matches
 #if !(defined(DEBUG) && DEBUG) && TARGET_OS_MAC && !TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR
 	if(![self pkt_getToken]){ // if we don't already have a token
-		NSString *existingHash = [self pkt_getKeychainValueForKey:@"tokenDigest" serviceName:@"PocketAPI"];
+		NSString *existingHash = [self pkt_getKeychainValueForKey:kPocketAPIKeychainKeyTokenDigest serviceName:@"PocketAPI"];
 		if(existingHash){ // ...but we do have an unmigrated token
-			NSString *token = [self pkt_getKeychainValueForKey:@"token" serviceName:@"PocketAPI"];
+			NSString *token = [self pkt_getKeychainValueForKey:kPocketAPIKeychainKeyToken serviceName:@"PocketAPI"];
 			NSString *currentHash = [[self class] pkt_hashForConsumerKey:self.consumerKey accessToken:token];
 			if([existingHash isEqualToString:currentHash]){ // ...and the hash matches our consumer key
 				// migrate the token to the new location in the keychain
-				NSString *username = [self pkt_getKeychainValueForKey:@"username" serviceName:@"PocketAPI"];
+				NSString *username = [self pkt_getKeychainValueForKey:kPocketAPIKeychainKeyUsername serviceName:@"PocketAPI"];
 				
-				[self pkt_setKeychainValue:username forKey:@"username"];
-				[self pkt_setKeychainValue:nil forKey:@"username" serviceName:@"PocketAPI"];
+				[self pkt_setKeychainValue:username forKey:kPocketAPIKeychainKeyUsername];
+				[self pkt_setKeychainValue:nil forKey:kPocketAPIKeychainKeyUsername serviceName:@"PocketAPI"];
 				
-				[self pkt_setKeychainValue:token forKey:@"token"];
-				[self pkt_setKeychainValue:nil forKey:@"token" serviceName:@"PocketAPI"];
+				[self pkt_setKeychainValue:token forKey:kPocketAPIKeychainKeyToken];
+				[self pkt_setKeychainValue:nil forKey:kPocketAPIKeychainKeyToken serviceName:@"PocketAPI"];
 				
-				[self pkt_setKeychainValue:currentHash forKey:@"tokenDigest"];
-				[self pkt_setKeychainValue:nil forKey:@"tokenDigest" serviceName:@"PocketAPI"];
+				[self pkt_setKeychainValue:currentHash forKey:kPocketAPIKeychainKeyTokenDigest];
+				[self pkt_setKeychainValue:nil forKey:kPocketAPIKeychainKeyTokenDigest serviceName:@"PocketAPI"];
 			}
 		}
 	}
@@ -203,7 +211,7 @@ static PocketAPI *sSharedAPI = nil;
 	
 	// ensure the access token stored matches the consumer key that generated it
 	if(self.isLoggedIn){
-		NSString *existingHash = [self pkt_getKeychainValueForKey:@"tokenDigest"];
+		NSString *existingHash = [self pkt_getKeychainValueForKey:kPocketAPIKeychainKeyTokenDigest accessGroup:self.keychainAccessGroup];
 		NSString *currentHash = [[self class] pkt_hashForConsumerKey:self.consumerKey accessToken:[self pkt_getToken]];
 		
 		if(![existingHash isEqualToString:currentHash]){
@@ -211,6 +219,13 @@ static PocketAPI *sSharedAPI = nil;
 			[self logout];
 		}
 	}
+}
+
+-(void)enableKeychainSharingWithKeychainAccessGroup:(NSString *)theKeychainAccessGroup{
+    self.keychainAccessGroup = theKeychainAccessGroup;
+    
+    // copy all the keychain values from the default keychain to the shared keychain group
+    [self pkt_copyKeychainValuesToSharingKeychain];
 }
 
 -(NSString *)URLScheme{
@@ -267,6 +282,7 @@ static PocketAPI *sSharedAPI = nil;
 	[consumerKey release], consumerKey = nil;
 	[URLScheme release], URLScheme = nil;
 	[userAgent release], userAgent = nil;
+    [keychainAccessGroup release], keychainAccessGroup = nil;
 	
 	[super dealloc];
 }
@@ -279,7 +295,7 @@ static PocketAPI *sSharedAPI = nil;
 		if([[url path] isEqualToString:@"/reverse"] && [urlQuery objectForKey:@"code"]){
 			BOOL allowReverseLogin = YES;
 #if TARGET_OS_IPHONE
-			id<PocketAPISupport> appDelegate = (id<PocketAPISupport>)[[UIApplication sharedApplication] delegate];
+			id<PocketAPISupport> appDelegate = (id<PocketAPISupport>)[[UIApplication pkt_sharedApplication] delegate];
 #else
 			id<PocketAPISupport> appDelegate = (id<PocketAPISupport>)[[NSApplication sharedApplication] delegate];
 #endif
@@ -439,20 +455,21 @@ static PocketAPI *sSharedAPI = nil;
 #pragma mark Account Info
 
 -(NSString *)username{
-	return [self pkt_getKeychainValueForKey:@"username"];
+	return [self pkt_getKeychainValueForKey:kPocketAPIKeychainKeyUsername accessGroup:self.keychainAccessGroup];
 }
 
 -(NSString *)pkt_getToken{
-	return [self pkt_getKeychainValueForKey:@"token"];
+	return [self pkt_getKeychainValueForKey:kPocketAPIKeychainKeyToken accessGroup:self.keychainAccessGroup];
 }
 
 -(void)pkt_loggedInWithUsername:(NSString *)username token:(NSString *)token{
 	[self willChangeValueForKey:@"username"];
 	[self willChangeValueForKey:@"isLoggedIn"];
 	
-	[self pkt_setKeychainValue:username forKey:@"username"];
-	[self pkt_setKeychainValue:token forKey:@"token"];
-	[self pkt_setKeychainValue:[[self class] pkt_hashForConsumerKey:self.consumerKey accessToken:token] forKey:@"tokenDigest"];
+	[self pkt_setKeychainValue:username forKey:kPocketAPIKeychainKeyUsername];
+	[self pkt_setKeychainValue:token forKey:kPocketAPIKeychainKeyToken];
+	[self pkt_setKeychainValue:[[self class] pkt_hashForConsumerKey:self.consumerKey accessToken:token] forKey:kPocketAPIKeychainKeyTokenDigest];
+    [self pkt_copyKeychainValuesToSharingKeychain];
 	
 	[self  didChangeValueForKey:@"isLoggedIn"];
 	[self  didChangeValueForKey:@"username"];
@@ -462,9 +479,10 @@ static PocketAPI *sSharedAPI = nil;
 	[self willChangeValueForKey:@"username"];
 	[self willChangeValueForKey:@"isLoggedIn"];
 	
-	[self pkt_setKeychainValue:nil forKey:@"username"];
-	[self pkt_setKeychainValue:nil forKey:@"token"];
-	[self pkt_setKeychainValue:nil forKey:@"tokenDigest"];
+	[self pkt_setKeychainValue:nil forKey:kPocketAPIKeychainKeyUsername];
+	[self pkt_setKeychainValue:nil forKey:kPocketAPIKeychainKeyToken];
+	[self pkt_setKeychainValue:nil forKey:kPocketAPIKeychainKeyTokenDigest];
+    [self pkt_copyKeychainValuesToSharingKeychain];
 	
 	[self didChangeValueForKey:@"isLoggedIn"];
 	[self didChangeValueForKey:@"username"];
@@ -550,6 +568,20 @@ static PocketAPI *sSharedAPI = nil;
 	[dict setObject:[NSNumber numberWithInteger:(NSInteger)([[NSDate date] timeIntervalSince1970])] forKey:@"time"];
 	
 	return dict;
+}
+
+-(void)pkt_copyKeychainValuesToSharingKeychain{
+    // don't copy anything if it's in the extension or no keychain access group given
+    if ([NSBundle pkt_isApplicationExtension]) { return; }
+    if (self.keychainAccessGroup == nil) { return; }
+
+    NSString *username = [self pkt_getKeychainValueForKey:kPocketAPIKeychainKeyUsername];
+    NSString *token = [self pkt_getKeychainValueForKey:kPocketAPIKeychainKeyToken];
+    NSString *tokenDigest = [self pkt_getKeychainValueForKey:kPocketAPIKeychainKeyTokenDigest];
+
+    [self pkt_setKeychainValue:username forKey:kPocketAPIKeychainKeyUsername accessGroup:keychainAccessGroup];
+    [self pkt_setKeychainValue:token forKey:kPocketAPIKeychainKeyToken accessGroup:keychainAccessGroup];
+    [self pkt_setKeychainValue:tokenDigest forKey:kPocketAPIKeychainKeyTokenDigest accessGroup:keychainAccessGroup];
 }
 
 #pragma mark -
@@ -680,6 +712,7 @@ static PocketAPI *sSharedAPI = nil;
 
 @end
 
+
 #pragma mark Keychain Credentials
 
 #import <TargetConditionals.h>
@@ -691,31 +724,47 @@ static PocketAPI *sSharedAPI = nil;
 	[self pkt_setKeychainValue:value forKey:key serviceName:PocketGlobalKeychainServiceName];
 }
 
--(id)pkt_getKeychainValueForKey:(NSString *)key{
-	return [self pkt_getKeychainValueForKey:key serviceName:PocketGlobalKeychainServiceName];
+-(void)pkt_setKeychainValue:(id)value forKey:(NSString *)key serviceName:(NSString *)serviceName{
+    [self pkt_setKeychainValue:value forKey:key serviceName:serviceName accessGroup:nil];
 }
 
--(void)pkt_setKeychainValue:(id)value forKey:(NSString *)key serviceName:(NSString *)serviceName{
+-(void)pkt_setKeychainValue:(id)value forKey:(NSString *)key accessGroup:(NSString *)accessGroup{
+    [self pkt_setKeychainValue:value forKey:key serviceName:PocketGlobalKeychainServiceName accessGroup:accessGroup];
+}
+
+-(void)pkt_setKeychainValue:(id)value forKey:(NSString *)key serviceName:(NSString *)serviceName accessGroup:(NSString *)accessGroup{
 	if(value){
 #if TARGET_IPHONE_SIMULATOR || (defined(DEBUG) && DEBUG && !TARGET_OS_IPHONE && TARGET_OS_MAC)
 		[[NSUserDefaults standardUserDefaults] setObject:value forKey:[NSString stringWithFormat:@"%@.%@", serviceName, key]];
 #else
-		[PocketAPIKeychainUtils storeUsername:key andPassword:value forServiceName:serviceName updateExisting:YES error:nil];
+		[PocketAPIKeychainUtils storeUsername:key andPassword:value forServiceName:serviceName inAccessGroup:accessGroup updateExisting:YES error:nil];
 #endif
 	}else{
 #if TARGET_IPHONE_SIMULATOR || (defined(DEBUG) && DEBUG && !TARGET_OS_IPHONE && TARGET_OS_MAC)
 		[[NSUserDefaults standardUserDefaults] removeObjectForKey:[NSString stringWithFormat:@"%@.%@", serviceName, key]];
 #else
-		[PocketAPIKeychainUtils deleteItemForUsername:key andServiceName:serviceName error:nil];
+		[PocketAPIKeychainUtils deleteItemForUsername:key andServiceName:serviceName inAccessGroup:accessGroup error:nil];
 #endif
 	}
 }
 
+-(id)pkt_getKeychainValueForKey:(NSString *)key{
+    return [self pkt_getKeychainValueForKey:key serviceName:PocketGlobalKeychainServiceName];
+}
+
+-(id)pkt_getKeychainValueForKey:(NSString *)key accessGroup:(NSString *)accessGroup{
+    return [self pkt_getKeychainValueForKey:key serviceName:PocketGlobalKeychainServiceName accessGroup:accessGroup];
+}
+
 -(id)pkt_getKeychainValueForKey:(NSString *)key serviceName:(NSString *)serviceName{
+    return [self pkt_getKeychainValueForKey:key serviceName:serviceName accessGroup:nil];
+}
+
+-(id)pkt_getKeychainValueForKey:(NSString *)key serviceName:(NSString *)serviceName accessGroup:(NSString *)accessGroup {
 #if TARGET_IPHONE_SIMULATOR || (defined(DEBUG) && DEBUG && !TARGET_OS_IPHONE && TARGET_OS_MAC)
 	return [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"%@.%@", serviceName, key]];
 #else
-	return [PocketAPIKeychainUtils getPasswordForUsername:key andServiceName:serviceName error:nil];
+	return [PocketAPIKeychainUtils getPasswordForUsername:key andServiceName:serviceName inAccessGroup:accessGroup error:nil];
 #endif
 }
 

@@ -56,8 +56,9 @@
 	NSString *userAgent;
 }
 
-@property (nonatomic, retain) NSString *consumerKey;
-@property (nonatomic, retain) NSString *URLScheme; // if you do not set this, it is derived from your consumer key
+@property (nonatomic, copy) NSString *consumerKey;
+@property (nonatomic, copy) NSString *URLScheme; // if you do not set this, it is derived from your consumer key
+@property (nonatomic, copy) NSString *keychainAccessGroup;
 
 @property (nonatomic, copy, readonly) NSString *username;
 @property (nonatomic, assign, readonly, getter=isLoggedIn) BOOL loggedIn;
@@ -69,6 +70,7 @@
 +(NSString *)pocketAppURLScheme;
 
 -(void)setConsumerKey:(NSString *)consumerKey;
+-(void)enableKeychainSharingWithKeychainAccessGroup:(NSString *)theKeychainAccessGroup;
 
 -(NSUInteger)appID;
 

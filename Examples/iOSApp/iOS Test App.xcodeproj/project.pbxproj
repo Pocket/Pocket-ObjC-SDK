@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		9D50B34B1A4EEEBA00856233 /* PocketRSSParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D50B34A1A4EEEBA00856233 /* PocketRSSParser.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		9DF8C4551B0FFEDC00A46A01 /* PocketAPIExtensionSafe.m in Sources */ = {isa = PBXBuildFile; fileRef = 9DF8C4541B0FFEDC00A46A01 /* PocketAPIExtensionSafe.m */; };
 		AA0FCA8B1648A8FB005AE7DA /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AA0FCA8A1648A8FB005AE7DA /* Default-568h@2x.png */; };
 		AA37FAF9157570ED00A63400 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA37FAF8157570ED00A63400 /* UIKit.framework */; };
 		AA37FAFB157570ED00A63400 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA37FAFA157570ED00A63400 /* Foundation.framework */; };
@@ -29,6 +30,8 @@
 		456D82AF15E46395002779D3 /* PocketAPI+NSOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PocketAPI+NSOperation.h"; sourceTree = "<group>"; };
 		9D50B3491A4EEEBA00856233 /* PocketRSSParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PocketRSSParser.h; sourceTree = "<group>"; };
 		9D50B34A1A4EEEBA00856233 /* PocketRSSParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PocketRSSParser.m; sourceTree = "<group>"; };
+		9DF8C4531B0FFEDC00A46A01 /* PocketAPIExtensionSafe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PocketAPIExtensionSafe.h; sourceTree = "<group>"; };
+		9DF8C4541B0FFEDC00A46A01 /* PocketAPIExtensionSafe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PocketAPIExtensionSafe.m; sourceTree = "<group>"; };
 		AA0FCA8A1648A8FB005AE7DA /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		AA37FAF4157570ED00A63400 /* iOS Test App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS Test App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA37FAF8157570ED00A63400 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -145,6 +148,8 @@
 				AA37FB3715769D5700A63400 /* PocketAPITypes.h */,
 				AA37FB3815769D5700A63400 /* PocketAPIKeychainUtils.h */,
 				AA37FB3915769D5700A63400 /* PocketAPIKeychainUtils.m */,
+				9DF8C4531B0FFEDC00A46A01 /* PocketAPIExtensionSafe.h */,
+				9DF8C4541B0FFEDC00A46A01 /* PocketAPIExtensionSafe.m */,
 			);
 			name = "Pocket SDK";
 			path = ../../SDK;
@@ -223,6 +228,7 @@
 				9D50B34B1A4EEEBA00856233 /* PocketRSSParser.m in Sources */,
 				AA37FB4415769E8200A63400 /* main.m in Sources */,
 				AA9685F115BDDED900E9F7F1 /* PocketAPILogin.m in Sources */,
+				9DF8C4551B0FFEDC00A46A01 /* PocketAPIExtensionSafe.m in Sources */,
 				AAD8655815E807BF001F0C0E /* PocketRSSViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

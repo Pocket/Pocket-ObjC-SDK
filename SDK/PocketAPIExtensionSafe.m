@@ -1,9 +1,9 @@
 //
-//  PocketAPILogin.h
+//  PocketAPIExtensionSafe.m
 //  PocketSDK
 //
-//  Created by Steve Streza on 7/23/12.
-//  Copyright (c) 2012 Read It Later, Inc. All rights reserved.
+//  Created by Michael Schneider on 5/22/15.
+//  Copyright (c) 2015 Read It Later, Inc. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy of this
 //  software and associated documentation files (the "Software"), to deal in the Software
@@ -21,40 +21,38 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
-#if !TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR
-	#import <Cocoa/Cocoa.h>
-#else
-    #import <UIKit/UIKit.h>
-#endif
-#import "PocketAPI.h"
+#import "PocketAPIExtensionSafe.h"
 
-@interface PocketAPILogin : NSObject <NSCoding, PocketAPIDelegate> {
-	PocketAPI *API;
-	
-	NSString *uuid; // unique ID for the login process
-	
-	NSString *requestToken;
-	NSString *accessToken;
-	
-	NSOperationQueue *operationQueue;
-	
-	id<PocketAPIDelegate> delegate;
-	
-	BOOL didStart;
-	BOOL didFinish;
-	
-	BOOL reverseAuth;
+@implementation NSBundle (PKTExtensionSafe)
+
++ (BOOL)pkt_isApplicationExtension
+{
+    return ([[[self mainBundle] executablePath] containsString:@".appex/"]);
 }
 
--(id)initWithAPI:(PocketAPI *)api delegate:(id<PocketAPIDelegate>)delegate;
+@end
 
-@property (nonatomic, readonly, retain) PocketAPI *API;
-@property (nonatomic, readonly, retain) NSString *uuid;
-@property (nonatomic, readonly, retain) NSString *requestToken;
-@property (nonatomic, readonly, retain) NSString *accessToken;
+#if TARGET_OS_IPHONE
+@implementation UIApplication (PKTExtensionSafe)
 
--(void)fetchRequestToken;
--(void)convertRequestTokenToAccessToken;
++ (instancetype)pkt_sharedApplication
+{
+    if ([NSBundle pkt_isApplicationExtension]) {
+        return nil;
+    }
+    
+    return [UIApplication performSelector:@selector(sharedApplication)];
+}
+
+- (BOOL)pkt_openURL:(NSURL *)URL
+{
+    return [self performSelector:@selector(openURL:) withObject:URL];
+}
+
+- (BOOL)pkt_canOpenURL:(NSURL *)URL
+{
+    return [self performSelector:@selector(canOpenURL:) withObject:URL];
+}
 
 @end
+#endif

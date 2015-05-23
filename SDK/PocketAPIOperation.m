@@ -22,6 +22,7 @@
 //
 
 #import "PocketAPIOperation.h"
+#import "PocketAPIExtensionSafe.h"
 
 NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 	switch (method) {
@@ -212,6 +213,13 @@ NSString *PocketAPINameForHTTPMethod(PocketAPIHTTPMethod method){
 	// if this succeeds, we re-call the API the app requested
 	// if it fails, then prompt for an error next time
 	if(needsToRelogin){
+        // if we are in an application just fail to save the URL if the user is not logged in
+        if ([NSBundle pkt_isApplicationExtension]) {
+            [self.delegate pocketAPI:self.API
+                     failedToSaveURL:[NSURL URLWithString:[self.arguments objectForKey:@"url"]]
+                               error:error];
+            return;
+        }
 		[self.API loginWithDelegate:self];
 		attemptedRelogin = YES;
 		return;
