@@ -288,6 +288,11 @@ static PocketAPI *sSharedAPI = nil;
 }
 
 -(BOOL)handleOpenURL:(NSURL *)url{
+    if ([NSBundle pkt_isApplicationExtension]) {
+        NSLog(@"WARNING: -handleOpenURL: is not available within an extension");
+        return NO;
+    }
+    
 	if([[url scheme] isEqualToString:self.URLScheme]){
 		NSDictionary *urlQuery = [NSDictionary pkt_dictionaryByParsingURLEncodedFormString:[url query]];
 
@@ -348,6 +353,11 @@ static PocketAPI *sSharedAPI = nil;
 }
 
 -(void)loginWithDelegate:(id<PocketAPIDelegate>)delegate{
+    if ([NSBundle pkt_isApplicationExtension]) {
+        NSLog(@"WARNING: -loginWithDelegate: is not available within an extension");
+        return;
+    }
+    
 	[currentLogin autorelease];
 	currentLogin = [[PocketAPILogin alloc] initWithAPI:self delegate:delegate];
 	[currentLogin fetchRequestToken];
@@ -413,6 +423,10 @@ static PocketAPI *sSharedAPI = nil;
 #if NS_BLOCKS_AVAILABLE
 
 -(void)loginWithHandler:(PocketAPILoginHandler)handler{
+    if ([NSBundle pkt_isApplicationExtension]) {
+        NSLog(@"WARNING: -loginWithHandler: is not available within an extension");
+        return;
+    }
 	[self loginWithDelegate:[PocketAPIBlockDelegate delegateWithLoginHandler:handler]];
 }
 
@@ -476,6 +490,12 @@ static PocketAPI *sSharedAPI = nil;
 }
 
 -(void)logout{
+    
+    if ([NSBundle pkt_isApplicationExtension]) {
+        NSLog(@"WARNING: -logout is not available within an extension");
+        return;
+    }
+    
 	[self willChangeValueForKey:@"username"];
 	[self willChangeValueForKey:@"isLoggedIn"];
 	
