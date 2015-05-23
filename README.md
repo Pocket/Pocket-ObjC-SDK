@@ -118,7 +118,7 @@ At this point you’ve properly installed the SDK and can now start making reque
 	    }
 	}];
 
-The example above uses blocks which requires iOS 4.0 or greater. If you have a need to support iOS 3.0, you can use the [linkto:delegate or operation based methods].
+The example above uses blocks which requires iOS 4.0 or greater. If you have a need to support iOS 3.0, you can use the delegate or operation based methods.
 
 
 
@@ -156,6 +156,23 @@ To call other arbitrary APIs, pass the API's method name, the HTTP method name, 
 	                              handler: ^(PocketAPI *api, NSString *apiMethod, NSDictionary *response, NSError *error){
 	    // handle the response here
 	 }];
+
+
+
+##Enabling Extension Support##
+
+The first step is to "Enable Keychain Sharing" in both your app and extension capabilities in Xcode.
+
+![](https://developer.apple.com/library/ios/documentation/IDEs/Conceptual/AppDistributionGuide/Art/4_enablekeychain2_2x.png "Enable Keychain Sharing")
+
+See [Configuring Keychain Sharing](https://developer.apple.com/library/ios/documentation/IDEs/Conceptual/AppDistributionGuide/AddingCapabilities/AddingCapabilities.html#//apple_ref/doc/uid/TP40012582-CH26-SW15) for more information.
+
+Final step is to add the following before you initialize the PocketAPI in your main app and extension:
+
+	[[PocketAPI sharedAPI] enableKeychainSharingWithKeychainAccessGroup:@"Your Keychain Access Group"];
+	[[PocketAPI sharedAPI] setConsumerKey:@"Your Consumer Key Here"];
+
+After enabling keychain sharing, the app and extensions can access data that is securely stored in the keychain. From now on you can use the default methods of the PocketAPI class to save links from within extensions. See [Step 6: Start Saving to Pocket!](#step-6-start-saving-to-pocket) for more details.
 
 Acknowledgements
 ================
