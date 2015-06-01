@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9D14FB0A1B1D019100252E45 /* PocketAPIExtensionSafe.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D14FB091B1D019100252E45 /* PocketAPIExtensionSafe.m */; };
 		AA49B9BF15DC33B0008644A8 /* PocketAPILogin.m in Sources */ = {isa = PBXBuildFile; fileRef = AA49B9BE15DC33B0008644A8 /* PocketAPILogin.m */; };
 		AADD9BAE1576B18400D7D20C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADD9BAD1576B18400D7D20C /* Cocoa.framework */; };
 		AADD9BB81576B18400D7D20C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AADD9BB61576B18400D7D20C /* InfoPlist.strings */; };
@@ -31,9 +32,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9D14FB091B1D019100252E45 /* PocketAPIExtensionSafe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PocketAPIExtensionSafe.m; path = ../../SDK/PocketAPIExtensionSafe.m; sourceTree = "<group>"; };
 		AA49B9BD15DC33B0008644A8 /* PocketAPILogin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PocketAPILogin.h; sourceTree = "<group>"; };
 		AA49B9BE15DC33B0008644A8 /* PocketAPILogin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PocketAPILogin.m; sourceTree = "<group>"; };
-		AA49B9C115DC3402008644A8 /* PocketCredentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; name = PocketCredentials.h; path = ../iOSApp/PocketCredentials.h; sourceTree = "<group>"; };
+		AA49B9C115DC3402008644A8 /* PocketCredentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PocketCredentials.h; path = ../iOSApp/PocketCredentials.h; sourceTree = "<group>"; };
 		AADD9BA91576B18400D7D20C /* PocketSDK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PocketSDK.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AADD9BAD1576B18400D7D20C /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		AADD9BB01576B18400D7D20C /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -62,8 +64,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4545405A15F6B4B900731E40 /* SenTestingKit.framework in Frameworks */,
-				4545405B15F6B4B900731E40 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,11 +82,7 @@
 		4545405C15F6B4B900731E40 /* pocketsdk.osx.unit-tests */ = {
 			isa = PBXGroup;
 			children = (
-				4545406215F6B4B900731E40 /* pocketsdk_osx_unit_tests.h */,
-				4545406315F6B4B900731E40 /* pocketsdk_osx_unit_tests.m */,
 				4545405D15F6B4B900731E40 /* Supporting Files */,
-				4545406B15F6CC2D00731E40 /* PocketTestStatus.h */,
-				4545406C15F6CC2D00731E40 /* PocketTestStatus.m */,
 			);
 			path = "pocketsdk.osx.unit-tests";
 			sourceTree = "<group>";
@@ -94,9 +90,7 @@
 		4545405D15F6B4B900731E40 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				4545405E15F6B4B900731E40 /* pocketsdk.osx.unit-tests-Info.plist */,
 				4545405F15F6B4B900731E40 /* InfoPlist.strings */,
-				4545406515F6B4B900731E40 /* pocketsdk.osx.unit-tests-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -104,6 +98,7 @@
 		AADD9B9E1576B18400D7D20C = {
 			isa = PBXGroup;
 			children = (
+				9D14FB091B1D019100252E45 /* PocketAPIExtensionSafe.m */,
 				AADD9BD31576B23500D7D20C /* Pocket SDK */,
 				AADD9BB31576B18400D7D20C /* Test App */,
 				4545405C15F6B4B900731E40 /* pocketsdk.osx.unit-tests */,
@@ -116,7 +111,6 @@
 			isa = PBXGroup;
 			children = (
 				AADD9BA91576B18400D7D20C /* PocketSDK.app */,
-				4545405815F6B4B900731E40 /* pocketsdk.osx.unit-tests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -126,7 +120,6 @@
 			children = (
 				AADD9BDE1576B25400D7D20C /* Security.framework */,
 				AADD9BAD1576B18400D7D20C /* Cocoa.framework */,
-				4545405915F6B4B900731E40 /* SenTestingKit.framework */,
 				AADD9BAF1576B18400D7D20C /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -202,8 +195,7 @@
 			);
 			name = "pocketsdk.osx.unit-tests";
 			productName = "pocketsdk.osx.unit-tests";
-			productReference = 4545405815F6B4B900731E40 /* pocketsdk.osx.unit-tests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productType = "com.apple.product-type.bundle.ocunit-test";
 		};
 		AADD9BA81576B18400D7D20C /* PocketSDK */ = {
 			isa = PBXNativeTarget;
@@ -255,7 +247,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4545406115F6B4B900731E40 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -292,8 +283,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4545406415F6B4B900731E40 /* pocketsdk_osx_unit_tests.m in Sources */,
-				4545406D15F6CC2D00731E40 /* PocketTestStatus.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -307,6 +296,7 @@
 				AADD9BDC1576B23500D7D20C /* PocketAPIOperation.m in Sources */,
 				AADD9BDD1576B23500D7D20C /* PocketAPIKeychainUtils.m in Sources */,
 				AA49B9BF15DC33B0008644A8 /* PocketAPILogin.m in Sources */,
+				9D14FB0A1B1D019100252E45 /* PocketAPIExtensionSafe.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,7 +314,6 @@
 		4545405F15F6B4B900731E40 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				4545406015F6B4B900731E40 /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
