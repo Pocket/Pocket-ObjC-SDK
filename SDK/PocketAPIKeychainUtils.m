@@ -162,8 +162,8 @@ static NSString *PocketAPIKeychainUtilsErrorDomain = @"PocketAPIKeychainUtilsErr
 	
 	// See if we already have a password entered for these credentials.
 	NSError *getError = nil;
-	NSString *existingPassword = [PocketAPIKeychainUtils getPasswordForUsername: username andServiceName: serviceName error:&getError];
-  
+    NSString *existingPassword = [PocketAPIKeychainUtils getPasswordForUsername: username andServiceName: serviceName inAccessGroup:accessGroup error:&getError];
+    
 	if ([getError code] == -1999) {
 		// There is an existing entry without a password properly stored (possibly as a result of the previous incorrect version of this code.
 		// Delete the existing item before moving on entering a correct one.
