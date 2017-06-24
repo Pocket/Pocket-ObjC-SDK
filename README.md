@@ -27,7 +27,7 @@ The project download includes the SDK and an example project.
 The SDK includes all necessary source files and does not have any other dependencies.
 
 
-![](https://s3.amazonaws.com/pocket-assets/adding-sdk.png "Dragging the SDK to your XCode project")
+![](https://s3.amazonaws.com/pocket-assets/adding-sdk.png "Dragging the SDK to your Xcode project")
 
 
 ![](https://s3.amazonaws.com/pocket-assets/adding-security-framework.png "Security.framework is in the Link Binary With Libraries Build Phase")
