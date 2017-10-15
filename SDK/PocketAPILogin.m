@@ -25,11 +25,11 @@
 #import "PocketAPIExtensionSafe.h"
 #import "PocketAPIOperation.h"
 
-const NSString *PocketAPIErrorDomain = @"PocketAPIErrorDomain";
+NSString * const PocketAPIErrorDomain = @"PocketAPIErrorDomain";
 
-const NSString *PocketAPILoginStartedNotification = @"PocketAPILoginStartedNotification";
-const NSString *PocketAPILoginFinishedNotification = @"PocketAPILoginFinishedNotification";
-const NSString *PocketAPILoginFailedNotification = @"PocketAPILoginFailedNotification";
+NSString * const PocketAPILoginStartedNotification = @"PocketAPILoginStartedNotification";
+NSString * const PocketAPILoginFinishedNotification = @"PocketAPILoginFinishedNotification";
+NSString * const PocketAPILoginFailedNotification = @"PocketAPILoginFailedNotification";
 
 @interface PocketAPIOperation (Private)
 
