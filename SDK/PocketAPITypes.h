@@ -88,7 +88,7 @@ typedef enum {
 	PocketAPIErrorServerMaintenance = 199
 } PocketAPIError;
 
-extern const NSString *PocketAPIErrorDomain;
+extern NSString * const PocketAPIErrorDomain;
 
-extern const NSString *PocketAPILoginStartedNotification;
-extern const NSString *PocketAPILoginFinishedNotification;
+extern NSString * const PocketAPILoginStartedNotification;
+extern NSString * const PocketAPILoginFinishedNotification;
