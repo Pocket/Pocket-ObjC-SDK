@@ -3,11 +3,11 @@ Welcome!
 
 Thanks for checking out the Pocket SDK. With a few lines of code, your app can quickly add support for saving URLs to users' Pocket lists.
 
-##Installing the Pocket SDK##
+## Installing the Pocket SDK ##
 
 The Pocket SDK is the fastest way to add Pocket integration to any iOS or Mac application. Adding the Pocket SDK to your app is incredibly easy. Follow the steps below and you can be saving urls to Pocket from your app within 15 minutes.
 
-###Step 1: Download the Pocket SDK###
+### Step 1: Download the Pocket SDK ###
 
 You can download the SDK at: [http://getpocket.com/api/v3/pocket-objc-sdk.zip](http://getpocket.com/api/v3/pocket-objc-sdk.zip)
 
@@ -17,7 +17,7 @@ If you use [CocoaPods](http://cocoapods.org/), you can add the `PocketAPI` pod t
 
 The project download includes the SDK and an example project.
 
-###Step 2: Add the Pocket SDK to your project###
+### Step 2: Add the Pocket SDK to your project ###
 
 - Open your existing project.
 - Drag the SDK folder from the example project into your Xcode project.
@@ -40,8 +40,7 @@ When you register your app with Pocket, it will provide you with a platform cons
 If you have not obtained a consumer key yet, you can register one at [http://getpocket.com/api/signup](http://getpocket.com/api/signup)
 
 
-###Step 4: Add the Pocket URL scheme###
-
+### Step 4: Add the Pocket URL scheme ###
 
 Once you have the consumer key for the platform you are supporting, the application must register a URL scheme to receive login callbacks. By default, this is "pocketapp" plus your application's ID (which you can find at the beginning of the consumer key before the hyphen). So if your consumer key is 42-abcdef, your app ID is 42, and your URL scheme will be "pocketapp42".
 
@@ -67,24 +66,24 @@ Or you can copy and paste the following into the XML Source for the Info.plist:
 		</dict>
 	</array>
 
-###Step 5: Configure your App Delegate###
+### Step 5: Configure your App Delegate ###
 
 
 The final steps to set up the Pocket SDK requires adding a few lines of code to your main app delegate. This is the class where you include iOS required methods like applicationDidFinishLaunching.
 
-####Import the PocketAPI Header####
+#### Import the PocketAPI Header ####
 
 At the top of your app delegate source file (and anywhere you call the PocketAPI object),  you'll need to include the PocketAPI header. At the top of your class you'll probably see other imports already. Simply add this line:
 
 	#import "PocketAPI.h"
 
-####Set Your Platform Consumer Key####
+#### Set Your Platform Consumer Key ####
 
 The Pocket SDK requires your consumer key in order to make any requests to the API. Call this method with your registered consumer key when launching your app:
 
 	[[PocketAPI sharedAPI] setConsumerKey:@"Your Consumer Key Here"];
 
-####Add a method for the Pocket url-scheme####
+#### Add a method for the Pocket url-scheme ####
 
 The final step is to give the SDK an opportunity to handle incoming URLs.  If you do not already implement this method on your app delegate, simply add the following method:
 
@@ -103,7 +102,7 @@ The final step is to give the SDK an opportunity to handle incoming URLs.  If yo
 	}
 
 
-###Step 6: Start Saving to Pocket!###
+### Step 6: Start Saving to Pocket! ###
 
 At this point you’ve properly installed the SDK and can now start making requests and saving urls to Pocket. Here is a two line example:
 
@@ -120,9 +119,7 @@ At this point you’ve properly installed the SDK and can now start making reque
 
 The example above uses blocks which requires iOS 4.0 or greater. If you have a need to support iOS 3.0, you can use the delegate or operation based methods.
 
-
-
-##Managing Accounts / Handling User Logins##
+## Managing Accounts / Handling User Logins ##
 
 Following Pocket’s API best practices, you’ll want to provide a way for the user to manage what account they are logged into. This is most commonly handled by adding a setting in your app’s option screen that lets the user configure their Pocket account. When the user taps this, you can simply call one line of code which will handle the entire authorization process:
 
@@ -142,7 +139,7 @@ Following Pocket’s API best practices, you’ll want to provide a way for the 
 
 It is also recommended to observe changes to the PocketAPI's username and loggedIn properties to determine when the logged-in user changes. If iOS terminates your application while it is in the background (e.g. due to memory constraints), any pending login attempts are automatically saved and restored at launch if needed. Therefore, your delegate/block responses may not get called. If you need to update UI when the logged in user changes, register for observers on PocketAPI at application launch.
 
-###Calling Other Pocket APIs###
+### Calling Other Pocket APIs ###
 
 To call other arbitrary APIs, pass the API's method name, the HTTP method name, and an NSDictionary of arguments. An NSDictionary with the response from the API will be passed to the handler.
 
@@ -157,9 +154,7 @@ To call other arbitrary APIs, pass the API's method name, the HTTP method name, 
 	    // handle the response here
 	 }];
 
-
-
-##Enabling Extension Support##
+## Enabling Extension Support ##
 
 The first step is to "Enable Keychain Sharing" in both your app and extension capabilities in Xcode.
 
