@@ -1,3 +1,11 @@
+# This SDK is deprecated
+
+Howdy all! 👋 Thanks for checking out this repo. Your 👀 mean a lot to us. 💗
+
+Unfortunately, this project is deprecated, and the code hosted here is woefully out of date. We wouldn't recommend it as anything other than a curiosity. 
+
+If you're interested in developing against the Pocket API, please visit our [Developer Documentation](https://getpocket.com/developer/).
+
 Welcome!
 ========
 
