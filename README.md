@@ -11,7 +11,7 @@ The Pocket SDK is the fastest way to add Pocket integration to any iOS or Mac ap
 
 You can download the SDK at: [http://getpocket.com/api/v3/pocket-objc-sdk.zip](http://getpocket.com/api/v3/pocket-objc-sdk.zip)
 
-You can also watch/checkout the SDK from GitHub at: [http://github.com/pocketco/Pocket-ObjC-SDK](http://github.com/pocketco/Pocket-ObjC-SDK). If you use recommend adding the Pocket SDK as a git submodule of your project by running `git submodule add git://github.com/Pocket/Pocket-ObjC-SDK.git <path>` from the root directory of your repository, replacing the `<path>` with the path you'd like it installed to.
+You can also watch/checkout the SDK from GitHub at: [http://github.com/Pocket/Pocket-ObjC-SDK](http://github.com/Pocket/Pocket-ObjC-SDK). If you use recommend adding the Pocket SDK as a git submodule of your project by running `git submodule add git://github.com/Pocket/Pocket-ObjC-SDK.git <path>` from the root directory of your repository, replacing the `<path>` with the path you'd like it installed to.
 
 If you use [CocoaPods](http://cocoapods.org/), you can add the `PocketAPI` pod to your Podfile. Then run `pod install`, and the Pocket SDK will be available in your project. See the documentation on the CocoaPods website if you want to set up a new or existing project.
 
